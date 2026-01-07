@@ -1,7 +1,11 @@
-import React from "react";
+import TestAPI from "./TestAPI";
 
-const App = () => {
-  return <div className="text-4xl">hi</div>;
-};
+function App() {
+  return (
+    <div>
+      <TestAPI />
+    </div>
+  );
+}
 
 export default App;

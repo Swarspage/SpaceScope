@@ -1,0 +1,42 @@
+# === Environment & secrets ===
+# Ignore any local environment files (do not ignore example files)
+.env
+.env.local
+.env.*.local
+.env.development
+.env.development.local
+.env.production
+.env.test
+# If you keep env in subfolders (explicit)
+Frontend/.env
+Backend/.env
+
+# Keep example files in repo
+!.env.example
+!.env.sample
+
+# === Node / build / logs ===
+node_modules/
+dist/
+dist-ssr/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# === Editor / OS ===
+.vscode/
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# === Misc secrets / local files ===
+.envrc
+.secrets/
+*.key
+*.pem
+secret-*.json
