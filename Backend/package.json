@@ -8,10 +8,11 @@
   },
   "dependencies": {
     "axios": "^1.13.2",
+    "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
     "express": "^4.22.1",
-    "mongoose": "^8.0.0"
+    "mongoose": "^8.21.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.11"

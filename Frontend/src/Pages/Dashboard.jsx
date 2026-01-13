@@ -4,6 +4,7 @@ import Globe from "react-globe.gl";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, CircleMarker } from "react-leaflet";
 import Sidebar from '../components/Sidebar';
+import { useAuth } from '../../Context/AuthContext';
 import {
     MdRocketLaunch,
     MdNotifications,
@@ -46,6 +47,9 @@ const intensityToRadius = (v) => {
 const Dashboard = () => {
     // Router navigation
     const navigate = useNavigate();
+
+    // Auth context for user data
+    const { user, loading: authLoading } = useAuth();
 
     // State management
     const [issData, setIssData] = useState(null);
@@ -249,18 +253,50 @@ const Dashboard = () => {
                             <MdNotifications className="text-xl" />
                             <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full border border-[#080b14]"></span>
                         </button>
-                        <button className="text-slate-400 hover:text-white transition-colors">
+                        <button
+                            onClick={() => navigate('/profile')}
+                            className="text-slate-400 hover:text-white transition-colors"
+                            title="Settings & Profile"
+                        >
                             <MdSettings className="text-xl" />
                         </button>
                         <div className="h-8 w-px bg-white/10 mx-1"></div>
-                        <div className="flex items-center gap-3">
+                        <div
+                            className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
+                            onClick={() => navigate('/profile')}
+                            title="View Profile"
+                        >
                             <div className="text-right hidden md:block">
-                                <div className="text-sm font-bold text-white leading-none mb-1">Cmdr. Shepard</div>
-                                <div className="text-[10px] text-[#00d9ff] font-medium">Level 5 Access</div>
+                                {authLoading ? (
+                                    <>
+                                        <div className="h-4 w-24 bg-slate-700 rounded animate-pulse mb-1"></div>
+                                        <div className="h-3 w-16 bg-slate-800 rounded animate-pulse"></div>
+                                    </>
+                                ) : user ? (
+                                    <>
+                                        <div className="text-sm font-bold text-white leading-none mb-1">
+                                            {user.fullName || user.username}
+                                        </div>
+                                        <div className="text-[10px] text-[#00d9ff] font-medium">
+                                            @{user.username}
+                                        </div>
+                                    </>
+                                ) : (
+                                    <>
+                                        <div className="text-sm font-bold text-white leading-none mb-1">Guest</div>
+                                        <div className="text-[10px] text-slate-500 font-medium">Not logged in</div>
+                                    </>
+                                )}
                             </div>
                             <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#00d9ff] to-blue-600 p-0.5">
                                 <div className="w-full h-full rounded-full bg-[#080b14] flex items-center justify-center">
-                                    <FaUserAstronaut className="text-white text-sm" />
+                                    {user ? (
+                                        <span className="text-white text-sm font-bold">
+                                            {(user.fullName || user.username)?.charAt(0).toUpperCase()}
+                                        </span>
+                                    ) : (
+                                        <FaUserAstronaut className="text-white text-sm" />
+                                    )}
                                 </div>
                             </div>
                         </div>

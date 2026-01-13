@@ -2,6 +2,8 @@
 import cors from "cors";
 import axios from "axios";
 import dotenv from "dotenv";
+import mongoose from "mongoose"; // ADD THIS
+import authRoutes from "./Routes/authRoutes.js"; // ADD THIS
 
 dotenv.config();
 
@@ -10,6 +12,20 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+
+// MongoDB Connection - ADD THIS
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/spacescope', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+  .then(() => console.log('✅ MongoDB Connected'))
+  .catch(err => console.error('❌ MongoDB Connection Error:', err));
+
+
+// Auth Routes - ADD THIS
+app.use('/api/auth', authRoutes);
+
 
 // Basic logger for visibility
 app.use((req, res, next) => {
