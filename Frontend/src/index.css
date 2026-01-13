@@ -1,1 +1,120 @@
+/* Import Google Fonts - must be first */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap");
+
 @import "tailwindcss";
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0e27;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e3a45;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #00d9ff;
+}
+
+/* Base Styles */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #0a0e27;
+  overflow-x: hidden;
+}
+
+/* Selection */
+::selection {
+  background: #00d9ff;
+  color: #000;
+}
+
+::-moz-selection {
+  background: #00d9ff;
+  color: #000;
+}
+
+/* Text Glow Effect */
+.text-glow {
+  text-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+}
+
+/* Grid Background */
+.grid-bg {
+  background-size: 40px 40px;
+  background-image: linear-gradient(to right,
+      rgba(0, 217, 255, 0.05) 1px,
+      transparent 1px),
+    linear-gradient(to bottom, rgba(0, 217, 255, 0.05) 1px, transparent 1px);
+}
+
+/* Scrollbar utilities */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-thumb-slate-700::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+.scrollbar-track-transparent::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Animation */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 12s linear infinite;
+}
+
+/* Override Leaflet internal styles for SpaceScope Theme */
+.leaflet-tooltip.custom-leaflet-tooltip {
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+.leaflet-container {
+  background: #050714 !important;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Custom Scrollbar for the page */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #050714;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1f2937;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #00d9ff;
+}

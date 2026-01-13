@@ -11,99 +11,405 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Test endpoint
-app.get("/api/test", (req, res) => {
-  res.json({ message: "Backend is working! 🚀" });
+// Basic logger for visibility
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
+  next();
 });
 
-// Get ISS location
+/* -------------------------
+   Config / base URLs
+   ------------------------- */
+const SPACEX_BASE = process.env.SPACEX_BASE || "https://api.spacexdata.com";
+const ISRO_BASE = process.env.ISRO_BASE || "https://isro.vercel.app";
+const NASA_API_KEY = process.env.NASA_API_KEY || "";
+const AGGREGATE_CACHE_TTL_SECONDS = Number(process.env.AGGREGATE_CACHE_TTL_SECONDS) || 30;
+const SPACEX_CACHE_TTL_SECONDS = Number(process.env.SPACEX_CACHE_TTL_SECONDS) || 60;
+
+/* -------------------------
+   Simple in-memory cache
+   ------------------------- */
+const cache = new Map();
+
+function setCache(key, data, ttlSeconds = SPACEX_CACHE_TTL_SECONDS) {
+  const expiresAt = Date.now() + ttlSeconds * 1000;
+  cache.set(key, { data, expiresAt });
+}
+function getCache(key) {
+  const entry = cache.get(key);
+  if (!entry) return null;
+  if (Date.now() > entry.expiresAt) {
+    cache.delete(key);
+    return null;
+  }
+  return entry.data;
+}
+function clearExpiredCache() {
+  const now = Date.now();
+  for (const [k, v] of cache.entries()) {
+    if (v.expiresAt <= now) cache.delete(k);
+  }
+}
+setInterval(clearExpiredCache, 30 * 1000);
+
+/* -------------------------
+   Utility: safe axios GET
+   ------------------------- */
+async function safeGet(url, opts = {}) {
+  try {
+    const r = await axios.get(url, opts);
+    return r.data;
+  } catch (err) {
+    // return structured error so callers can handle
+    console.error(`GET ${url} failed:`, err?.message || err);
+    throw err;
+  }
+}
+
+/* -------------------------
+   Existing basic endpoints
+   ------------------------- */
+
+app.get("/api/test", (req, res) => {
+  res.json({ message: "Backend is working" });
+});
+
 app.get("/api/iss", async (req, res) => {
   try {
-    const response = await axios.get("http://api.open-notify.org/iss-now.json");
-    res.json(response.data);
-  } catch (error) {
+    const data = await safeGet("http://api.open-notify.org/iss-now.json");
+    res.json(data);
+  } catch (e) {
     res.status(500).json({ error: "Failed to get ISS data" });
   }
 });
 
-// Get ISS pass times
 app.get("/api/iss-pass", async (req, res) => {
   try {
     const { lat, lon } = req.query;
-    const response = await axios.get(
-      `http://api.open-notify.org/iss-pass.json?lat=${lat}&lon=${lon}`
+    if (!lat || !lon) return res.status(400).json({ error: "lat and lon required" });
+    const data = await safeGet(
+      `http://api.open-notify.org/iss-pass.json?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(
+        lon
+      )}`
     );
-    res.json(response.data);
-  } catch (error) {
+    res.json(data);
+  } catch (e) {
     res.status(500).json({ error: "Failed to get ISS pass data" });
   }
 });
 
-// Get Kp Index (Aurora)
 app.get("/api/aurora", async (req, res) => {
   try {
-    const response = await axios.get(
-      "https://services.swpc.noaa.gov/json/geospace/kp_3day.json"
-    );
-    res.json(response.data);
-  } catch (error) {
+    const data = await safeGet("https://services.swpc.noaa.gov/json/ovation_aurora_latest.json");
+    res.json(data);
+  } catch (e) {
     res.status(500).json({ error: "Failed to get aurora data" });
   }
 });
 
-// Get Solar Flare data
-app.get("/api/solar-flares", async (req, res) => {
+/* -------------------------
+   SpaceX proxy endpoints (kept from previous)
+   ------------------------- */
+
+app.get("/api/spacex/launches", async (req, res) => {
   try {
-    const response = await axios.get(
-      "https://services.swpc.noaa.gov/json/goes/primary/xrays-6-hour.json"
-    );
-    res.json(response.data);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to get solar flare data" });
+    const cacheKey = "spacex:launches";
+    const cached = getCache(cacheKey);
+    if (cached) return res.json(cached);
+
+    const url = `${SPACEX_BASE}/v4/launches`;
+    const data = await safeGet(url);
+    setCache(cacheKey, data, SPACEX_CACHE_TTL_SECONDS);
+    res.json(data);
+  } catch (e) {
+    res.status(500).json({ error: "Failed to fetch SpaceX launches" });
   }
 });
 
-// NASA APOD
-app.get("/api/nasa-apod", async (req, res) => {
+app.get("/api/spacex/launches/:id", async (req, res) => {
   try {
-    const response = await axios.get(
-      `https://api.nasa.gov/planetary/apod?api_key=${process.env.NASA_API_KEY}`
-    );
-    res.json(response.data);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to get NASA APOD" });
+    const { id } = req.params;
+    const url = `${SPACEX_BASE}/v4/launches/${encodeURIComponent(id)}`;
+    const data = await safeGet(url);
+    res.json(data);
+  } catch (e) {
+    res.status(e.response?.status || 500).json({ error: "Failed to fetch SpaceX launch" });
   }
 });
 
-// Near Earth Objects
-app.get("/api/neo", async (req, res) => {
+app.get("/api/spacex/launches/latest", async (req, res) => {
   try {
-    const today = new Date().toISOString().split("T")[0];
-    const response = await axios.get(
-      `https://api.nasa.gov/neo/rest/v1/feed?start_date=${today}&api_key=${process.env.NASA_API_KEY}`
-    );
-    res.json(response.data);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to get NEO data" });
+    // try v5 then v4 fallback
+    try {
+      const urlV5 = `${SPACEX_BASE}/v5/launches/latest`;
+      const d = await safeGet(urlV5);
+      return res.json(d);
+    } catch (err) {
+      const urlV4 = `${SPACEX_BASE}/v4/launches/latest`;
+      const d2 = await safeGet(urlV4);
+      return res.json(d2);
+    }
+  } catch (e) {
+    res.status(500).json({ error: "Failed to fetch latest SpaceX launch" });
   }
 });
 
-// Earth imagery
-app.get("/api/earth-imagery", async (req, res) => {
+app.post("/api/spacex/launches/query", async (req, res) => {
   try {
-    const { lat, lon, date } = req.query;
-    const response = await axios.get(
-      `https://api.nasa.gov/planetary/earth/imagery?lon=${lon}&lat=${lat}&date=${date}&api_key=${process.env.NASA_API_KEY}`
-    );
-    res.json(response.data);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to get Earth imagery" });
+    const url = `${SPACEX_BASE}/v4/launches/query`;
+    const r = await axios.post(url, req.body, { headers: { "Content-Type": "application/json" } });
+    res.json(r.data);
+  } catch (e) {
+    res.status(e.response?.status || 500).json({ error: "Failed to query SpaceX launches" });
   }
 });
 
+app.get("/api/spacex/rockets", async (req, res) => {
+  try {
+    const cacheKey = "spacex:rockets";
+    const cached = getCache(cacheKey);
+    if (cached) return res.json(cached);
+
+    const url = `${SPACEX_BASE}/v4/rockets`;
+    const data = await safeGet(url);
+    setCache(cacheKey, data, SPACEX_CACHE_TTL_SECONDS);
+    res.json(data);
+  } catch (e) {
+    res.status(500).json({ error: "Failed to fetch rockets" });
+  }
+});
+
+app.get("/api/spacex/rockets/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const url = `${SPACEX_BASE}/v4/rockets/${encodeURIComponent(id)}`;
+    const data = await safeGet(url);
+    res.json(data);
+  } catch (e) {
+    res.status(e.response?.status || 500).json({ error: "Failed to fetch rocket" });
+  }
+});
+
+app.get("/api/spacex/company", async (req, res) => {
+  try {
+    const cacheKey = "spacex:company";
+    const cached = getCache(cacheKey);
+    if (cached) return res.json(cached);
+
+    const url = `${SPACEX_BASE}/v4/company`;
+    const data = await safeGet(url);
+    setCache(cacheKey, data, SPACEX_CACHE_TTL_SECONDS);
+    res.json(data);
+  } catch (e) {
+    res.status(500).json({ error: "Failed to fetch company info" });
+  }
+});
+
+/* -------------------------
+   ISRO proxy endpoints
+   - ISRO open-source repo exposes endpoints such as:
+     /api/spacecrafts, /api/launchers, /api/spacecraft_missions, /api/centres, /api/customer_satellites
+   - Base can be overridden via ISRO_BASE in .env
+   ------------------------- */
+
+app.get("/api/isro/spacecrafts", async (req, res) => {
+  try {
+    const cacheKey = "isro:spacecrafts";
+    const cached = getCache(cacheKey);
+    if (cached) return res.json(cached);
+
+    const url = `${ISRO_BASE}/api/spacecrafts`;
+    const data = await safeGet(url);
+    setCache(cacheKey, data, SPACEX_CACHE_TTL_SECONDS);
+    res.json(data);
+  } catch (e) {
+    res.status(500).json({ error: "Failed to fetch ISRO spacecrafts" });
+  }
+});
+
+app.get("/api/isro/launchers", async (req, res) => {
+  try {
+    const cacheKey = "isro:launchers";
+    const cached = getCache(cacheKey);
+    if (cached) return res.json(cached);
+
+    const url = `${ISRO_BASE}/api/launchers`;
+    const data = await safeGet(url);
+    setCache(cacheKey, data, SPACEX_CACHE_TTL_SECONDS);
+    res.json(data);
+  } catch (e) {
+    res.status(500).json({ error: "Failed to fetch ISRO launchers" });
+  }
+});
+
+app.get("/api/isro/missions", async (req, res) => {
+  try {
+    const cacheKey = "isro:missions";
+    const cached = getCache(cacheKey);
+    if (cached) return res.json(cached);
+
+    // repo sometimes uses /api/spacecraft_missions
+    const urlCandidates = [
+      `${ISRO_BASE}/api/spacecraft_missions`,
+      `${ISRO_BASE}/api/spacecraft_mission`,
+      `${ISRO_BASE}/api/spacecraft-missions`,
+      `${ISRO_BASE}/api/spacecrafts/missions`
+    ];
+
+    let data = null;
+    for (const u of urlCandidates) {
+      try {
+        data = await safeGet(u);
+        if (data) break;
+      } catch (err) {
+        // try next candidate
+      }
+    }
+    if (!data) throw new Error("No ISRO missions endpoint found at ISRO_BASE");
+    setCache(cacheKey, data, SPACEX_CACHE_TTL_SECONDS);
+    res.json(data);
+  } catch (e) {
+    console.error("ISRO missions error:", e?.message || e);
+    res.status(500).json({ error: "Failed to fetch ISRO missions" });
+  }
+});
+
+/* -------------------------
+   NASA endpoints
+   - APOD (requires NASA_API_KEY)
+   - NASA launches (uses Launch Library to collect launches from providers that match 'NASA' name)
+   ------------------------- */
+
+app.get("/api/nasa/apod", async (req, res) => {
+  try {
+    if (!NASA_API_KEY) return res.status(400).json({ error: "NASA_API_KEY not set in .env" });
+    const url = `https://api.nasa.gov/planetary/apod?api_key=${encodeURIComponent(NASA_API_KEY)}`;
+    const data = await safeGet(url);
+    res.json(data);
+  } catch (e) {
+    res.status(500).json({ error: "Failed to fetch NASA APOD" });
+  }
+});
+
+app.get("/api/nasa/launches", async (req, res) => {
+  try {
+    // We use the public Launch Library to fetch upcoming/past launches and filter by provider name containing "NASA"
+    // This is a practical way to get a collection of NASA-related launches in a consistent schema
+    const cacheKey = "nasa:launches";
+    const cached = getCache(cacheKey);
+    if (cached) return res.json(cached);
+
+    const limit = Number(req.query.limit) || 100;
+    const url = `https://ll.thespacedevs.com/2.2.0/launch/?limit=${limit}&ordering=-window_start`;
+    const resp = await safeGet(url);
+
+    // resp.results is expected; be defensive
+    const results = resp?.results || resp?.launches || [];
+    // filter launches where launch_service_provider or agencies contain NASA
+    const nasaMatches = results.filter((l) => {
+      const providerName = l?.launch_service_provider?.name || "";
+      if (providerName && /nasa/i.test(providerName)) return true;
+
+      // some entries include agencies in payloads/mission; be permissive
+      const agencies = (l?.rocket?.second_stage?.payloads || []).map((p) => p?.agencies || []).flat();
+      if (agencies.some((a) => a?.name && /nasa/i.test(a.name))) return true;
+      return false;
+    });
+
+    setCache(cacheKey, nasaMatches, SPACEX_CACHE_TTL_SECONDS);
+    res.json(nasaMatches);
+  } catch (e) {
+    console.error("NASA launches error:", e?.message || e);
+    res.status(500).json({ error: "Failed to fetch NASA launches" });
+  }
+});
+
+/* -------------------------
+   Aggregate endpoint
+   - Returns combined launch/mission lists from SpaceX, ISRO and NASA
+   - Useful for single-page view
+   ------------------------- */
+
+app.get("/api/aggregate/launches", async (req, res) => {
+  try {
+    const cacheKey = "aggregate:launches";
+    const cached = getCache(cacheKey);
+    if (cached) return res.json(cached);
+
+    // fetch in parallel with fallbacks
+    const promises = {
+      spacex: safeGet(`${SPACEX_BASE}/v4/launches`).catch((e) => {
+        console.error("agg: spacex failed", e?.message || e);
+        return [];
+      }),
+      isro: (async () => {
+        // prefer ISRO missions; fallback to launchers or spacecrafts if not available
+        try {
+          const m = await safeGet(`${ISRO_BASE}/api/spacecraft_missions`);
+          return m;
+        } catch (e1) {
+          try {
+            const l = await safeGet(`${ISRO_BASE}/api/launchers`);
+            return l;
+          } catch (e2) {
+            try {
+              const s = await safeGet(`${ISRO_BASE}/api/spacecrafts`);
+              return s;
+            } catch (e3) {
+              console.warn("agg: isro endpoints all failed");
+              return [];
+            }
+          }
+        }
+      })(),
+      nasa: (async () => {
+        try {
+          // re-use the same Launch Library approach as /api/nasa/launches
+          const url = `https://ll.thespacedevs.com/2.2.0/launch/?limit=100&ordering=-window_start`;
+          const r = await safeGet(url);
+          return r?.results || [];
+        } catch (e) {
+          console.error("agg: nasa fetch failed", e?.message || e);
+          return [];
+        }
+      })(),
+    };
+
+    const [spacexData, isroData, nasaData] = await Promise.all([promises.spacex, promises.isro, promises.nasa]);
+
+    const payload = {
+      spacex: spacexData || [],
+      isro: isroData || [],
+      nasa: nasaData || [],
+      generated_at: new Date().toISOString(),
+    };
+
+    setCache(cacheKey, payload, AGGREGATE_CACHE_TTL_SECONDS);
+    res.json(payload);
+  } catch (e) {
+    console.error("Aggregate error:", e?.message || e);
+    res.status(500).json({ error: "Failed to fetch aggregated launches" });
+  }
+});
+
+/* -------------------------
+   Generic 404 + error handler
+   ------------------------- */
+app.use((req, res) => {
+  res.status(404).json({ error: "Not found" });
+});
+
+app.use((err, req, res, next) => {
+  console.error("Unhandled error:", err);
+  res.status(500).json({ error: "Internal server error" });
+});
+
+/* -------------------------
+   Start server
+   ------------------------- */
 const PORT = process.env.PORT || 5000;
-
 app.listen(PORT, () => {
-  console.log(`🚀 SpaceScope Backend running on http://localhost:${PORT}`);
-  console.log(`📡 Test endpoint: http://localhost:${PORT}/api/test`);
+  console.log(`Server running on port ${PORT}`);
+  console.log(`SpaceX base: ${SPACEX_BASE}`);
+  console.log(`ISRO base: ${ISRO_BASE}`);
 });
