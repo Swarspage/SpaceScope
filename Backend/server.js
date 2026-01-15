@@ -381,7 +381,7 @@ app.get("/api/aggregate/launches", async (req, res) => {
       nasa: (async () => {
         try {
           // re-use the same Launch Library approach as /api/nasa/launches
-          const url = `https://ll.thespacedevs.com/2.2.0/launch/?limit=100&ordering=-window_start`;
+          const url = `https://ll.thespacedevs.com/2.2.0/launch/?limit=1000&ordering=-window_start`;
           const r = await safeGet(url);
           return r?.results || [];
         } catch (e) {

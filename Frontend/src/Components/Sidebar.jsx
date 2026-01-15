@@ -41,7 +41,7 @@ const Sidebar = ({ activeTab = 'Dashboard' }) => {
                         icon={MdDashboard}
                         label="Dashboard"
                         active={activeTab === 'Dashboard'}
-                        onClick={() => navigate('/')}
+                        onClick={() => navigate('/dashboard')}
                     />
                     <NavItem
                         icon={MdRocketLaunch}
@@ -53,7 +53,7 @@ const Sidebar = ({ activeTab = 'Dashboard' }) => {
                         icon={MdSchool}
                         label="Learning Zone"
                         active={activeTab === 'Learning Zone'}
-                        onClick={() => { }}
+                        onClick={() => navigate('/learning')}
                     />
                     <NavItem
                         icon={MdSatelliteAlt}

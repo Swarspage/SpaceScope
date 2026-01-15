@@ -34,6 +34,8 @@ import ProfilePage from "./Pages/ProfilePage";
 import AuroraPage from "./Pages/AuroraPage";
 import ISSTracker from "./Pages/ISSTracker";
 import MissionTimelines from "./Pages/MissionTimelines";
+import LearningPage from "./Pages/LearningPage";
+import HomePage from "./Pages/HomePage";
 
 // Protected Route Component - must be used inside AuthProvider
 const ProtectedRoute = ({ children }) => {
@@ -54,12 +56,13 @@ const ProtectedRoute = ({ children }) => {
 const AppRoutes = () => {
   return (
     <Routes>
-      {/* Authentication */}
+      {/* Public Routes */}
+      <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
 
       {/* Protected Routes */}
       <Route
-        path="/"
+        path="/dashboard"
         element={
           <ProtectedRoute>
             <Dashboard />
@@ -99,6 +102,15 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <MissionTimelines />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/learning"
+        element={
+          <ProtectedRoute>
+            <LearningPage />
           </ProtectedRoute>
         }
       />
