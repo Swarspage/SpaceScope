@@ -6,6 +6,7 @@ import {
     MdSchool,
     MdSatelliteAlt
 } from 'react-icons/md';
+import Logo from '../assets/Logo.png';
 
 const Sidebar = ({ activeTab = 'Dashboard' }) => {
     const navigate = useNavigate();
@@ -26,11 +27,8 @@ const Sidebar = ({ activeTab = 'Dashboard' }) => {
     return (
         <aside className="w-64 bg-[#0a0e17] border-r border-white/5 flex flex-col flex-shrink-0 z-20">
             {/* App Logo */}
-            <div className="h-20 flex items-center px-6 gap-3">
-                <div className="w-8 h-8 bg-[#00d9ff] rounded-lg flex items-center justify-center text-white shadow-[0_0_15px_rgba(0,217,255,0.3)]">
-                    <MdRocketLaunch className="text-xl" />
-                </div>
-                <span className="text-white font-bold text-lg tracking-tight">SpaceScope</span>
+            <div className="h-40 flex items-center px-4">
+                <img src={Logo} alt="Singularity" className="h-20 w-auto object-contain" />
             </div>
 
             {/* Main Menu */}

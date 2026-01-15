@@ -9,10 +9,10 @@ import L from "leaflet";
  * ISSTracker.jsx
  * - Single-file page combining a react-globe.gl globe + a leaflet map
  * - Centralized polling of ISS position; both views update from the same source
- * - SpaceScope tokens applied inline + Tailwind utility classes
+ * - Singularity tokens applied inline + Tailwind utility classes
  */
 
-/* ---------- Theme tokens (SpaceScope) ---------- */
+/* ---------- Theme tokens (Singularity) ---------- */
 const THEME = {
     primary: "#00d9ff",
     bgDeep: "#050714",
@@ -346,7 +346,7 @@ export default function ISSTracker() {
 
                     {/* Footer */}
                     <div className="mt-auto pt-6 border-t border-white/5 text-[10px] text-gray-600">
-                        <p>SpaceScope ISS Tracker v2.0</p>
+                        <p>Singularity ISS Tracker v2.0</p>
                         <p className="mt-1">Rendering: WebGL + Leaflet</p>
                     </div>
                 </aside>

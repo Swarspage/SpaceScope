@@ -63,7 +63,7 @@
 //               <MdRocketLaunch className="text-xl" />
 //             </div>
 //             <div>
-//               <h1 className="text-xl font-bold text-white tracking-tight leading-none">SpaceScope</h1>
+//               <h1 className="text-xl font-bold text-white tracking-tight leading-none">Singularity</h1>
 //               <span className="text-[10px] font-bold text-primary tracking-widest uppercase">Dashboard</span>
 //             </div>
 //           </div>
@@ -196,7 +196,7 @@
 
 //           <div className="mt-8 text-center">
 //             <p className="text-secondary text-xs">
-//               New to SpaceScope? <button onClick={() => setActiveTab('register')} className="text-primary font-bold hover:underline">Create an account</button>
+//               New to Singularity? <button onClick={() => setActiveTab('register')} className="text-primary font-bold hover:underline">Create an account</button>
 //             </p>
 //           </div>
 
@@ -306,7 +306,7 @@
 //             <MdCheckCircle className="text-4xl text-primary" />
 //           </div>
 //           <h2 className="text-3xl font-bold text-white mb-2">Check your Email</h2>
-//           <p className="text-secondary text-lg mb-8">We sent a verification link to <span className="text-white">explorer@spacescope.com</span></p>
+//           <p className="text-secondary text-lg mb-8">We sent a verification link to <span className="text-white">explorer@Singularity.com</span></p>
 //           <button onClick={() => { setShowVerifyOverlay(false); setActiveTab('login'); }} className="px-8 py-3 rounded-lg bg-primary text-black font-bold hover:bg-white transition-colors">Back to Login</button>
 //         </div>
 //       )}
@@ -333,6 +333,7 @@ import {
   MdLocationOn
 } from 'react-icons/md';
 import { FaGoogle, FaGithub } from 'react-icons/fa';
+import Logo from '../assets/Logo.png';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -470,14 +471,8 @@ const LoginPage = () => {
 
         {/* Header / Logo */}
         <div className="p-8 pb-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-btn-gradient flex items-center justify-center shadow-lg shadow-primary/20 text-white">
-              <MdRocketLaunch className="text-xl" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-white tracking-tight leading-none">SpaceScope</h1>
-              <span className="text-[10px] font-bold text-primary tracking-widest uppercase">Dashboard</span>
-            </div>
+          <div className="flex items-center">
+            <img src={Logo} alt="Singularity" className="h-10 w-auto object-contain" />
           </div>
         </div>
 
@@ -505,7 +500,7 @@ const LoginPage = () => {
           {/* Welcome Header */}
           <div className="mb-8 animate-slide-up">
             <h2 className="text-3xl font-bold text-white mb-2">
-              {activeTab === 'login' ? 'Welcome Back' : 'Join SpaceScope'}
+              {activeTab === 'login' ? 'Welcome Back' : 'Join Singularity'}
             </h2>
             <p className="text-secondary text-sm">
               {activeTab === 'login'
@@ -680,7 +675,7 @@ const LoginPage = () => {
           <div className="mt-8 text-center">
             <p className="text-secondary text-xs">
               {activeTab === 'login' ? (
-                <>New to SpaceScope? <button onClick={() => { setActiveTab('register'); setError(''); }} className="text-primary font-bold hover:underline">Create an account</button></>
+                <>New to Singularity? <button onClick={() => { setActiveTab('register'); setError(''); }} className="text-primary font-bold hover:underline">Create an account</button></>
               ) : (
                 <>Already have an account? <button onClick={() => { setActiveTab('login'); setError(''); }} className="text-primary font-bold hover:underline">Sign in</button></>
               )}
@@ -793,7 +788,7 @@ const LoginPage = () => {
             <MdCheckCircle className="text-4xl text-primary" />
           </div>
           <h2 className="text-3xl font-bold text-white mb-2">Account Created!</h2>
-          <p className="text-secondary text-lg mb-8">Welcome to SpaceScope. You can now log in with your credentials.</p>
+          <p className="text-secondary text-lg mb-8">Welcome to Singularity. You can now log in with your credentials.</p>
           <button onClick={() => { setShowVerifyOverlay(false); setActiveTab('login'); }} className="px-8 py-3 rounded-lg bg-primary text-black font-bold hover:bg-white transition-colors">Go to Login</button>
         </div>
       )}

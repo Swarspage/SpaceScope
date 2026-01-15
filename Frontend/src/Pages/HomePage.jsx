@@ -6,6 +6,7 @@ import {
     ChevronRight, Play, Check, Users, ArrowRight, Star,
     MapPin, Clock, Shield, Mail, Twitter, Instagram, Youtube, Github
 } from 'lucide-react';
+import Logo from '../assets/Logo.png';
 
 /* FONTS INJECTION 
   (Include this in your index.css or within a <style> tag in the root)
@@ -101,11 +102,8 @@ const HomePage = () => {
             <nav className={`fixed top-0 w-full z-50 transition-all duration-300 border-b ${isScrolled ? 'bg-[#050714]/90 backdrop-blur-xl border-white/5 py-3' : 'bg-transparent border-transparent py-6'}`}>
                 <div className="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
                     {/* Logo */}
-                    <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#00d9ff] to-[#b900ff] flex items-center justify-center shadow-[0_0_20px_rgba(0,217,255,0.4)]">
-                            <Rocket className="text-white w-5 h-5 fill-current" />
-                        </div>
-                        <span className="font-display font-bold text-xl text-white tracking-tight">SpaceScope</span>
+                    <div className="flex items-center">
+                        <img src={Logo} alt="Singularity" className="h-20 w-auto object-contain" />
                     </div>
 
                     {/* Desktop Nav */}
@@ -544,7 +542,7 @@ const HomePage = () => {
                             {[...Array(5)].map((_, i) => <Star key={i} className="w-5 h-5 fill-[#ffaa00] text-[#ffaa00]" />)}
                         </div>
                         <p className="text-xl md:text-2xl text-white italic leading-relaxed mb-8 relative z-10">
-                            "SpaceScope helped me catch my first ISS pass! The notifications are perfect and the real-time tracking is incredible. It's the only space app I need."
+                            "Singularity helped me catch my first ISS pass! The notifications are perfect and the real-time tracking is incredible. It's the only space app I need."
                         </p>
                         <div className="flex flex-col items-center">
                             <div className="w-16 h-16 rounded-full bg-gray-700 border-2 border-[#00d9ff] mb-3 overflow-hidden">
@@ -597,11 +595,8 @@ const HomePage = () => {
                 <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
                     {/* Brand */}
                     <div className="col-span-1">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#00d9ff] to-[#b900ff] flex items-center justify-center">
-                                <Rocket className="text-white w-4 h-4 fill-current" />
-                            </div>
-                            <span className="font-display font-bold text-lg text-white">SpaceScope</span>
+                        <div className="flex items-center mb-4">
+                            <img src={Logo} alt="Singularity" className="h-8 w-auto object-contain" />
                         </div>
                         <p className="text-sm italic mb-6">Your Gateway to the Cosmos.</p>
                         <div className="flex gap-4">
@@ -637,13 +632,13 @@ const HomePage = () => {
                             <button className="bg-[#00d9ff]/10 border border-[#00d9ff]/30 text-[#00d9ff] px-4 py-2 rounded-lg font-bold hover:bg-[#00d9ff]/20 transition-all">Go</button>
                         </div>
                         <div className="flex items-center gap-2 mt-4 text-sm">
-                            <Mail className="w-4 h-4" /> hello@spacescope.com
+                            <Mail className="w-4 h-4" /> hello@Singularity.com
                         </div>
                     </div>
                 </div>
 
                 <div className="max-w-7xl mx-auto pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-xs">
-                    <p>© 2025 SpaceScope. Built with data from NASA, NOAA & ESA.</p>
+                    <p>© 2025 Singularity. Built with data from NASA, NOAA & ESA.</p>
                     <div className="flex gap-6">
                         <a href="#" className="hover:text-[#00d9ff]">Privacy Policy</a>
                         <a href="#" className="hover:text-[#00d9ff]">Terms of Service</a>

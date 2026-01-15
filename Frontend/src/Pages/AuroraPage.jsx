@@ -20,11 +20,11 @@ import {
 import { getAuroraData } from "../services/api";
 
 /**
- * SpaceScope Utility: Color Mapping
+ * Singularity Utility: Color Mapping
  */
 const intensityToColor = (v) => {
     if (v <= 0) return "transparent";
-    // SpaceScope Thermal Gradient
+    // Singularity Thermal Gradient
     if (v <= 1) return "#00d9ff"; // Cyan (Low)
     if (v <= 3) return "#00ff88"; // Green
     if (v <= 6) return "#facc15"; // Yellow
