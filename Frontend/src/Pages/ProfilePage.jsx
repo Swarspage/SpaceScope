@@ -11,7 +11,7 @@ const ProfilePage = () => {
     const [formData, setFormData] = useState({
         fullName: user?.fullName || '',
         location: user?.location || ''
-    });
+    }); 
 
     const handleLogout = () => {
         logout();

@@ -1,0 +1,1060 @@
+{
+    "generated_at": "2026-01-18T00:00:00Z",
+    "version": "1.0.1-prototype-large",
+    "description": "SpaceScope applications dataset (regenerated). Place precomputed NDVI and natural-color PNGs under /public/tiles/... for full functionality. Some thumbnails reference public URLs for quick demos.",
+    "vitals": {
+        "global_avg_temp_delta": 1.2,
+        "co2_ppm": 422,
+        "arctic_ice_pct_change_per_decade": -13,
+        "sea_level_mm_per_year": 3.4
+    },
+    "satellites": [
+        {
+            "id": "sentinel-2a",
+            "name": "Sentinel-2A",
+            "agency": "ESA",
+            "launch": "2015-06-23",
+            "mission": "Vegetation, Water",
+            "status": "Active",
+            "scenes": [
+                "s-s2a-001",
+                "s-s2a-002",
+                "s-s2a-003",
+                "s-s2a-004"
+            ]
+        },
+        {
+            "id": "sentinel-2b",
+            "name": "Sentinel-2B",
+            "agency": "ESA",
+            "launch": "2017-03-07",
+            "mission": "Vegetation, Water",
+            "status": "Active",
+            "scenes": [
+                "s-s2b-001",
+                "s-s2b-002",
+                "s-s2b-003",
+                "s-s2b-004"
+            ]
+        },
+        {
+            "id": "landsat-8",
+            "name": "Landsat 8",
+            "agency": "USGS / NASA",
+            "launch": "2013-02-11",
+            "mission": "Land Use, Forestry",
+            "status": "Active",
+            "scenes": [
+                "s-l8-001",
+                "s-l8-002",
+                "s-l8-003",
+                "s-l8-004"
+            ]
+        },
+        {
+            "id": "landsat-9",
+            "name": "Landsat 9",
+            "agency": "USGS / NASA",
+            "launch": "2021-09-27",
+            "mission": "Land Use, Forestry",
+            "status": "Active",
+            "scenes": [
+                "s-l9-001",
+                "s-l9-002",
+                "s-l9-003",
+                "s-l9-004"
+            ]
+        },
+        {
+            "id": "modis-terra",
+            "name": "MODIS Terra",
+            "agency": "NASA",
+            "launch": "1999-12-18",
+            "mission": "Daily global monitoring",
+            "status": "Active",
+            "scenes": [
+                "s-modis-001",
+                "s-modis-002",
+                "s-modis-003",
+                "s-modis-004"
+            ]
+        },
+        {
+            "id": "jason-3",
+            "name": "Jason-3",
+            "agency": "NOAA / EUMETSAT",
+            "launch": "2016-01-17",
+            "mission": "Ocean Topography",
+            "status": "Active",
+            "scenes": [
+                "s-j3-001",
+                "s-j3-002",
+                "s-j3-003",
+                "s-j3-004"
+            ]
+        }
+    ],
+    "scenes": [
+        {
+            "id": "s-s2a-001",
+            "satellite": "sentinel-2a",
+            "date": "2022-08-18T10:35:00Z",
+            "bbox": [
+                -93.5,
+                41.2,
+                -91.3,
+                43.0
+            ],
+            "cloud_cover": 5,
+            "processing_level": "L2A",
+            "sources": {
+                "natural_color": "/tiles/area1/nc-2022.png",
+                "ndvi": "/tiles/area1/ndvi-2022.png",
+                "thumbnail": "https://images.unsplash.com/photo-1614730341194-75c60740a070?q=80&w=1600&auto=format&fit=crop"
+            },
+            "bands": [
+                "B2",
+                "B3",
+                "B4",
+                "B8"
+            ],
+            "notes": "Iowa test scene — low cloud"
+        },
+        {
+            "id": "s-s2a-002",
+            "satellite": "sentinel-2a",
+            "date": "2019-06-05T10:10:00Z",
+            "bbox": [
+                -63.5,
+                -3.5,
+                -60.0,
+                0.5
+            ],
+            "cloud_cover": 12,
+            "processing_level": "L2A",
+            "sources": {
+                "natural_color": "/tiles/area2/nc-2019.png",
+                "ndvi": "/tiles/area2/ndvi-2019.png",
+                "thumbnail": "https://eoimages.gsfc.nasa.gov/images/imagerecords/79000/79028/amazon_fires_2019_lrg.jpg"
+            },
+            "bands": [
+                "B2",
+                "B3",
+                "B4",
+                "B8"
+            ],
+            "notes": "Amazon basin, near cleared areas"
+        },
+        {
+            "id": "s-s2a-003",
+            "satellite": "sentinel-2a",
+            "date": "2021-09-10T11:05:00Z",
+            "bbox": [
+                -122.6,
+                36.7,
+                -119.0,
+                39.0
+            ],
+            "cloud_cover": 3,
+            "processing_level": "L2A",
+            "sources": {
+                "natural_color": "/tiles/area3/nc-2021.png",
+                "ndvi": "/tiles/area3/ndvi-2021.png",
+                "thumbnail": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1600&auto=format&fit=crop"
+            },
+            "bands": [
+                "B2",
+                "B3",
+                "B4",
+                "B8"
+            ],
+            "notes": "California coastal tile"
+        },
+        {
+            "id": "s-s2a-004",
+            "satellite": "sentinel-2a",
+            "date": "2018-05-21T10:00:00Z",
+            "bbox": [
+                -93.8,
+                41.0,
+                -91.0,
+                43.1
+            ],
+            "cloud_cover": 22,
+            "processing_level": "L2A",
+            "sources": {
+                "natural_color": "/tiles/area1/nc-2018.png",
+                "ndvi": "/tiles/area1/ndvi-2018.png",
+                "thumbnail": "/thumbs/area1-2018.jpg"
+            },
+            "bands": [
+                "B2",
+                "B3",
+                "B4",
+                "B8"
+            ],
+            "notes": "Iowa spring scene"
+        },
+        {
+            "id": "s-s2b-001",
+            "satellite": "sentinel-2b",
+            "date": "2020-07-22T10:18:00Z",
+            "bbox": [
+                -93.6,
+                41.4,
+                -91.4,
+                43.2
+            ],
+            "cloud_cover": 8,
+            "processing_level": "L2A",
+            "sources": {
+                "natural_color": "/tiles/area1/nc-2020.png",
+                "ndvi": "/tiles/area1/ndvi-2020.png",
+                "thumbnail": "/thumbs/area1-2020.jpg"
+            },
+            "bands": [
+                "B2",
+                "B3",
+                "B4",
+                "B8"
+            ],
+            "notes": "Iowa midsummer"
+        },
+        {
+            "id": "s-s2b-002",
+            "satellite": "sentinel-2b",
+            "date": "2017-07-02T10:25:00Z",
+            "bbox": [
+                -122.5,
+                37.0,
+                -121.0,
+                38.5
+            ],
+            "cloud_cover": 7,
+            "processing_level": "L2A",
+            "sources": {
+                "natural_color": "/tiles/area3/nc-2017.png",
+                "ndvi": "/tiles/area3/ndvi-2017.png",
+                "thumbnail": "/thumbs/area3-2017.jpg"
+            },
+            "bands": [
+                "B2",
+                "B3",
+                "B4",
+                "B8"
+            ],
+            "notes": "Coastal California tile"
+        },
+        {
+            "id": "s-s2b-003",
+            "satellite": "sentinel-2b",
+            "date": "2016-09-05T09:58:00Z",
+            "bbox": [
+                -63.1,
+                -3.1,
+                -60.2,
+                0.3
+            ],
+            "cloud_cover": 18,
+            "processing_level": "L2A",
+            "sources": {
+                "natural_color": "/tiles/area2/nc-2016.png",
+                "ndvi": "/tiles/area2/ndvi-2016.png",
+                "thumbnail": "/thumbs/area2-2016.jpg"
+            },
+            "bands": [
+                "B2",
+                "B3",
+                "B4",
+                "B8"
+            ],
+            "notes": "Amazon historical sample"
+        },
+        {
+            "id": "s-s2b-004",
+            "satellite": "sentinel-2b",
+            "date": "2015-10-11T10:03:00Z",
+            "bbox": [
+                -62.9,
+                -3.8,
+                -60.3,
+                -1.2
+            ],
+            "cloud_cover": 40,
+            "processing_level": "L1C",
+            "sources": {
+                "natural_color": "/tiles/area2/nc-2015.png",
+                "ndvi": "/tiles/area2/ndvi-2015.png",
+                "thumbnail": "/thumbs/area2-2015.jpg"
+            },
+            "bands": [
+                "B2",
+                "B3",
+                "B4",
+                "B8"
+            ],
+            "notes": "Amazon early season"
+        },
+        {
+            "id": "s-l8-001",
+            "satellite": "landsat-8",
+            "date": "2018-08-01T15:12:00Z",
+            "bbox": [
+                -93.4,
+                41.1,
+                -91.2,
+                42.9
+            ],
+            "cloud_cover": 6,
+            "processing_level": "Level-2",
+            "sources": {
+                "natural_color": "/tiles/area1/nc-l8-2018.png",
+                "ndvi": "/tiles/area1/ndvi-l8-2018.png",
+                "thumbnail": "/thumbs/l8-area1-2018.jpg"
+            },
+            "bands": [
+                "B2",
+                "B3",
+                "B4",
+                "B5",
+                "B6",
+                "B7"
+            ],
+            "notes": "Landsat 8 overlapping tile for Iowa"
+        },
+        {
+            "id": "s-l8-002",
+            "satellite": "landsat-8",
+            "date": "2021-09-01T15:05:00Z",
+            "bbox": [
+                -122.7,
+                36.8,
+                -119.2,
+                39.1
+            ],
+            "cloud_cover": 2,
+            "processing_level": "Level-2",
+            "sources": {
+                "natural_color": "/tiles/area3/nc-l8-2021.png",
+                "ndvi": "/tiles/area3/ndvi-l8-2021.png",
+                "thumbnail": "/thumbs/l8-area3-2021.jpg"
+            },
+            "bands": [
+                "B2",
+                "B3",
+                "B4",
+                "B5",
+                "B6",
+                "B7"
+            ],
+            "notes": "Landsat 8 — California"
+        },
+        {
+            "id": "s-l8-003",
+            "satellite": "landsat-8",
+            "date": "2019-07-11T15:20:00Z",
+            "bbox": [
+                -63.8,
+                -3.9,
+                -60.5,
+                0.4
+            ],
+            "cloud_cover": 15,
+            "processing_level": "Level-2",
+            "sources": {
+                "natural_color": "/tiles/area2/nc-l8-2019.png",
+                "ndvi": "/tiles/area2/ndvi-l8-2019.png",
+                "thumbnail": "/thumbs/l8-area2-2019.jpg"
+            },
+            "bands": [
+                "B2",
+                "B3",
+                "B4",
+                "B5",
+                "B6",
+                "B7"
+            ],
+            "notes": "Landsat 8 — Amazon sample"
+        },
+        {
+            "id": "s-l8-004",
+            "satellite": "landsat-8",
+            "date": "2015-08-18T15:15:00Z",
+            "bbox": [
+                -93.6,
+                41.0,
+                -91.5,
+                43.0
+            ],
+            "cloud_cover": 30,
+            "processing_level": "Level-1",
+            "sources": {
+                "natural_color": "/tiles/area1/nc-l8-2015.png",
+                "ndvi": "/tiles/area1/ndvi-l8-2015.png",
+                "thumbnail": "/thumbs/l8-area1-2015.jpg"
+            },
+            "bands": [
+                "B2",
+                "B3",
+                "B4",
+                "B5",
+                "B6",
+                "B7"
+            ],
+            "notes": "Landsat 8 historical"
+        },
+        {
+            "id": "s-l9-001",
+            "satellite": "landsat-9",
+            "date": "2022-08-30T15:10:00Z",
+            "bbox": [
+                -93.3,
+                41.25,
+                -91.25,
+                42.95
+            ],
+            "cloud_cover": 4,
+            "processing_level": "Level-2",
+            "sources": {
+                "natural_color": "/tiles/area1/nc-l9-2022.png",
+                "ndvi": "/tiles/area1/ndvi-l9-2022.png",
+                "thumbnail": "/thumbs/l9-area1-2022.jpg"
+            },
+            "bands": [
+                "B2",
+                "B3",
+                "B4",
+                "B5",
+                "B6",
+                "B7"
+            ],
+            "notes": "Landsat 9 overlapping tile (Iowa)"
+        },
+        {
+            "id": "s-l9-002",
+            "satellite": "landsat-9",
+            "date": "2023-07-15T15:05:00Z",
+            "bbox": [
+                -122.6,
+                36.95,
+                -119.1,
+                38.95
+            ],
+            "cloud_cover": 5,
+            "processing_level": "Level-2",
+            "sources": {
+                "natural_color": "/tiles/area3/nc-l9-2023.png",
+                "ndvi": "/tiles/area3/ndvi-l9-2023.png",
+                "thumbnail": "/thumbs/l9-area3-2023.jpg"
+            },
+            "bands": [
+                "B2",
+                "B3",
+                "B4",
+                "B5",
+                "B6",
+                "B7"
+            ],
+            "notes": "Landsat 9 — California recent"
+        },
+        {
+            "id": "s-l9-003",
+            "satellite": "landsat-9",
+            "date": "2020-08-12T15:00:00Z",
+            "bbox": [
+                -63.0,
+                -3.5,
+                -60.2,
+                0.2
+            ],
+            "cloud_cover": 8,
+            "processing_level": "Level-2",
+            "sources": {
+                "natural_color": "/tiles/area2/nc-l9-2020.png",
+                "ndvi": "/tiles/area2/ndvi-l9-2020.png",
+                "thumbnail": "/thumbs/l9-area2-2020.jpg"
+            },
+            "bands": [
+                "B2",
+                "B3",
+                "B4",
+                "B5",
+                "B6",
+                "B7"
+            ],
+            "notes": "Landsat 9 — Amazon"
+        },
+        {
+            "id": "s-l9-004",
+            "satellite": "landsat-9",
+            "date": "2016-05-12T15:00:00Z",
+            "bbox": [
+                -122.9,
+                36.6,
+                -120.2,
+                39.2
+            ],
+            "cloud_cover": 25,
+            "processing_level": "Level-1",
+            "sources": {
+                "natural_color": "/tiles/area3/nc-l9-2016.png",
+                "ndvi": "/tiles/area3/ndvi-l9-2016.png",
+                "thumbnail": "/thumbs/l9-area3-2016.jpg"
+            },
+            "bands": [
+                "B2",
+                "B3",
+                "B4",
+                "B5",
+                "B6",
+                "B7"
+            ],
+            "notes": "Landsat 9 early sample"
+        },
+        {
+            "id": "s-modis-001",
+            "satellite": "modis-terra",
+            "date": "2024-01-10T10:00:00Z",
+            "bbox": [
+                -125,
+                30,
+                -65,
+                50
+            ],
+            "cloud_cover": 0,
+            "processing_level": "Level-3",
+            "sources": {
+                "natural_color": "/tiles/modis/nc-2024-continental.png",
+                "ndvi": "/tiles/modis/ndvi-2024-continental.png",
+                "thumbnail": "/thumbs/modis-2024.jpg"
+            },
+            "bands": [
+                "red",
+                "green",
+                "blue",
+                "ndvi"
+            ],
+            "notes": "Continental overview from MODIS Terra"
+        },
+        {
+            "id": "s-modis-002",
+            "satellite": "modis-terra",
+            "date": "2023-09-05T10:00:00Z",
+            "bbox": [
+                -70,
+                -20,
+                10,
+                10
+            ],
+            "cloud_cover": 0,
+            "processing_level": "Level-3",
+            "sources": {
+                "natural_color": "/tiles/modis/nc-2023-southamerica.png",
+                "ndvi": "/tiles/modis/ndvi-2023-southamerica.png",
+                "thumbnail": "/thumbs/modis-2023-sa.jpg"
+            },
+            "bands": [
+                "red",
+                "green",
+                "blue",
+                "ndvi"
+            ],
+            "notes": "MODIS overview South America"
+        },
+        {
+            "id": "s-modis-003",
+            "satellite": "modis-terra",
+            "date": "2022-11-12T10:00:00Z",
+            "bbox": [
+                -10,
+                35,
+                60,
+                70
+            ],
+            "cloud_cover": 0,
+            "processing_level": "Level-3",
+            "sources": {
+                "natural_color": "/tiles/modis/nc-2022-europe.png",
+                "ndvi": "/tiles/modis/ndvi-2022-europe.png",
+                "thumbnail": "/thumbs/modis-2022-eu.jpg"
+            },
+            "bands": [
+                "red",
+                "green",
+                "blue",
+                "ndvi"
+            ],
+            "notes": "MODIS Europe overview"
+        },
+        {
+            "id": "s-j3-001",
+            "satellite": "jason-3",
+            "date": "2023-10-02T00:00:00Z",
+            "bbox": [
+                -180,
+                -90,
+                180,
+                90
+            ],
+            "cloud_cover": 0,
+            "processing_level": "L3",
+            "sources": {
+                "dataset": "https://www.aviso.altimetry.fr/",
+                "thumbnail": "/thumbs/jason3-2023.jpg"
+            },
+            "bands": [
+                "sea_level"
+            ],
+            "notes": "Jason-3 global ocean topography product (metadata only)"
+        },
+        {
+            "id": "s-j3-002",
+            "satellite": "jason-3",
+            "date": "2021-05-01T00:00:00Z",
+            "bbox": [
+                -180,
+                -90,
+                180,
+                90
+            ],
+            "cloud_cover": 0,
+            "processing_level": "L3",
+            "sources": {
+                "dataset": "https://www.aviso.altimetry.fr/",
+                "thumbnail": "/thumbs/jason3-2021.jpg"
+            },
+            "bands": [
+                "sea_level"
+            ],
+            "notes": "Jason-3 historic product"
+        }
+    ],
+    "time_series": {
+        "area1": {
+            "id": "area1",
+            "name": "Iowa Corn Belt (demo area)",
+            "bbox": [
+                -93.8,
+                41.0,
+                -91.0,
+                43.1
+            ],
+            "years": [
+                2015,
+                2016,
+                2017,
+                2018,
+                2019,
+                2020,
+                2021,
+                2022,
+                2023,
+                2024
+            ],
+            "assets": {
+                "2015": {
+                    "ndvi": "/tiles/area1/ndvi-2015.png",
+                    "nc": "/tiles/area1/nc-2015.png"
+                },
+                "2016": {
+                    "ndvi": "/tiles/area1/ndvi-2016.png",
+                    "nc": "/tiles/area1/nc-2016.png"
+                },
+                "2017": {
+                    "ndvi": "/tiles/area1/ndvi-2017.png",
+                    "nc": "/tiles/area1/nc-2017.png"
+                },
+                "2018": {
+                    "ndvi": "/tiles/area1/ndvi-2018.png",
+                    "nc": "/tiles/area1/nc-2018.png"
+                },
+                "2019": {
+                    "ndvi": "/tiles/area1/ndvi-2019.png",
+                    "nc": "/tiles/area1/nc-2019.png"
+                },
+                "2020": {
+                    "ndvi": "/tiles/area1/ndvi-2020.png",
+                    "nc": "/tiles/area1/nc-2020.png"
+                },
+                "2021": {
+                    "ndvi": "/tiles/area1/ndvi-2021.png",
+                    "nc": "/tiles/area1/nc-2021.png"
+                },
+                "2022": {
+                    "ndvi": "/tiles/area1/ndvi-2022.png",
+                    "nc": "/tiles/area1/nc-2022.png"
+                },
+                "2023": {
+                    "ndvi": "/tiles/area1/ndvi-2023.png",
+                    "nc": "/tiles/area1/nc-2023.png"
+                },
+                "2024": {
+                    "ndvi": "/tiles/area1/ndvi-2024.png",
+                    "nc": "/tiles/area1/nc-2024.png"
+                }
+            }
+        },
+        "area2": {
+            "id": "area2",
+            "name": "Amazon Basin (demo area)",
+            "bbox": [
+                -64.0,
+                -4.5,
+                -59.5,
+                1.5
+            ],
+            "years": [
+                2015,
+                2016,
+                2017,
+                2018,
+                2019,
+                2020,
+                2021,
+                2022,
+                2023,
+                2024
+            ],
+            "assets": {
+                "2015": {
+                    "ndvi": "/tiles/area2/ndvi-2015.png",
+                    "nc": "/tiles/area2/nc-2015.png"
+                },
+                "2016": {
+                    "ndvi": "/tiles/area2/ndvi-2016.png",
+                    "nc": "/tiles/area2/nc-2016.png"
+                },
+                "2017": {
+                    "ndvi": "/tiles/area2/ndvi-2017.png",
+                    "nc": "/tiles/area2/nc-2017.png"
+                },
+                "2018": {
+                    "ndvi": "/tiles/area2/ndvi-2018.png",
+                    "nc": "/tiles/area2/nc-2018.png"
+                },
+                "2019": {
+                    "ndvi": "/tiles/area2/ndvi-2019.png",
+                    "nc": "/tiles/area2/nc-2019.png"
+                },
+                "2020": {
+                    "ndvi": "/tiles/area2/ndvi-2020.png",
+                    "nc": "/tiles/area2/nc-2020.png"
+                },
+                "2021": {
+                    "ndvi": "/tiles/area2/ndvi-2021.png",
+                    "nc": "/tiles/area2/nc-2021.png"
+                },
+                "2022": {
+                    "ndvi": "/tiles/area2/ndvi-2022.png",
+                    "nc": "/tiles/area2/nc-2022.png"
+                },
+                "2023": {
+                    "ndvi": "/tiles/area2/ndvi-2023.png",
+                    "nc": "/tiles/area2/nc-2023.png"
+                },
+                "2024": {
+                    "ndvi": "/tiles/area2/ndvi-2024.png",
+                    "nc": "/tiles/area2/nc-2024.png"
+                }
+            }
+        },
+        "area3": {
+            "id": "area3",
+            "name": "California Coastal Region (demo area)",
+            "bbox": [
+                -122.9,
+                36.6,
+                -119.0,
+                39.2
+            ],
+            "years": [
+                2015,
+                2016,
+                2017,
+                2018,
+                2019,
+                2020,
+                2021,
+                2022,
+                2023,
+                2024
+            ],
+            "assets": {
+                "2015": {
+                    "ndvi": "/tiles/area3/ndvi-2015.png",
+                    "nc": "/tiles/area3/nc-2015.png"
+                },
+                "2016": {
+                    "ndvi": "/tiles/area3/ndvi-2016.png",
+                    "nc": "/tiles/area3/nc-2016.png"
+                },
+                "2017": {
+                    "ndvi": "/tiles/area3/ndvi-2017.png",
+                    "nc": "/tiles/area3/nc-2017.png"
+                },
+                "2018": {
+                    "ndvi": "/tiles/area3/ndvi-2018.png",
+                    "nc": "/tiles/area3/nc-2018.png"
+                },
+                "2019": {
+                    "ndvi": "/tiles/area3/ndvi-2019.png",
+                    "nc": "/tiles/area3/nc-2019.png"
+                },
+                "2020": {
+                    "ndvi": "/tiles/area3/ndvi-2020.png",
+                    "nc": "/tiles/area3/nc-2020.png"
+                },
+                "2021": {
+                    "ndvi": "/tiles/area3/ndvi-2021.png",
+                    "nc": "/tiles/area3/nc-2021.png"
+                },
+                "2022": {
+                    "ndvi": "/tiles/area3/ndvi-2022.png",
+                    "nc": "/tiles/area3/nc-2022.png"
+                },
+                "2023": {
+                    "ndvi": "/tiles/area3/ndvi-2023.png",
+                    "nc": "/tiles/area3/nc-2023.png"
+                },
+                "2024": {
+                    "ndvi": "/tiles/area3/ndvi-2024.png",
+                    "nc": "/tiles/area3/nc-2024.png"
+                }
+            }
+        }
+    },
+    "events": [
+        {
+            "id": "event-001",
+            "type": "deforestation",
+            "title": "Forest Loss Detected — Amazonas Sector",
+            "date": "2023-06-22T00:00:00Z",
+            "severity": "high",
+            "bbox": [
+                -63.8,
+                -3.9,
+                -61.0,
+                -1.2
+            ],
+            "description": "Approximately 35 hectares of forest loss detected from NDVI drop in this bounding box.",
+            "preview": "https://eoimages.gsfc.nasa.gov/images/imagerecords/79000/79028/amazon_fires_2019_lrg.jpg",
+            "related_scenes": [
+                "s-s2a-002",
+                "s-l8-003"
+            ]
+        },
+        {
+            "id": "event-002",
+            "type": "wildfire",
+            "title": "Wildfire Hotspots — Northern California",
+            "date": "2021-08-15T12:00:00Z",
+            "severity": "critical",
+            "bbox": [
+                -122.3,
+                37.2,
+                -121.0,
+                38.5
+            ],
+            "description": "Thermal anomalies and persistent smoke plumes detected across multiple days.",
+            "preview": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1600&auto=format&fit=crop",
+            "related_scenes": [
+                "s-s2a-003",
+                "s-s2b-002"
+            ]
+        },
+        {
+            "id": "event-003",
+            "type": "flood",
+            "title": "River Flooding — Mississippi Tributary",
+            "date": "2022-04-10T00:00:00Z",
+            "severity": "high",
+            "bbox": [
+                -92.9,
+                41.7,
+                -91.7,
+                42.9
+            ],
+            "description": "Radar-derived extent mapping shows inundation after heavy rainfall.",
+            "preview": "https://images.unsplash.com/photo-1508921912186-1d1a45ebb3c1?q=80&w=1600&auto=format&fit=crop",
+            "related_scenes": [
+                "s-s2a-001",
+                "s-l8-001"
+            ]
+        },
+        {
+            "id": "event-004",
+            "type": "hurricane",
+            "title": "Tropical Cyclone — Atlantic Cone",
+            "date": "2020-09-01T06:00:00Z",
+            "severity": "medium",
+            "bbox": [
+                -70.0,
+                10.0,
+                -40.0,
+                30.0
+            ],
+            "description": "Track prediction cone aggregated from multiple models; for evacuation planning.",
+            "preview": "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1600&auto=format&fit=crop",
+            "related_scenes": []
+        },
+        {
+            "id": "event-005",
+            "type": "earthquake",
+            "title": "Rapid Damage Assessment — Coastal Fault",
+            "date": "2019-11-07T03:00:00Z",
+            "severity": "medium",
+            "bbox": [
+                -122.5,
+                37.0,
+                -121.5,
+                38.0
+            ],
+            "description": "Interferometric processing indicates ground deformation; used to prioritize response.",
+            "preview": "https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1600&auto=format&fit=crop",
+            "related_scenes": [
+                "s-s2b-002",
+                "s-l9-004"
+            ]
+        },
+        {
+            "id": "event-006",
+            "type": "coral_bleaching",
+            "title": "Coral Reef Heat Stress — Great Barrier (sample)",
+            "date": "2023-03-20T00:00:00Z",
+            "severity": "high",
+            "bbox": [
+                145.0,
+                -19.5,
+                147.5,
+                -16.5
+            ],
+            "description": "SST anomaly and bleaching risk high across reef transects.",
+            "preview": "https://images.unsplash.com/photo-1504198453319-5ce911bafcde?q=80&w=1600&auto=format&fit=crop",
+            "related_scenes": []
+        },
+        {
+            "id": "event-007",
+            "type": "oil_spill",
+            "title": "Offshore Spill — Gulf (simulated)",
+            "date": "2022-02-18T00:00:00Z",
+            "severity": "high",
+            "bbox": [
+                -90.5,
+                26.0,
+                -88.5,
+                28.0
+            ],
+            "description": "SAR/optical detection of slick; used for response coordination.",
+            "preview": "https://images.unsplash.com/photo-1509395176047-4a66953fd231?q=80&w=1600&auto=format&fit=crop",
+            "related_scenes": []
+        },
+        {
+            "id": "event-008",
+            "type": "algal_bloom",
+            "title": "Harmful Algal Bloom — Coastal Shelf",
+            "date": "2021-06-03T00:00:00Z",
+            "severity": "medium",
+            "bbox": [
+                -75.0,
+                34.0,
+                -73.0,
+                36.0
+            ],
+            "description": "Chlorophyll anomaly detected in coastal shelf waters indicating bloom.",
+            "preview": "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1600&auto=format&fit=crop",
+            "related_scenes": []
+        }
+    ],
+    "stories": [
+        {
+            "id": "story-001",
+            "title": "The Green Wall — Sahel Reforestation",
+            "area_id": "area2",
+            "year": 2021,
+            "excerpt": "Satellite data identified groundwater-rich zones enabling targeted planting; survival rates increased by 40%.",
+            "metrics": {
+                "survival_increase_percent": 40,
+                "trees_planted": 1000000
+            },
+            "image": "https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1600&auto=format&fit=crop"
+        },
+        {
+            "id": "story-002",
+            "title": "Farmers Increase Yield with NDVI",
+            "area_id": "area1",
+            "year": 2020,
+            "excerpt": "Precision NDVI monitoring allowed better irrigation and fertilization timing, improving yields by 12%.",
+            "metrics": {
+                "yield_increase_percent": 12
+            },
+            "image": "https://images.unsplash.com/photo-1504198453319-5ce911bafcde?q=80&w=1600&auto=format&fit=crop"
+        },
+        {
+            "id": "story-003",
+            "title": "Rapid Flood Response",
+            "area_id": "area1",
+            "year": 2022,
+            "excerpt": "SAR-based flood extents were provided to local authorities within hours, enabling targeted evacuations.",
+            "metrics": {
+                "response_time_hours": 6
+            },
+            "image": "https://images.unsplash.com/photo-1508921912186-1d1a45ebb3c1?q=80&w=1600&auto=format&fit=crop"
+        }
+    ],
+    "catalog": {
+        "sample_queries": [
+            {
+                "name": "Iowa NDVI 2020",
+                "query": {
+                    "area_id": "area1",
+                    "year": 2020,
+                    "product": "ndvi"
+                }
+            },
+            {
+                "name": "Amazon 2019 natural color",
+                "query": {
+                    "area_id": "area2",
+                    "year": 2019,
+                    "product": "nc"
+                }
+            }
+        ],
+        "license": "Local tile assets must be provided by the developer. Refer to NASA/ESA/USGS licensing for source datasets; attribution required when using upstream datasets."
+    },
+    "learning_resources": [
+        {
+            "id": "lr-ndvi-python",
+            "title": "How to process NDVI in Python",
+            "type": "tutorial",
+            "duration_min": 15,
+            "summary": "Compute NDVI from red and NIR bands using numpy and rasterio; includes cloud masking tips.",
+            "link": "https://example.com/tutorials/ndvi-python"
+        },
+        {
+            "id": "lr-sar-primer",
+            "title": "Understanding SAR Imagery",
+            "type": "video",
+            "duration_min": 10,
+            "summary": "Short primer on SAR backscatter, speckle, and common use-cases (flood mapping, ship detection).",
+            "link": "https://example.com/guides/sar-primer"
+        }
+    ],
+    "external_references": {
+        "nasa_earthdata": "https://earthdata.nasa.gov/",
+        "esa_copernicus_open_hub": "https://scihub.copernicus.eu/",
+        "usgs_earth_explorer": "https://earthexplorer.usgs.gov/",
+        "sentinel_hub_demo": "https://www.sentinel-hub.com/explore",
+        "sample_public_thumbnails": [
+            "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop",
+            "https://eoimages.gsfc.nasa.gov/images/imagerecords/79000/79028/amazon_fires_2019_lrg.jpg",
+            "https://eoimages.gsfc.nasa.gov/images/imagerecords/144000/144432/ISS036-E-019178_lrg.jpg"
+        ],
+        "openstreetmap_tiles_template": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        "iss_pass_api_example": "http://api.open-notify.org/iss-pass.json"
+    },
+    "placeholders": {
+        "local_tile_instructions": "Create folders under /public/tiles/area1, /public/tiles/area2, /public/tiles/area3 and put named PNG files for ndvi-YYYY.png and nc-YYYY.png. Example path: /public/tiles/area1/ndvi-2020.png",
+        "thumb_instructions": "Place small JPEG thumbnails under /public/thumbs/ matching filenames, or use the external sample_public_thumbnails until local files are ready."
+    }
+}

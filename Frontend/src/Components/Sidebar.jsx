@@ -55,9 +55,9 @@ const Sidebar = ({ activeTab = 'Dashboard' }) => {
                     />
                     <NavItem
                         icon={MdSatelliteAlt}
-                        label="Satellite Showcase"
-                        active={activeTab === 'Satellite Showcase'}
-                        onClick={() => { }}
+                        label="Applications"
+                        active={activeTab === 'Applications'}
+                        onClick={() => navigate('/applications')}
                     />
                 </nav>
             </div>
