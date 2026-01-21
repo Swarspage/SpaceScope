@@ -62,7 +62,7 @@ const StatCard = ({ label, value, subtext, icon: Icon, alertLevel = "normal" }) 
     const textClass = alertLevel === "high" ? "text-error" : "text-white";
 
     return (
-        <div className={`bg-panel-dark/60 backdrop-blur-md border ${borderClass} rounded-xl p-5 transition-all duration-300 group`}>
+        <div className={`bg-black/20 backdrop-blur-md border ${borderClass} rounded-xl p-5 transition-all duration-300 group`}>
             <div className="flex justify-between items-start mb-2">
                 <span className="text-secondary text-xs uppercase tracking-widest font-bold">{label}</span>
                 {Icon && <Icon className={`w-4 h-4 ${alertLevel === "high" ? "text-error" : "text-primary/70 group-hover:text-primary"} transition-colors`} />}
@@ -167,7 +167,7 @@ const AuroraPage = () => {
     };
 
     return (
-        <div className={`min-h-screen bg-background-dark text-white font-sans selection:bg-primary/30 ${isFullscreen ? 'p-0' : 'p-4 lg:p-8'}`}>
+        <div className={`min-h-screen bg-transparent text-white font-sans selection:bg-primary/30 ${isFullscreen ? 'p-0' : 'p-4 lg:p-8'}`}>
 
             {/* --- Header Section --- */}
             {!isFullscreen && (
@@ -213,7 +213,7 @@ const AuroraPage = () => {
             )}
 
             {/* --- Main Viewport (Map) --- */}
-            <main className={`relative group rounded-2xl overflow-hidden border border-white/10 shadow-glass bg-[#050714] transition-all duration-500
+            <main className={`relative group rounded-2xl overflow-hidden border border-white/10 shadow-glass bg-[#050714]/80 transition-all duration-500
               ${isFullscreen ? 'fixed inset-0 z-50 rounded-none border-none h-screen' : 'h-[60vh] w-full'}`
             }>
 
@@ -266,7 +266,7 @@ const AuroraPage = () => {
                     center={[60, 0]}
                     zoom={2}
                     minZoom={2}
-                    className="w-full h-full bg-[#050714]"
+                    className="w-full h-full bg-transparent"
                     zoomControl={false}
                     whenCreated={setMapInstance}
                 >

@@ -224,18 +224,18 @@ const Dashboard = () => {
 
 
     return (
-        <div className="flex h-screen bg-[#080b14] text-slate-300 font-sans overflow-hidden">
+        <div className="flex h-screen bg-transparent text-slate-300 font-sans overflow-hidden">
 
             {/* === LEFT SIDEBAR === */}
             <Sidebar activeTab="Dashboard" />
 
             {/* === MAIN CONTENT AREA === */}
-            <div className="flex-1 flex flex-col min-w-0 bg-[#080b14] relative">
+            <div className="flex-1 flex flex-col min-w-0 bg-transparent relative">
                 {/* Ambient Background Glows */}
                 <div className="absolute top-[-20%] left-[20%] w-[500px] h-[500px] bg-[#00d9ff]/5 rounded-full blur-[100px] pointer-events-none" />
 
                 {/* Top Header */}
-                <header className="h-16 flex items-center justify-between px-6 border-b border-white/5 bg-[#080b14]/90 backdrop-blur-md sticky top-0 z-10">
+                <header className="h-16 flex items-center justify-between px-6 border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 z-10">
                     <div className="flex-1 max-w-xl">
                         <div className="relative group">
                             <MdSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-[#00d9ff] transition-colors text-lg" />
@@ -321,7 +321,7 @@ const Dashboard = () => {
                                 </h2>
                             </div>
                             <div className="flex gap-4">
-                                <div className="px-6 py-3 rounded-xl border border-white/10 bg-[#0f1322]">
+                                <div className="px-6 py-3 rounded-xl border border-white/10 bg-black/30 backdrop-blur-md">
                                     <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">Active Missions</div>
                                     <div className="text-2xl font-bold text-white font-mono">{spacexData.length > 0 ? spacexData.length + 5 : '12'}</div>
                                 </div>
@@ -341,13 +341,13 @@ const Dashboard = () => {
                         {/* Top Grid: Aurora & ISS */}
                         <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
                             {/* ... Aurora Card ... */}
-                            <div className="xl:col-span-7 h-[400px] bg-[#0f1322]/80 backdrop-blur-xl border border-white/5 rounded-2xl relative overflow-hidden group flex flex-col hover:border-[#00d9ff]/30 transition-all duration-300">
+                            <div className="xl:col-span-7 h-[400px] bg-black/30 backdrop-blur-xl border border-white/5 rounded-2xl relative overflow-hidden group flex flex-col hover:border-[#00d9ff]/30 transition-all duration-300">
                                 <div className="absolute inset-0 z-0">
                                     <MapContainer
                                         center={[60, 0]}
                                         zoom={2}
                                         minZoom={2}
-                                        style={{ height: "100%", width: "100%", background: "#050714" }}
+                                        style={{ height: "100%", width: "100%", background: "transparent" }}
                                         zoomControl={false}
                                         scrollWheelZoom={false}
                                     >
@@ -385,7 +385,7 @@ const Dashboard = () => {
                             </div>
 
                             {/* ... ISS Card ... */}
-                            <div className="xl:col-span-5 h-[400px] bg-[#0f1322]/80 backdrop-blur-xl border border-white/5 rounded-2xl p-6 flex flex-col hover:border-[#00d9ff]/30 transition-all duration-300">
+                            <div className="xl:col-span-5 h-[400px] bg-black/30 backdrop-blur-xl border border-white/5 rounded-2xl p-6 flex flex-col hover:border-[#00d9ff]/30 transition-all duration-300">
                                 <div className="flex justify-between items-center mb-4">
                                     <h3 className="text-lg font-bold text-white flex items-center gap-2">
                                         <MdSatelliteAlt className="text-[#00d9ff]" /> ISS Tracker
@@ -415,7 +415,7 @@ const Dashboard = () => {
                                     <div className="absolute top-2 left-2 bg-black/50 backdrop-blur-md px-2 py-0.5 rounded border border-white/10 text-[10px] text-cyan-400 font-mono pointer-events-none">LIVE TELEMETRY</div>
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
-                                    <div className="bg-[#080b14] p-3 rounded-xl border border-white/5">
+                                    <div className="bg-black/30 backdrop-blur-md p-3 rounded-xl border border-white/5">
                                         <div className="text-[10px] text-slate-500 uppercase font-bold">Altitude</div>
                                         <div className="text-xl text-[#00d9ff] font-mono font-bold">408 km</div>
                                     </div>
@@ -429,7 +429,7 @@ const Dashboard = () => {
                         {/* Middle Grid: Solar & Meteors */}
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                             {/* Solar Activity */}
-                            <div className="lg:col-span-5 bg-[#0f1322]/80 backdrop-blur-xl border border-white/5 rounded-2xl p-6">
+                            <div className="lg:col-span-5 bg-black/30 backdrop-blur-xl border border-white/5 rounded-2xl p-6">
                                 <div className="flex justify-between items-center mb-6">
                                     <h3 className="text-lg font-bold text-white flex items-center gap-2"><WiDaySunny className="text-orange-400 text-2xl" /> Solar Activity</h3>
                                     <span className="px-2 py-1 rounded bg-orange-500/10 border border-orange-500/20 text-orange-400 text-[10px] font-bold uppercase">Moderate</span>
@@ -452,13 +452,13 @@ const Dashboard = () => {
                             </div>
 
                             {/* Meteor Calendar */}
-                            <div className="lg:col-span-7 bg-[#0f1322]/80 backdrop-blur-xl border border-white/5 rounded-2xl p-6">
+                            <div className="lg:col-span-7 bg-black/30 backdrop-blur-xl border border-white/5 rounded-2xl p-6">
                                 <div className="flex justify-between items-center mb-4">
                                     <h3 className="text-lg font-bold text-white flex items-center gap-2"><WiStars className="text-purple-400 text-2xl" /> Meteor Calendar</h3>
                                     <button className="text-xs text-[#00d9ff] hover:text-white transition-colors">View All</button>
                                 </div>
                                 <div className="space-y-4">
-                                    <div className="bg-[#080b14] border border-white/5 rounded-xl p-4 flex justify-between items-center group hover:border-white/10 transition-colors">
+                                    <div className="bg-black/30 backdrop-blur-md border border-white/5 rounded-xl p-4 flex justify-between items-center group hover:border-white/10 transition-colors">
                                         <div className="flex items-center gap-4">
                                             <div className="w-12 h-12 rounded-lg bg-purple-900/20 text-purple-400 flex items-center justify-center"><WiStars className="text-2xl" /></div>
                                             <div>
@@ -475,7 +475,7 @@ const Dashboard = () => {
                                             <button className="w-8 h-8 rounded-full bg-[#1a2036] text-slate-400 hover:text-white flex items-center justify-center"><MdNotifications /></button>
                                         </div>
                                     </div>
-                                    <div className="bg-[#080b14] border border-white/5 rounded-xl p-4 flex justify-between items-center group hover:border-white/10 transition-colors">
+                                    <div className="bg-black/30 backdrop-blur-md border border-white/5 rounded-xl p-4 flex justify-between items-center group hover:border-white/10 transition-colors">
                                         <div className="flex items-center gap-4">
                                             <div className="w-12 h-12 rounded-lg bg-blue-900/20 text-blue-400 flex items-center justify-center"><WiStars className="text-2xl" /></div>
                                             <div>
@@ -497,7 +497,7 @@ const Dashboard = () => {
                         </div>
 
                         {/* Bottom: Active Missions (SpaceX API Integration) */}
-                        <div className="bg-[#0f1322]/80 backdrop-blur-xl border border-white/5 rounded-2xl p-6">
+                        <div className="bg-black/30 backdrop-blur-xl border border-white/5 rounded-2xl p-6">
                             <div className="flex justify-between items-center mb-4">
                                 <h3 className="text-lg font-bold text-white flex items-center gap-2">
                                     <MdRocketLaunch className="text-blue-500" />
@@ -515,7 +515,7 @@ const Dashboard = () => {
                                     spacexData.map((launch) => (
                                         <div
                                             key={launch.flight_number}
-                                            className="bg-[#080b14] border border-white/5 rounded-xl p-4 hover:border-blue-500/30 transition-all duration-300 group"
+                                            className="bg-black/30 backdrop-blur-md border border-white/5 rounded-xl p-4 hover:border-blue-500/30 transition-all duration-300 group"
                                         >
                                             <div className="flex items-center gap-3 mb-3">
                                                 {/* Patch Image or Fallback Icon */}

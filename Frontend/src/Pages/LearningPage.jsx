@@ -156,7 +156,7 @@ const LearningPage = () => {
     const QuizCard = ({ quiz, index }) => {
         const theme = getDifficultyColor(quiz.level);
         return (
-            <div className="group relative flex flex-col h-full rounded-2xl overflow-hidden bg-[#0f1322]/80 border border-white/5 hover:border-[#00d9ff]/30 transition-all hover:-translate-y-1 cursor-pointer">
+            <div className="group relative flex flex-col h-full rounded-2xl overflow-hidden bg-black/30 backdrop-blur-md border border-white/5 hover:border-[#00d9ff]/30 transition-all hover:-translate-y-1 cursor-pointer">
                 <div className="relative h-[180px] w-full overflow-hidden">
                     <img src={quiz.image} alt={quiz.topic} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0f1322] via-transparent to-transparent opacity-90" />
@@ -183,7 +183,7 @@ const LearningPage = () => {
     };
 
     const ArticleCard = ({ article }) => (
-        <div className="group flex flex-col h-full rounded-2xl overflow-hidden bg-[#0f1322]/80 border border-white/5 hover:border-[#00d9ff]/30 transition-all hover:-translate-y-1">
+        <div className="group flex flex-col h-full rounded-2xl overflow-hidden bg-black/30 backdrop-blur-md border border-white/5 hover:border-[#00d9ff]/30 transition-all hover:-translate-y-1">
             <div className="relative h-40 w-full overflow-hidden bg-gray-900">
                 <FileText className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white/20" size={48} />
                 <div className="absolute top-3 left-3 px-2.5 py-1 bg-[#00d9ff]/20 rounded-full text-[10px] font-bold text-[#00d9ff] uppercase">
@@ -201,7 +201,7 @@ const LearningPage = () => {
     );
 
     const VideoCard = ({ video }) => (
-        <div className="group rounded-2xl overflow-hidden bg-[#0f1322]/80 border border-white/5 hover:border-[#00d9ff]/30 transition-all hover:-translate-y-1">
+        <div className="group rounded-2xl overflow-hidden bg-black/30 backdrop-blur-md border border-white/5 hover:border-[#00d9ff]/30 transition-all hover:-translate-y-1">
             <div className="relative aspect-video bg-black">
                 <div className="w-full h-full flex items-center justify-center bg-gray-900">
                     <Video className="text-white/20" size={48} />
@@ -221,14 +221,14 @@ const LearningPage = () => {
     );
 
     return (
-        <div className="flex h-screen bg-[#080b14] text-slate-300 font-sans overflow-hidden">
+        <div className="flex h-screen bg-transparent text-slate-300 font-sans overflow-hidden">
             <Sidebar activeTab="Learning Zone" />
 
-            <div className="flex-1 flex flex-col min-w-0 bg-[#080b14] relative">
+            <div className="flex-1 flex flex-col min-w-0 bg-transparent relative">
                 <div className="absolute top-[-20%] left-[20%] w-[500px] h-[500px] bg-[#00d9ff]/5 rounded-full blur-[100px] pointer-events-none" />
 
                 {/* Header */}
-                <header className="h-16 flex items-center justify-between px-6 border-b border-white/5 bg-[#080b14]/90 backdrop-blur-md sticky top-0 z-10">
+                <header className="h-16 flex items-center justify-between px-6 border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 z-10">
                     <div className="flex-1 max-w-xl">
                         <div className="relative group">
                             <MdSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-[#00d9ff] text-lg" />
@@ -373,7 +373,7 @@ const LearningPage = () => {
                         {/* Leaderboard Sidebar */}
                         {showLeaderboard && activeTab !== 'Leaderboard' && (
                             <div className="hidden xl:block w-[30%] min-w-[320px] max-w-[400px] pl-8 border-l border-white/5">
-                                <div className="sticky top-0 bg-[#0f1322]/80 border border-white/10 rounded-2xl p-6">
+                                <div className="sticky top-0 bg-black/30 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
                                     <div className="flex justify-between items-center mb-4">
                                         <div className="flex items-center gap-2">
                                             <Trophy className="text-[#ffd700]" size={20} />
@@ -398,7 +398,7 @@ const LearningPage = () => {
                                                 <div className={`w-8 text-center font-bold ${u.rank <= 3 ? 'text-[#ffd700]' : 'text-[#64748b]'}`}>
                                                     {u.rank <= 3 ? (u.rank === 1 ? '🥇' : u.rank === 2 ? '🥈' : '🥉') : u.rank}
                                                 </div>
-                                                <div className="w-8 h-8 rounded-full border-2 border-[#2e364f] flex items-center justify-center bg-[#0a0e17] text-lg">{u.avatar}</div>
+                                                <div className="w-8 h-8 rounded-full border-2 border-[#2e364f] flex items-center justify-center bg-black/30 backdrop-blur-md text-lg">{u.avatar}</div>
                                                 <div className="flex-1"><div className="text-[13px] text-white">{u.name}</div></div>
                                                 <div className="font-bold text-[13px] text-[#94a3b8]">{u.xp.toLocaleString()} XP</div>
                                             </div>

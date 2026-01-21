@@ -25,7 +25,7 @@ const Sidebar = ({ activeTab = 'Dashboard' }) => {
     );
 
     return (
-        <aside className="w-64 bg-[#0a0e17] border-r border-white/5 flex flex-col flex-shrink-0 z-20">
+        <aside className="w-64 bg-black/10 backdrop-blur-sm border-r border-white/5 flex flex-col flex-shrink-0 z-20">
             {/* App Logo */}
             <div className="h-40 flex items-center px-4">
                 <img src={Logo} alt="Singularity" className="h-20 w-auto object-contain" />

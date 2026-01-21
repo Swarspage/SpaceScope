@@ -15,7 +15,7 @@ import L from "leaflet";
 /* ---------- Theme tokens (Singularity) ---------- */
 const THEME = {
     primary: "#00d9ff",
-    bgDeep: "#050714",
+    bgDeep: "transparent",
     panel: "#0a0e17",
     card: "#0f1322",
     textHeading: "#ffffff",
@@ -145,11 +145,9 @@ export default function ISSTracker() {
 
                 {/* Main Visual Area */}
                 <main
-                    className="rounded-2xl p-4 sm:p-6 flex flex-col gap-6"
+                    className="rounded-2xl p-4 sm:p-6 flex flex-col gap-6 bg-black/30 backdrop-blur-md"
                     style={{
-                        background: "rgba(15,19,34,0.6)",
                         border: `1px solid ${THEME.border}`,
-                        backdropFilter: "blur(12px)",
                         boxShadow: THEME.glowCSS,
                         minHeight: "80vh",
                     }}
@@ -226,13 +224,13 @@ export default function ISSTracker() {
                             className="relative rounded-xl overflow-hidden border border-white/10 flex flex-col"
                             style={{
                                 minHeight: "400px",
-                                background: "#0f1322"
+                                background: "rgba(0,0,0,0.3)"
                             }}
                         >
                             <MapContainer
                                 center={iss ? [iss.lat, iss.lng] : [0, 0]}
                                 zoom={3}
-                                style={{ height: "100%", width: "100%", outline: "none", background: "#050714" }}
+                                style={{ height: "100%", width: "100%", outline: "none", background: "transparent" }}
                                 scrollWheelZoom={true}
                                 whenCreated={(mapInstance) => { mapRef.current = mapInstance; }}
                             >
@@ -266,11 +264,9 @@ export default function ISSTracker() {
 
                 {/* Sidebar */}
                 <aside
-                    className="rounded-2xl p-5 flex flex-col gap-6 h-full"
+                    className="rounded-2xl p-5 flex flex-col gap-6 h-full bg-black/30 backdrop-blur-md"
                     style={{
-                        background: "linear-gradient(180deg, rgba(15,19,34,0.95), rgba(10,14,23,0.9))",
                         border: `1px solid ${THEME.border}`,
-                        backdropFilter: "blur(8px)",
                     }}
                 >
                     {/* Telemetry Section */}
@@ -282,7 +278,7 @@ export default function ISSTracker() {
 
                         <div className="grid gap-4">
                             {/* Lat/Lng Card */}
-                            <div className="p-4 rounded-xl space-y-3" style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${THEME.border}` }}>
+                            <div className="p-4 rounded-xl space-y-3 bg-black/30 backdrop-blur-md" style={{ border: `1px solid ${THEME.border}` }}>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
                                         <div className="text-[10px] uppercase text-gray-500 mb-1">Latitude</div>
@@ -303,7 +299,7 @@ export default function ISSTracker() {
                             </div>
 
                             {/* Status Card */}
-                            <div className="p-4 rounded-xl flex items-center justify-between" style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${THEME.border}` }}>
+                            <div className="p-4 rounded-xl flex items-center justify-between bg-black/30 backdrop-blur-md" style={{ border: `1px solid ${THEME.border}` }}>
                                 <div>
                                     <div className="text-[10px] uppercase text-gray-500">Signal Status</div>
                                     <div className="text-sm font-bold text-[#00ff88] flex items-center gap-1.5 mt-0.5">

@@ -463,11 +463,11 @@ const LoginPage = () => {
   `;
 
   return (
-    <div className="bg-background-dark min-h-screen text-slate-300 font-display overflow-hidden flex selection:bg-primary selection:text-black">
+    <div className="bg-transparent min-h-screen text-slate-300 font-display overflow-hidden flex selection:bg-primary selection:text-black">
       <style>{customStyles}</style>
 
       {/* === LEFT PANEL: AUTH SIDEBAR === */}
-      <div className="w-full lg:w-[480px] bg-panel-dark border-r border-white/5 flex flex-col relative z-20 shadow-2xl h-screen flex-shrink-0">
+      <div className="w-full lg:w-[480px] bg-panel-dark/90 border-r border-white/5 flex flex-col relative z-20 shadow-2xl h-screen flex-shrink-0">
 
         {/* Header / Logo */}
         <div className="p-8 pb-4 flex items-center justify-between">
@@ -692,7 +692,7 @@ const LoginPage = () => {
       </div>
 
       {/* === RIGHT PANEL: HERO SECTION === */}
-      <div className="hidden lg:flex flex-1 relative items-center justify-center overflow-hidden bg-background-dark">
+      <div className="hidden lg:flex flex-1 relative items-center justify-center overflow-hidden bg-transparent">
         {/* Background Stars & Gradient */}
         <div className="absolute inset-0 bg-space-gradient z-0"></div>
         <div className="absolute inset-0 stars-bg opacity-40 animate-[float_100s_linear_infinite]" style={{ animationDuration: '100s', animationName: 'none' }}></div>

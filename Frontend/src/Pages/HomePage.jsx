@@ -7,11 +7,58 @@ import {
     MapPin, Clock, Shield, Mail, Twitter, Instagram, Youtube, Github
 } from 'lucide-react';
 import Logo from '../assets/Logo.png';
+import Earth3DImage from '../assets/earth_3d.png';
 
 /* FONTS INJECTION 
   (Include this in your index.css or within a <style> tag in the root)
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Space+Grotesk:wght@400;700;900&display=swap');
 */
+
+const SectionHeading = ({ pre, title, highlight, sub }) => (
+    <div className="text-center mb-16 relative z-10">
+        {pre && (
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="text-[#00d9ff] font-bold text-xs tracking-[0.2em] uppercase mb-4"
+            >
+                {pre}
+            </motion.div>
+        )}
+        <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="font-display font-black text-4xl md:text-5xl text-white mb-3 leading-tight"
+        >
+            {title}
+        </motion.h2>
+        {highlight && (
+            <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
+                className="font-display font-bold text-3xl md:text-4xl bg-gradient-to-r from-[#00d9ff] to-[#b900ff] bg-clip-text text-transparent mb-6"
+            >
+                {highlight}
+            </motion.h2>
+        )}
+        {sub && (
+            <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 }}
+                className="font-sans text-[#b8c5d6] text-lg max-w-2xl mx-auto"
+            >
+                {sub}
+            </motion.p>
+        )}
+    </div>
+);
 
 const HomePage = () => {
     const navigate = useNavigate();
@@ -53,53 +100,14 @@ const HomePage = () => {
 
     // --- REUSABLE COMPONENTS ---
 
-    const SectionHeading = ({ pre, title, highlight, sub }) => (
-        <div className="text-center mb-16 relative z-10">
-            {pre && (
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    className="text-[#00d9ff] font-bold text-xs tracking-[0.2em] uppercase mb-4"
-                >
-                    {pre}
-                </motion.div>
-            )}
-            <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="font-display font-black text-4xl md:text-5xl text-white mb-3 leading-tight"
-            >
-                {title}
-            </motion.h2>
-            {highlight && (
-                <motion.h2
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="font-display font-bold text-3xl md:text-4xl bg-gradient-to-r from-[#00d9ff] to-[#b900ff] bg-clip-text text-transparent mb-6"
-                >
-                    {highlight}
-                </motion.h2>
-            )}
-            {sub && (
-                <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                    className="font-sans text-[#b8c5d6] text-lg max-w-2xl mx-auto"
-                >
-                    {sub}
-                </motion.p>
-            )}
-        </div>
-    );
+    // --- REUSABLE COMPONENTS ---
+    // Moved outside to prevent re-creation on every render (which caused blinking)
 
     return (
-        <div className="bg-[#050714] min-h-screen text-[#94a3b8] font-sans overflow-x-hidden selection:bg-[#00d9ff] selection:text-black">
+        <div className="bg-transparent min-h-screen text-[#94a3b8] font-sans overflow-x-hidden selection:bg-[#00d9ff] selection:text-black">
 
             {/* 1. NAVIGATION HEADER */}
-            <nav className={`fixed top-0 w-full z-50 transition-all duration-300 border-b ${isScrolled ? 'bg-[#050714]/90 backdrop-blur-xl border-white/5 py-3' : 'bg-transparent border-transparent py-6'}`}>
+            <nav className={`fixed top-0 w-full z-50 transition-all duration-300 border-b ${isScrolled ? 'bg-black/10 backdrop-blur-md border-white/5 py-3' : 'bg-transparent border-transparent py-6'}`}>
                 <div className="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
                     {/* Logo */}
                     <div className="flex items-center">
@@ -138,7 +146,7 @@ const HomePage = () => {
                 {mobileMenuOpen && (
                     <motion.div
                         initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
-                        className="fixed inset-0 z-[60] bg-[#050714]/98 backdrop-blur-xl p-8 flex flex-col"
+                        className="fixed inset-0 z-[60] bg-black/95 backdrop-blur-xl p-8 flex flex-col"
                     >
                         <div className="flex justify-end mb-12">
                             <button onClick={() => setMobileMenuOpen(false)}><X className="w-8 h-8 text-white" /></button>
@@ -179,28 +187,15 @@ const HomePage = () => {
                     <motion.div style={{ y: y1 }} className="absolute bottom-0 -right-20 w-[500px] h-[500px] bg-[#b900ff]/10 rounded-full blur-[120px]" />
                 </div>
 
-                {/* 3D Earth Simulation (CSS only) */}
+                {/* 3D Earth Image */}
                 <div className="absolute right-0 top-1/2 -translate-y-1/2 md:translate-x-1/4 opacity-40 md:opacity-100 z-0 pointer-events-none">
-                    <motion.div
+                    <motion.img
+                        src={Earth3DImage}
+                        alt="Earth 3D Render"
                         animate={{ rotate: 360 }}
-                        transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
-                        className="w-[300px] md:w-[600px] h-[300px] md:h-[600px] rounded-full relative"
-                        style={{
-                            background: 'radial-gradient(circle at 30% 30%, #0a2f5f, #000000)',
-                            boxShadow: 'inset -20px -20px 50px rgba(0,0,0,0.5), 0 0 50px rgba(0, 217, 255, 0.2)'
-                        }}
-                    >
-                        {/* Atmosphere */}
-                        <div className="absolute inset-0 rounded-full shadow-[0_0_40px_rgba(0,217,255,0.3)_inset]"></div>
-                        {/* Orbiting ISS */}
-                        <motion.div
-                            animate={{ rotate: -360 }}
-                            transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-                            className="absolute inset-[-40px] border border-dashed border-[#00d9ff]/30 rounded-full"
-                        >
-                            <div className="absolute top-1/2 -right-2 w-4 h-4 bg-white rounded-full shadow-[0_0_10px_white]"></div>
-                        </motion.div>
-                    </motion.div>
+                        transition={{ duration: 200, repeat: Infinity, ease: "linear" }}
+                        className="w-[300px] md:w-[600px] h-[300px] md:h-[600px] object-contain drop-shadow-[0_0_50px_rgba(0,100,255,0.3)]"
+                    />
                 </div>
 
                 <div className="max-w-7xl mx-auto px-6 md:px-12 w-full relative z-10 grid md:grid-cols-2">
@@ -280,7 +275,7 @@ const HomePage = () => {
             </section>
 
             {/* 3. PROBLEM STATEMENT */}
-            <section className="py-24 px-6 md:px-12 bg-[#0a0e17] relative">
+            <section className="py-24 px-6 md:px-12 bg-transparent relative">
                 <div className="max-w-7xl mx-auto">
                     <SectionHeading pre="THE CHALLENGE" title="Ever Missed a Meteor Shower?" sub="Or wondered when the ISS passes overhead? The universe is vast, but finding reliable info shouldn't be." />
 
@@ -312,7 +307,7 @@ const HomePage = () => {
             </section>
 
             {/* 4. SOLUTION SHOWCASE */}
-            <section className="py-24 px-6 md:px-12 bg-gradient-to-b from-[#0a0e17] to-[#050714]">
+            <section className="py-24 px-6 md:px-12 bg-transparent">
                 <div className="max-w-7xl mx-auto">
                     <SectionHeading pre="THE SOLUTION" title="One Platform. Everything Space." highlight="Personalized for You." />
 
@@ -385,7 +380,7 @@ const HomePage = () => {
             </section>
 
             {/* 5. LIVE DATA PREVIEW */}
-            <section className="py-24 px-6 md:px-12 bg-[#050714] relative overflow-hidden">
+            <section className="py-24 px-6 md:px-12 bg-transparent relative overflow-hidden">
                 <div className="max-w-7xl mx-auto">
                     <SectionHeading pre="SEE IT IN ACTION" title="Real-Time Space Data" sub="Data updates live directly from NASA and NOAA APIs." />
 
@@ -455,7 +450,7 @@ const HomePage = () => {
             </section>
 
             {/* 6. FEATURES GRID */}
-            <section className="py-24 px-6 md:px-12 bg-[#0a0e17]" id="features">
+            <section className="py-24 px-6 md:px-12 bg-transparent" id="features">
                 <div className="max-w-7xl mx-auto">
                     <SectionHeading pre="POWERFUL FEATURES" title="Everything You Need" />
 
@@ -481,7 +476,7 @@ const HomePage = () => {
             </section>
 
             {/* 7. HOW IT WORKS */}
-            <section className="py-24 px-6 md:px-12 bg-gradient-to-b from-[#0a0e17] to-[#050714]" id="how-it-works">
+            <section className="py-24 px-6 md:px-12 bg-transparent" id="how-it-works">
                 <div className="max-w-7xl mx-auto">
                     <SectionHeading pre="GETTING STARTED" title="Start in 3 Simple Steps" />
 
@@ -515,7 +510,7 @@ const HomePage = () => {
             </section>
 
             {/* 8. SOCIAL PROOF */}
-            <section className="py-24 px-6 md:px-12 bg-[#050714]" id="community">
+            <section className="py-24 px-6 md:px-12 bg-transparent" id="community">
                 <div className="max-w-7xl mx-auto">
                     <SectionHeading pre="JOIN THE COMMUNITY" title="50,000+ Space Enthusiasts" highlight="Worldwide" />
 
@@ -558,7 +553,7 @@ const HomePage = () => {
             {/* 9. FINAL CTA */}
             <section className="py-32 px-6 md:px-12 relative overflow-hidden flex items-center justify-center">
                 {/* Background Galaxy Effect */}
-                <div className="absolute inset-0 bg-gradient-to-b from-[#050714] to-[#0a0e17] z-0"></div>
+                <div className="absolute inset-0 bg-transparent z-0"></div>
                 <motion.div
                     animate={{ rotate: 360 }} transition={{ duration: 100, repeat: Infinity, ease: "linear" }}
                     className="absolute w-[800px] h-[800px] bg-gradient-to-r from-[#00d9ff]/5 to-[#b900ff]/5 rounded-full blur-3xl z-0"
@@ -591,7 +586,7 @@ const HomePage = () => {
             </section>
 
             {/* 10. FOOTER */}
-            <footer className="bg-[#0a0e17] pt-20 pb-10 px-6 md:px-12 border-t border-white/5 text-[#94a3b8]">
+            <footer className="bg-black/80 pt-20 pb-10 px-6 md:px-12 border-t border-white/5 text-[#94a3b8]">
                 <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
                     {/* Brand */}
                     <div className="col-span-1">

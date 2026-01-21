@@ -135,7 +135,7 @@ const MissionTimelines = () => {
         const time = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
 
         return (
-            <div className="flex flex-col items-center justify-center bg-[#0a0e17] border border-white/10 rounded-lg p-2 min-w-[80px] h-full">
+            <div className="flex flex-col items-center justify-center bg-black/30 backdrop-blur-md border border-white/10 rounded-lg p-2 min-w-[80px] h-full">
                 <span className="text-[10px] font-bold text-slate-500 tracking-wider">{month} {year}</span>
                 <span className="text-3xl font-black text-white leading-none my-1">{day}</span>
                 <div className="flex items-center gap-1 text-[10px] font-mono text-[#00d9ff] bg-[#00d9ff]/10 px-1.5 py-0.5 rounded">
@@ -170,7 +170,7 @@ const MissionTimelines = () => {
 
     // --- Main JSX ---
     return (
-        <div className="flex h-screen bg-[#080b14] text-slate-300 font-sans overflow-hidden">
+        <div className="flex h-screen bg-transparent text-slate-300 font-sans overflow-hidden">
 
             {/* === SIDEBAR === */}
             <Sidebar activeTab="Missions" />
@@ -181,7 +181,7 @@ const MissionTimelines = () => {
                 <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#00d9ff]/5 via-transparent to-transparent pointer-events-none" />
 
                 {/* Header */}
-                <header className="h-20 flex items-center justify-between px-8 border-b border-white/5 bg-[#080b14]/95 backdrop-blur-sm z-10">
+                <header className="h-20 flex items-center justify-between px-8 border-b border-white/5 bg-black/20 backdrop-blur-md z-10">
                     <div>
                         <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
                             <MdTimeline className="text-[#00d9ff]" /> Mission Timelines
@@ -205,7 +205,7 @@ const MissionTimelines = () => {
                         </div>
 
                         {/* Provider Tabs */}
-                        <div className="flex bg-[#0f1322] p-1 rounded-lg border border-white/10">
+                        <div className="flex bg-black/30 backdrop-blur-md p-1 rounded-lg border border-white/10">
                             {['ALL', 'SPACEX', 'ISRO', 'NASA'].map(provider => (
                                 <button
                                     key={provider}
@@ -247,7 +247,7 @@ const MissionTimelines = () => {
                                             key={mission.id}
                                             onClick={() => setSelectedMission(mission)}
                                             className={`
-                                                group relative flex items-center bg-[#0f1322]/60 backdrop-blur-sm border rounded-xl p-4 cursor-pointer transition-all duration-200
+                                                group relative flex items-center bg-black/30 backdrop-blur-md border rounded-xl p-4 cursor-pointer transition-all duration-200
                                                 hover:bg-[#151a2d] hover:border-white/20 hover:translate-x-1
                                                 ${isSelected ? `border-[#00d9ff] shadow-[0_0_20px_rgba(0,217,255,0.1)]` : 'border-white/5'}
                                             `}
@@ -300,14 +300,14 @@ const MissionTimelines = () => {
 
                     {/* === SLIDE-OVER DETAILS PANEL === */}
                     <div className={`
-                        absolute top-0 right-0 h-full w-[450px] bg-[#0a0e17] border-l border-white/10 shadow-2xl z-30
+                        absolute top-0 right-0 h-full w-[450px] bg-black/60 backdrop-blur-xl border-l border-white/10 shadow-2xl z-30
                         transform transition-transform duration-300 ease-in-out
                         ${selectedMission ? 'translate-x-0' : 'translate-x-full'}
                     `}>
                         {selectedMission && (
                             <div className="flex flex-col h-full">
                                 {/* Header */}
-                                <div className="h-16 flex items-center justify-between px-6 border-b border-white/5 bg-[#0f1322]">
+                                <div className="h-16 flex items-center justify-between px-6 border-b border-white/5 bg-transparent">
                                     <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">
                                         Classified Briefing
                                     </span>
@@ -348,13 +348,13 @@ const MissionTimelines = () => {
 
                                     {/* Data Grid */}
                                     <div className="grid grid-cols-2 gap-3 mb-6">
-                                        <div className="bg-[#1a2036]/50 p-3 rounded-lg border border-white/5">
+                                        <div className="bg-black/30 backdrop-blur-md p-3 rounded-lg border border-white/5">
                                             <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">Launch Date</div>
                                             <div className="text-sm text-white font-mono">
                                                 {selectedMission.date?.toLocaleString() || "TBD"}
                                             </div>
                                         </div>
-                                        <div className="bg-[#1a2036]/50 p-3 rounded-lg border border-white/5">
+                                        <div className="bg-black/30 backdrop-blur-md p-3 rounded-lg border border-white/5">
                                             <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">Location</div>
                                             <div className="text-sm text-white truncate" title={selectedMission.location}>
                                                 {selectedMission.location || "Classified"}
@@ -362,7 +362,7 @@ const MissionTimelines = () => {
                                         </div>
                                     </div>
 
-                                    <div className="bg-[#0f1322] border border-white/5 rounded-xl p-5 relative overflow-hidden">
+                                    <div className="bg-black/30 backdrop-blur-md border border-white/5 rounded-xl p-5 relative overflow-hidden">
                                         <div className="absolute top-0 left-0 w-1 h-full bg-[#00d9ff]"></div>
                                         <h4 className="text-sm font-bold text-white mb-2 flex items-center gap-2">
                                             <MdOutlineInfo className="text-[#00d9ff]" /> Mission Details

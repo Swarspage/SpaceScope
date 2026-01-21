@@ -11,7 +11,7 @@ const ProfilePage = () => {
     const [formData, setFormData] = useState({
         fullName: user?.fullName || '',
         location: user?.location || ''
-    }); 
+    });
 
     const handleLogout = () => {
         logout();
@@ -38,7 +38,7 @@ const ProfilePage = () => {
     };
 
     return (
-        <div className="flex h-screen bg-[#050714] text-white">
+        <div className="flex h-screen bg-transparent text-white">
             <Sidebar activeTab="Profile" />
 
             <main className="flex-1 overflow-auto p-8">
@@ -55,7 +55,7 @@ const ProfilePage = () => {
                     </div>
 
                     {/* Profile Card */}
-                    <div className="bg-[#0f1322]/80 backdrop-blur-xl border border-white/5 rounded-2xl p-8">
+                    <div className="bg-black/30 backdrop-blur-xl border border-white/5 rounded-2xl p-8">
                         {/* Avatar Section */}
                         <div className="flex items-center gap-6 mb-8">
                             <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#00d9ff] to-purple-500 flex items-center justify-center text-4xl font-bold">
@@ -71,7 +71,7 @@ const ProfilePage = () => {
                         {!isEditing ? (
                             <>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                                    <div className="flex items-center gap-3 p-4 bg-[#080b14] rounded-lg">
+                                    <div className="flex items-center gap-3 p-4 bg-black/30 backdrop-blur-md rounded-lg">
                                         <MdEmail className="text-2xl text-[#00d9ff]" />
                                         <div>
                                             <p className="text-xs text-slate-500">Email</p>
@@ -79,7 +79,7 @@ const ProfilePage = () => {
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-3 p-4 bg-[#080b14] rounded-lg">
+                                    <div className="flex items-center gap-3 p-4 bg-black/30 backdrop-blur-md rounded-lg">
                                         <MdPerson className="text-2xl text-[#00d9ff]" />
                                         <div>
                                             <p className="text-xs text-slate-500">Username</p>
@@ -87,7 +87,7 @@ const ProfilePage = () => {
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-3 p-4 bg-[#080b14] rounded-lg">
+                                    <div className="flex items-center gap-3 p-4 bg-black/30 backdrop-blur-md rounded-lg">
                                         <MdLocationOn className="text-2xl text-[#00d9ff]" />
                                         <div>
                                             <p className="text-xs text-slate-500">Location</p>
@@ -95,7 +95,7 @@ const ProfilePage = () => {
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-3 p-4 bg-[#080b14] rounded-lg">
+                                    <div className="flex items-center gap-3 p-4 bg-black/30 backdrop-blur-md rounded-lg">
                                         <MdCalendarToday className="text-2xl text-[#00d9ff]" />
                                         <div>
                                             <p className="text-xs text-slate-500">Joined</p>
@@ -121,7 +121,7 @@ const ProfilePage = () => {
                                         type="text"
                                         value={formData.fullName}
                                         onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                                        className="w-full bg-[#080b14] border border-white/10 rounded-lg px-4 py-3 text-white focus:border-[#00d9ff] focus:outline-none"
+                                        className="w-full bg-black/30 backdrop-blur-md border border-white/10 rounded-lg px-4 py-3 text-white focus:border-[#00d9ff] focus:outline-none"
                                     />
                                 </div>
 
@@ -131,7 +131,7 @@ const ProfilePage = () => {
                                         type="text"
                                         value={formData.location}
                                         onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                                        className="w-full bg-[#080b14] border border-white/10 rounded-lg px-4 py-3 text-white focus:border-[#00d9ff] focus:outline-none"
+                                        className="w-full bg-black/30 backdrop-blur-md border border-white/10 rounded-lg px-4 py-3 text-white focus:border-[#00d9ff] focus:outline-none"
                                     />
                                 </div>
 

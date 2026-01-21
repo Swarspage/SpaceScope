@@ -40,7 +40,7 @@ const COLORS = {
 };
 
 const STYLES = {
-    glass: "backdrop-blur-xl bg-[#0a0e17]/80 border border-white/10 shadow-xl",
+    glass: "backdrop-blur-xl bg-black/30 border border-white/10 shadow-xl",
     card: "rounded-xl p-4 md:p-6 transition-all duration-200",
     btnPrimary: "bg-[#00d9ff] text-black hover:bg-[#00b8d4] font-bold rounded-lg px-4 py-2 transition-all shadow-[0_0_15px_rgba(0,217,255,0.3)]",
     btnSecondary: "bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-lg px-4 py-2 transition-all",
@@ -277,13 +277,13 @@ export default function Applications() {
     const activeAssets = activeSeries?.assets[activeYear];
 
     return (
-        <div className="bg-[#050714] text-[#94a3b8] font-sans min-h-screen relative overflow-x-hidden selection:bg-[#00d9ff] selection:text-black">
+        <div className="bg-transparent text-[#94a3b8] font-sans min-h-screen relative overflow-x-hidden selection:bg-[#00d9ff] selection:text-black">
 
             {/* MAIN LAYOUT GRID */}
             <div className="grid grid-cols-1 lg:grid-cols-12 min-h-screen">
 
                 {/* LEFT PANEL: Controls & Dashboard (3 cols) */}
-                <div className="lg:col-span-3 bg-[#0a0e17] border-r border-white/5 flex flex-col h-screen overflow-y-auto custom-scrollbar">
+                <div className="lg:col-span-3 bg-black/20 backdrop-blur-md border-r border-white/5 flex flex-col h-screen overflow-y-auto custom-scrollbar">
 
                     {/* 1. Hero Snapshot */}
                     <div className="p-6 border-b border-white/5 bg-[#0f1322]">
@@ -345,15 +345,15 @@ export default function Applications() {
                             <TrendingUp size={14} className="text-[#00ff88]" /> Planetary Vitals
                         </h3>
                         <div className="grid grid-cols-2 gap-3">
-                            <div className="bg-[#0f1322] p-3 rounded-lg border border-white/5">
+                            <div className="bg-black/30 backdrop-blur-md p-3 rounded-lg border border-white/5">
                                 <div className="text-[10px] uppercase text-[#64748b] mb-1">Avg Temp Δ</div>
                                 <div className="text-lg font-mono text-[#ff3366]">{data.vitals.global_avg_temp_delta}</div>
                             </div>
-                            <div className="bg-[#0f1322] p-3 rounded-lg border border-white/5">
+                            <div className="bg-black/30 backdrop-blur-md p-3 rounded-lg border border-white/5">
                                 <div className="text-[10px] uppercase text-[#64748b] mb-1">CO2 (ppm)</div>
                                 <div className="text-lg font-mono text-[#ffaa00]">{data.vitals.co2_ppm}</div>
                             </div>
-                            <div className="bg-[#0f1322] p-3 rounded-lg border border-white/5">
+                            <div className="bg-black/30 backdrop-blur-md p-3 rounded-lg border border-white/5">
                                 <div className="text-[10px] uppercase text-[#64748b] mb-1">Arctic Ice</div>
                                 <div className="text-lg font-mono text-[#00d9ff]">{data.vitals.arctic_ice_pct_change_per_decade}%</div>
                             </div>
@@ -374,7 +374,7 @@ export default function Applications() {
                         ) : (
                             <ul className="space-y-2">
                                 {savedLocations.map(loc => (
-                                    <li key={loc.id} className="flex justify-between items-center bg-[#0f1322] p-2 rounded text-xs border border-white/5 hover:border-[#00d9ff] cursor-pointer group"
+                                    <li key={loc.id} className="flex justify-between items-center bg-black/30 backdrop-blur-md p-2 rounded text-xs border border-white/5 hover:border-[#00d9ff] cursor-pointer group"
                                         onClick={() => setViewTarget({ center: loc.center, zoom: loc.zoom })}>
                                         <span>{loc.name}</span>
                                         <button
@@ -393,12 +393,12 @@ export default function Applications() {
                 </div>
 
                 {/* CENTER PANEL: Map & Scrubber (6 cols) */}
-                <div className="lg:col-span-6 relative bg-[#050714] h-[50vh] lg:h-screen flex flex-col" id="map-view">
+                <div className="lg:col-span-6 relative bg-transparent h-[50vh] lg:h-screen flex flex-col" id="map-view">
                     {/* Map Container */}
                     <MapContainer
                         center={mapCenter}
                         zoom={4}
-                        className="flex-grow w-full z-0 bg-[#050714]"
+                        className="flex-grow w-full z-0 bg-transparent"
                         zoomControl={false}
                     >
                         <MapController viewTarget={viewTarget} />
@@ -531,11 +531,11 @@ export default function Applications() {
                 </div>
 
                 {/* RIGHT PANEL: Feed & Details (3 cols) */}
-                <div className="lg:col-span-3 bg-[#0a0e17] border-l border-white/5 h-auto lg:h-screen overflow-y-auto custom-scrollbar">
+                <div className="lg:col-span-3 bg-black/20 backdrop-blur-md border-l border-white/5 h-auto lg:h-screen overflow-y-auto custom-scrollbar">
 
                     {/* 7. Scene Inspector (Contextual) */}
                     {(inspectScene || (activeAssets && !activeEvent)) && (
-                        <div className="p-6 border-b border-white/5 bg-[#0f1322]">
+                        <div className="p-6 border-b border-white/5 bg-black/30 backdrop-blur-md">
                             <div className="flex justify-between items-start mb-4">
                                 <h3 className="text-white font-bold flex items-center gap-2">
                                     <Satellite size={16} className="text-[#00d9ff]" /> Inspector
@@ -597,7 +597,7 @@ export default function Applications() {
                                         onClick={() => { setActiveEvent(evt); setViewTarget({ bbox: evt.bbox }); }}
                                         className={`p-3 rounded-lg border cursor-pointer transition-all ${activeEvent?.id === evt.id
                                             ? 'bg-[#00d9ff]/10 border-[#00d9ff]'
-                                            : 'bg-white/5 border-transparent hover:border-white/20'
+                                            : 'bg-black/30 backdrop-blur-md border-transparent hover:border-white/20'
                                             }`}
                                     >
                                         <div className="flex justify-between items-start mb-1">
@@ -638,11 +638,11 @@ export default function Applications() {
             </div>
 
             {/* 9. Stories Section (Below Fold content if strictly single page, but can be integrated as modal or bottom section) */}
-            <section className="bg-[#050714] border-t border-white/5 py-12 px-6 lg:px-12">
+            <section className="bg-transparent border-t border-white/5 py-12 px-6 lg:px-12">
                 <h2 className="font-display text-2xl text-white mb-8">Stories from Earth</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {data.stories.map(story => (
-                        <div key={story.id} className={`${STYLES.card} bg-[#0a0e17] border border-white/5 hover:border-[#00d9ff]/50 group`}>
+                        <div key={story.id} className={`${STYLES.card} bg-black/30 backdrop-blur-md border border-white/5 hover:border-[#00d9ff]/50 group`}>
                             <div className="h-40 mb-4 overflow-hidden rounded-lg">
                                 <img src={story.image} alt={story.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                             </div>
@@ -673,7 +673,7 @@ export default function Applications() {
             </section>
 
             {/* 10. Data Access & Learning */}
-            <section className="bg-[#0a0e17] border-t border-white/5 py-12 px-6 lg:px-12 grid md:grid-cols-2 gap-12">
+            <section className="bg-transparent border-t border-white/5 py-12 px-6 lg:px-12 grid md:grid-cols-2 gap-12">
                 <div>
                     <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
                         <Download size={18} className="text-[#00d9ff]" /> Developer Access
@@ -771,7 +771,7 @@ export default function Applications() {
         @keyframes slide-up { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .animate-slide-up { animation: slide-up 0.3s ease-out forwards; }
         /* Map dark mode override */
-        .leaflet-container { background: #050714; }
+        .leaflet-container { background: transparent; }
         .leaflet-tile { filter: brightness(0.7) contrast(1.2) grayscale(0.8) invert(1) hue-rotate(180deg); }
       `}</style>
         </div>

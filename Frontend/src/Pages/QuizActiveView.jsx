@@ -96,7 +96,7 @@ const QuizActiveView = ({
         const percentage = Math.round((score / (questions.length * 10)) * 100);
 
         return (
-            <div className="fixed inset-0 z-[100] bg-[#050714] flex items-center justify-center p-4 animate-fade-in">
+            <div className="fixed inset-0 z-[100] bg-[#050714]/95 flex items-center justify-center p-4 animate-fade-in">
                 {/* Background Effects */}
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,217,255,0.1)_0%,rgba(5,7,20,1)_70%)] pointer-events-none" />
 
@@ -138,7 +138,7 @@ const QuizActiveView = ({
 
     // --- ACTIVE QUIZ VIEW ---
     return (
-        <div className="fixed inset-0 z-[100] bg-[#050714] flex flex-col animate-fade-in">
+        <div className="fixed inset-0 z-[100] bg-[#050714]/90 flex flex-col animate-fade-in">
 
             {/* HEADER */}
             <div className="h-20 shrink-0 px-6 md:px-12 flex items-center justify-between border-b border-white/5 bg-[#0a0e17]/80 backdrop-blur-xl">
@@ -215,8 +215,8 @@ const QuizActiveView = ({
                     {isAnswered && (
                         <div className="animate-fade-in-up">
                             <div className={`rounded-xl p-6 border mb-8 ${selectedOption === currentQuestion.answer
-                                    ? 'bg-[#00ff88]/5 border-[#00ff88]/20'
-                                    : 'bg-[#ff3366]/5 border-[#ff3366]/20'
+                                ? 'bg-[#00ff88]/5 border-[#00ff88]/20'
+                                : 'bg-[#ff3366]/5 border-[#ff3366]/20'
                                 }`}>
                                 <div className="flex items-start gap-4">
                                     <div className={`p-2 rounded-lg shrink-0 ${selectedOption === currentQuestion.answer ? 'bg-[#00ff88]/10 text-[#00ff88]' : 'bg-[#ff3366]/10 text-[#ff3366]'
@@ -259,8 +259,8 @@ const QuizActiveView = ({
                             onClick={handleSubmit}
                             disabled={!selectedOption}
                             className={`px-8 py-3.5 rounded-xl font-bold text-sm transition-all duration-200 ${selectedOption
-                                    ? 'bg-gradient-to-r from-[#00d9ff] to-[#b900ff] text-black shadow-[0_0_15px_rgba(0,217,255,0.3)] hover:scale-105 transform cursor-pointer'
-                                    : 'bg-[#0f1322] text-[#64748b] border border-white/5 cursor-not-allowed'
+                                ? 'bg-gradient-to-r from-[#00d9ff] to-[#b900ff] text-black shadow-[0_0_15px_rgba(0,217,255,0.3)] hover:scale-105 transform cursor-pointer'
+                                : 'bg-[#0f1322] text-[#64748b] border border-white/5 cursor-not-allowed'
                                 }`}
                         >
                             Submit Answer
