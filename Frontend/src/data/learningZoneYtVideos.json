@@ -1,0 +1,188 @@
+{
+    "rocket_launches": [
+        {
+            "name": "Watch Live: SpaceX launches 1st Starlink mission of 2026 on Falcon 9 rocket from Cape Canaveral",
+            "time_and_date": "January 4, 2026, 1:48 a.m. EST",
+            "location": "Cape Canaveral Space Force Station, Florida",
+            "link": "https://www.youtube.com/watch?v=LKXCWfEz2xc"
+        },
+        {
+            "name": "Blastoff! SpaceX launches Indian Space Research ...",
+            "time_and_date": "November 18, 2024",
+            "location": "Cape Canaveral Space Force Station, Florida",
+            "link": "https://www.youtube.com/watch?v=ocyZU_5P4-o"
+        },
+        {
+            "name": "Axiom Mission 4 Launches to the International Space Station",
+            "time_and_date": "June 25, 2025, 2:31 a.m. EDT",
+            "location": "Kennedy Space Center, Florida",
+            "link": "https://www.youtube.com/watch?v=_4TT_1e6rkM"
+        },
+        {
+            "name": "NISAR Launch",
+            "time_and_date": "July 30, 2025, 8:10 a.m. EDT",
+            "location": "Satish Dhawan Space Centre, India",
+            "link": "https://www.youtube.com/watch?v=waTmU9hyOqo"
+        },
+        {
+            "name": "Blastoff! NASA's SpaceX Crew-10 launches to space station, booster lands in Florida",
+            "time_and_date": "March 14, 2025, 7:03 p.m. EST",
+            "location": "Kennedy Space Center, Florida",
+            "link": "https://www.youtube.com/watch?v=gOsIYwwbr78"
+        },
+        {
+            "name": "New Glenn-2 Launch Recap",
+            "time_and_date": "November 13, 2025, 3:55:01 PM EST",
+            "location": "Cape Canaveral Space Force Station, Florida",
+            "link": "https://www.youtube.com/watch?v=lVvURVG_b10"
+        },
+        {
+            "name": "NASA's Europa Clipper Mission: Liftoff!",
+            "time_and_date": "October 14, 2024",
+            "location": "Kennedy Space Center, Florida",
+            "link": "https://www.youtube.com/watch?v=ux5KMw1Bk6Q"
+        },
+        {
+            "name": "LIVE: ISRO LVM3-M5 / CMS-03 Launch",
+            "time_and_date": "November 2, 2025, 17:26 IST",
+            "location": "Satish Dhawan Space Centre, Sriharikota, India",
+            "link": "https://www.youtube.com/watch?v=yAR9fV48Hjw"
+        },
+        {
+            "name": "LVM3-M6 / BlueBird Block-2 Mission | Live Launch | ISRO-NSIL",
+            "time_and_date": "December 24, 2025, 08:54 IST",
+            "location": "Satish Dhawan Space Centre, Sriharikota, India",
+            "link": "https://www.youtube.com/watch?v=tNpY3wLE3nE"
+        },
+        {
+            "name": "Replay! SpaceX launches Starship on 11th test flight",
+            "time_and_date": "October 13, 2025",
+            "location": "Starbase, South Texas",
+            "link": "https://www.youtube.com/watch?v=31KE1XY32SE"
+        }
+    ],
+    "cosmic_events": [
+        {
+            "name": "Epic Cosmic Show: Perseid Meteor, Aurora Borealis & Milky Way | Time-Lapse Spectacle 8-12-24",
+            "time_and_date": "August 12, 2024",
+            "location": "Not specified",
+            "link": "https://www.youtube.com/watch?v=KA6C2b2zWgI"
+        },
+        {
+            "name": "Don't Miss the Northern Lights and Perseid Meteor Shower this Weekend | Aurora Borealis",
+            "time_and_date": "August 2024 (weekend)",
+            "location": "Worldwide",
+            "link": "https://www.youtube.com/watch?v=5jw6XS3EYD8"
+        },
+        {
+            "name": "🔴 Live Now: Geminid Meteor Shower & Aurora Borealis over the Arctic Ocean in 4K UltraHD",
+            "time_and_date": "December 2024",
+            "location": "Ilulissat, Greenland",
+            "link": "https://www.youtube.com/watch?v=mhe7jeK8pzw"
+        },
+        {
+            "name": "Central Oregon experiences a spectacular celestial event - the Northern lights",
+            "time_and_date": "2024 (Friday night)",
+            "location": "Central Oregon, USA",
+            "link": "https://www.youtube.com/watch?v=GjKm9trELYQ"
+        },
+        {
+            "name": "Aurora Secrets: Red Lights, Solar Storms & What's Next in the Sky",
+            "time_and_date": "November 17, 2024 (Leonid)",
+            "location": "Not specified",
+            "link": "https://www.youtube.com/watch?v=0Is_9webEpI"
+        },
+        {
+            "name": "Perseids Meteor Shower And Aurora Australis Timelapse",
+            "time_and_date": "August 2024 (Friday)",
+            "location": "Canberra, Australia",
+            "link": "https://www.youtube.com/watch?v=sy36jj2KcJs"
+        },
+        {
+            "name": "THE PERSEID METEOR SHOWER 2024",
+            "time_and_date": "2024",
+            "location": "Not specified",
+            "link": "https://www.youtube.com/watch?v=MXoKh_sTIOI"
+        },
+        {
+            "name": "Perseids Meteor Shower 2025 | Real-Time Footage from Finland",
+            "time_and_date": "August 13, 2025",
+            "location": "Palainen, Marttila, Finland",
+            "link": "https://www.youtube.com/watch?v=iKqXXr-_0Nw"
+        },
+        {
+            "name": "2025 Geminid Meteor Shower: online observation - 13 Dec. 2025",
+            "time_and_date": "December 13, 2025",
+            "location": "Online (Virtual Telescope)",
+            "link": "https://www.youtube.com/watch?v=Ss4cq9lzG8c"
+        },
+        {
+            "name": "Bright Red Vivid Auroras Fills The Sky Over Wisconsin",
+            "time_and_date": "December 2, 2023",
+            "location": "Wisconsin, USA",
+            "link": "https://www.youtube.com/watch?v=KIryGNeCcmg"
+        }
+    ],
+    "informative_videos": [
+        {
+            "name": "Decoding the Universe: Cosmos | Full Documentary | NOVA | PBS",
+            "time_and_date": "May 23, 2024",
+            "location": "N/A",
+            "link": "https://www.youtube.com/watch?v=5BNPeFHU7QQ"
+        },
+        {
+            "name": "Cosmic Dawn (NASA+ Original Documentary)",
+            "time_and_date": "Not specified",
+            "location": "N/A",
+            "link": "https://www.youtube.com/watch?v=uSMGENDH_QI"
+        },
+        {
+            "name": "Five Wonders of our Universe | Universe | BBC Earth Science",
+            "time_and_date": "September 14, 2025",
+            "location": "N/A",
+            "link": "https://www.youtube.com/watch?v=oz-Y1Xzx5iQ"
+        },
+        {
+            "name": "How Much Do We Actually Know About Space?",
+            "time_and_date": "July 25, 2025",
+            "location": "N/A",
+            "link": "https://www.youtube.com/watch?v=1vrobCgYA9o"
+        },
+        {
+            "name": "Mysteries of The Universe | Space Documentary 2025",
+            "time_and_date": "January 8, 2025",
+            "location": "N/A",
+            "link": "https://www.youtube.com/watch?v=6zAEiyw6Cfs"
+        },
+        {
+            "name": "Journey Into Space 🪐 | Spaced Out FULL Compilation | Nat Geo Kids Compilation | @natgeokids",
+            "time_and_date": "Not specified",
+            "location": "N/A",
+            "link": "https://www.youtube.com/watch?v=8Sl8m5-Tutk"
+        },
+        {
+            "name": "The Universe: Countless Wonders of the Milky Way (S2, E4) | Full Episode | History",
+            "time_and_date": "Not specified",
+            "location": "N/A",
+            "link": "https://www.youtube.com/watch?v=-1VV2nh8GtE"
+        },
+        {
+            "name": "Decoding the Universe: Quantum | Full Documentary | NOVA | PBS",
+            "time_and_date": "November 7, 2024",
+            "location": "N/A",
+            "link": "https://www.youtube.com/watch?v=t06aTX9jM34"
+        },
+        {
+            "name": "Journeying through stunning cosmic views with James Webb Space Telescope",
+            "time_and_date": "December 25, 2025",
+            "location": "N/A",
+            "link": "https://www.youtube.com/watch?v=lFiOZqyymUY"
+        },
+        {
+            "name": "Journey To The Edge Of The Universe | Full Documentary",
+            "time_and_date": "March 14, 2025",
+            "location": "N/A",
+            "link": "https://www.youtube.com/watch?v=I753-8PIjd0"
+        }
+    ]
+}

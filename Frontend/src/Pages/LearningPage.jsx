@@ -15,6 +15,8 @@ import {
     Sparkles,
     ChevronLeft,
     ChevronRight,
+    MapPin,
+    Calendar
 } from 'lucide-react';
 import {
     MdSearch,
@@ -28,6 +30,7 @@ import QuizActiveView from './QuizActiveView';
 
 // --- IMPORTANT: DATA IMPORT ---
 import quizData from '../../Quiz.json';
+import learningVideos from '../data/learningZoneYtVideos.json';
 
 const LearningPage = () => {
     // Router and Auth
@@ -78,20 +81,48 @@ const LearningPage = () => {
         );
     }, [quizContent]);
 
+    // --- VIDEO HELPER FUNCTIONS ---
+    const getVideoId = (url) => {
+        if (!url) return null;
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[2].length === 11) ? match[2] : null;
+    };
+
+    const getThumbnailUrl = (videoId) => {
+        return videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : null;
+    };
+
     const videos = useMemo(() => {
-        if (!quizContent || !quizContent.topics) return [];
-        return quizContent.topics.flatMap(topic =>
-            (topic.sources || [])
-                .filter(source => source.type.toLowerCase().includes('youtube'))
-                .map(source => ({
-                    title: source.title,
-                    url: source.url,
-                    topic: topic.topic,
-                    channel: 'Space Science',
-                    duration: '10:00'
-                }))
-        );
-    }, [quizContent]);
+        const allVideos = [];
+
+        const processCategory = (category, items) => {
+            return items.map(item => {
+                const videoId = getVideoId(item.link);
+                return {
+                    id: videoId || Math.random().toString(),
+                    title: item.name,
+                    url: item.link,
+                    thumbnail: getThumbnailUrl(videoId),
+                    category: category,
+                    date: item.time_and_date,
+                    location: item.location
+                };
+            });
+        };
+
+        if (learningVideos.rocket_launches) {
+            allVideos.push(...processCategory('Launch', learningVideos.rocket_launches));
+        }
+        if (learningVideos.cosmic_events) {
+            allVideos.push(...processCategory('Event', learningVideos.cosmic_events));
+        }
+        if (learningVideos.informative_videos) {
+            allVideos.push(...processCategory('Documentary', learningVideos.informative_videos));
+        }
+
+        return allVideos;
+    }, []);
 
     const filteredContent = useMemo(() => {
         if (activeTab !== 'Quizzes') return [];
@@ -100,7 +131,15 @@ const LearningPage = () => {
             if (['Easy', 'Medium', 'Hard'].includes(activeFilter)) {
                 content = content.filter(q => q.level.toLowerCase() === activeFilter.toLowerCase());
             } else {
-                content = content.filter(q => q.topic.includes(activeFilter) || activeFilter.includes(q.topic));
+                content = content.filter(q => {
+                    if (activeFilter === "Space Missions" && q.topic.includes("Space Missions")) return true;
+                    if (activeFilter === "Satellites" && q.topic.includes("Satellites")) return true;
+                    if (activeFilter === "Cosmic Events" && q.topic.includes("Cosmic Events")) return true;
+                    if (activeFilter === "Solar System" && q.topic.includes("Solar System")) return true;
+                    if (activeFilter === "Exoplanets" && q.topic.includes("Exoplanets")) return true;
+                    if (activeFilter === "Space Tech" && (q.topic.includes("Technology") || q.topic.includes("Engineering"))) return true;
+                    return false;
+                });
             }
         }
         return content;
@@ -116,10 +155,15 @@ const LearningPage = () => {
 
     function getImageForTopic(topic) {
         const t = topic.toLowerCase();
-        if (t.includes('mission')) return "https://images.unsplash.com/photo-1541873676-a18131494184?auto=format&fit=crop&q=80&w=600";
-        if (t.includes('satellite')) return "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&q=80&w=600";
-        if (t.includes('solar')) return "https://images.unsplash.com/photo-1614730341194-75c60740a2d3?auto=format&fit=crop&q=80&w=600";
-        return "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=600";
+        // High quality Unsplash images
+        if (t.includes('space missions')) return "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&q=80&w=800"; // Launch
+        if (t.includes('satellites')) return "https://images.unsplash.com/photo-1541188495357-ad2db385d439?auto=format&fit=crop&q=80&w=800"; // Satellite
+        if (t.includes('cosmic events')) return "https://images.unsplash.com/photo-1531306728370-e2ebd9d7bb99?auto=format&fit=crop&q=80&w=800"; // Aurora
+        if (t.includes('solar system')) return "https://images.unsplash.com/photo-1614730341194-75c60740a2d3?auto=format&fit=crop&q=80&w=800"; // Planets
+        if (t.includes('exoplanets')) return "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&q=80&w=800"; // Deep Space
+        if (t.includes('technology') || t.includes('engineering')) return "https://images.unsplash.com/photo-1517976487492-5750f3195933?auto=format&fit=crop&q=80&w=800"; // Tech
+
+        return "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800"; // General
     }
 
     const getDifficultyColor = (level) => {
@@ -131,15 +175,46 @@ const LearningPage = () => {
         }
     };
 
+    const topicCategories = [
+        "Space Missions",
+        "Satellites",
+        "Cosmic Events",
+        "Solar System",
+        "Exoplanets",
+        "Space Tech"
+    ];
+
     const FilterBar = () => (
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-            <div className="flex gap-3 overflow-x-auto pb-2 w-full md:w-auto">
-                {['All Topics', 'Space Missions', 'Satellites', 'Solar System', 'Easy', 'Medium', 'Hard'].map((filter) => (
+            <div className="flex gap-3 overflow-x-auto pb-2 w-full md:w-auto scrollbar-hide">
+                <button
+                    onClick={() => setActiveFilter('All Topics')}
+                    className={`px-5 py-2.5 rounded-full text-[13px] font-medium border whitespace-nowrap transition-all ${activeFilter === 'All Topics'
+                        ? 'bg-[#00d9ff]/15 border-[#00d9ff]/30 text-[#00d9ff]'
+                        : 'bg-[#0f1322]/60 border-white/10 text-[#94a3b8] hover:text-white'
+                        }`}
+                >
+                    All Topics
+                </button>
+                {topicCategories.map((filter) => (
                     <button
                         key={filter}
                         onClick={() => setActiveFilter(filter)}
                         className={`px-5 py-2.5 rounded-full text-[13px] font-medium border whitespace-nowrap transition-all ${activeFilter === filter
                             ? 'bg-[#00d9ff]/15 border-[#00d9ff]/30 text-[#00d9ff]'
+                            : 'bg-[#0f1322]/60 border-white/10 text-[#94a3b8] hover:text-white'
+                            }`}
+                    >
+                        {filter}
+                    </button>
+                ))}
+                <div className="h-6 w-px bg-white/10 mx-2 self-center" />
+                {['Easy', 'Medium', 'Hard'].map((filter) => (
+                    <button
+                        key={filter}
+                        onClick={() => setActiveFilter(filter)}
+                        className={`px-4 py-2.5 rounded-full text-[13px] font-medium border whitespace-nowrap transition-all ${activeFilter === filter
+                            ? 'bg-purple-500/20 border-purple-500/40 text-purple-400'
                             : 'bg-[#0f1322]/60 border-white/10 text-[#94a3b8] hover:text-white'
                             }`}
                     >
@@ -201,21 +276,47 @@ const LearningPage = () => {
     );
 
     const VideoCard = ({ video }) => (
-        <div className="group rounded-2xl overflow-hidden bg-black/30 backdrop-blur-md border border-white/5 hover:border-[#00d9ff]/30 transition-all hover:-translate-y-1">
-            <div className="relative aspect-video bg-black">
-                <div className="w-full h-full flex items-center justify-center bg-gray-900">
-                    <Video className="text-white/20" size={48} />
-                </div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-16 h-16 rounded-full bg-[#00d9ff]/20 border-2 border-[#00d9ff] flex items-center justify-center text-[#00d9ff] cursor-pointer">
+        <div
+            onClick={() => window.open(video.url, '_blank')}
+            className="group rounded-2xl overflow-hidden bg-black/30 backdrop-blur-md border border-white/5 hover:border-[#00d9ff]/30 transition-all hover:-translate-y-1 cursor-pointer flex flex-col h-full"
+        >
+            <div className="relative aspect-video bg-black overflow-hidden">
+                {video.thumbnail ? (
+                    <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100" />
+                ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gray-900">
+                        <Video className="text-white/20" size={48} />
+                    </div>
+                )}
+
+                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all flex items-center justify-center">
+                    <div className="w-14 h-14 rounded-full bg-[#00d9ff]/20 border border-[#00d9ff]/50 flex items-center justify-center text-[#00d9ff] shadow-[0_0_20px_rgba(0,217,255,0.3)] group-hover:scale-110 transition-transform">
                         <Play size={24} fill="currentColor" />
                     </div>
                 </div>
-                <div className="absolute bottom-2 right-2 bg-black/80 px-2 py-0.5 rounded text-[10px] font-bold text-white">{video.duration}</div>
+
+                <div className="absolute top-3 left-3 px-2 py-0.5 rounded bg-black/60 border border-white/10 text-[10px] font-bold text-[#00d9ff] uppercase backdrop-blur-sm">
+                    {video.category}
+                </div>
             </div>
-            <div className="p-4">
-                <h3 className="font-bold text-base text-white mb-2 line-clamp-2">{video.title}</h3>
-                <span className="text-xs text-[#94a3b8]">{video.channel}</span>
+
+            <div className="p-5 flex flex-col flex-grow">
+                <h3 className="font-bold text-base text-white mb-3 line-clamp-2 leading-tight group-hover:text-[#00d9ff] transition-colors">{video.title}</h3>
+
+                <div className="mt-auto space-y-2">
+                    {video.date && (
+                        <div className="flex items-start gap-2 text-[11px] text-slate-400">
+                            <Calendar size={12} className="mt-0.5" />
+                            <span className="line-clamp-1">{video.date}</span>
+                        </div>
+                    )}
+                    {video.location && video.location !== "N/A" && video.location !== "Not specified" && (
+                        <div className="flex items-start gap-2 text-[11px] text-slate-400">
+                            <MapPin size={12} className="mt-0.5" />
+                            <span className="line-clamp-1">{video.location}</span>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );

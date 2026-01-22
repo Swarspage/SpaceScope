@@ -334,92 +334,151 @@ const MissionTimelines = () => {
                         )}
                     </div>
 
-                    {/* === SLIDE-OVER DETAILS PANEL === */}
-                    <div className={`
-                        absolute top-0 right-0 h-full w-[450px] bg-black/60 backdrop-blur-xl border-l border-white/10 shadow-2xl z-30
-                        transform transition-transform duration-300 ease-in-out
-                        ${selectedMission ? 'translate-x-0' : 'translate-x-full'}
-                    `}>
-                        {selectedMission && (
-                            <div className="flex flex-col h-full">
-                                {/* Header */}
-                                <div className="h-16 flex items-center justify-between px-6 border-b border-white/5 bg-transparent">
-                                    <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">
-                                        Classified Briefing
-                                    </span>
-                                    <button
-                                        onClick={() => setSelectedMission(null)}
-                                        className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
-                                    >
-                                        <MdClose className="text-xl" />
-                                    </button>
-                                </div>
+                    {/* === MISSION DETAIL MODAL (Replaces Side Panel) === */}
+                    {selectedMission && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+                            <div
+                                className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-[#050714] rounded-3xl border border-white/10 shadow-[0_0_50px_rgba(0,217,255,0.1)] flex flex-col md:flex-row overflow-hidden"
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                {/* Close Button */}
+                                <button
+                                    onClick={() => setSelectedMission(null)}
+                                    className="absolute top-4 right-4 z-50 w-10 h-10 rounded-full bg-black/50 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-all hover:rotate-90"
+                                >
+                                    <MdClose className="text-xl" />
+                                </button>
 
-                                {/* Content */}
-                                <div className="flex-1 overflow-y-auto p-6">
-                                    {/* Big Image/Icon */}
-                                    <div className="flex justify-center mb-8 relative">
-                                        <div className={`absolute inset-0 blur-[60px] opacity-20 rounded-full ${selectedMission.provider === 'SPACEX' ? 'bg-blue-500' : selectedMission.provider === 'NASA' ? 'bg-red-500' : 'bg-orange-500'}`}></div>
-                                        <div className="w-48 h-48 relative z-10 drop-shadow-2xl">
-                                            {selectedMission.image ? (
-                                                <img src={selectedMission.image} alt="Mission" className="w-full h-full object-contain" />
-                                            ) : (
-                                                <div className="w-full h-full bg-[#1a2036] rounded-full flex items-center justify-center border-4 border-[#0f1322]">
-                                                    {getProviderStyle(selectedMission.provider).icon}
-                                                </div>
-                                            )}
-                                        </div>
+                                {/* LEFT: Visual & Timer */}
+                                <div className="w-full md:w-2/5 relative bg-black/30 flex flex-col items-center justify-center p-8 border-b md:border-b-0 md:border-r border-white/10">
+                                    {/* Background Glow */}
+                                    <div className={`absolute inset-0 opacity-20 blur-[80px] ${selectedMission.provider === 'SPACEX' ? 'bg-blue-600' : selectedMission.provider === 'NASA' ? 'bg-red-600' : 'bg-orange-600'}`}></div>
+
+                                    {/* Mission Patch / Icon */}
+                                    <div className="relative z-10 w-48 h-48 mb-8 drop-shadow-2xl hover:scale-105 transition-transform duration-500">
+                                        {selectedMission.image ? (
+                                            <img src={selectedMission.image} alt="Mission Patch" className="w-full h-full object-contain" />
+                                        ) : (
+                                            <div className="w-full h-full bg-[#1a2036] rounded-full flex items-center justify-center border-4 border-[#0f1322]">
+                                                {getProviderStyle(selectedMission.provider).icon}
+                                            </div>
+                                        )}
                                     </div>
 
-                                    <div className="text-center mb-6">
-                                        <h2 className="text-3xl font-black text-white leading-tight mb-2">{selectedMission.name}</h2>
-                                        <div className="flex items-center justify-center gap-2">
-                                            <span className={`text-sm font-bold ${getProviderStyle(selectedMission.provider).color}`}>
+                                    {/* Countdown Timer */}
+                                    <CountdownTimer targetDate={selectedMission.date} />
+                                </div>
+
+                                {/* RIGHT: Details & Telemetry */}
+                                <div className="w-full md:w-3/5 p-8 bg-[#050714]/80 backdrop-blur-xl flex flex-col">
+
+                                    {/* Header */}
+                                    <div className="mb-6">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${getProviderStyle(selectedMission.provider).color} ${getProviderStyle(selectedMission.provider).bg} ${getProviderStyle(selectedMission.provider).border}`}>
                                                 {selectedMission.provider}
                                             </span>
-                                            <span className="text-slate-600">•</span>
                                             <StatusBadge status={selectedMission.status} />
+                                        </div>
+                                        <h2 className="text-4xl font-black text-white leading-none tracking-tight mb-2 uppercase">{selectedMission.name}</h2>
+                                        <div className="flex items-center gap-2 text-xs font-mono text-slate-500">
+                                            <span className="text-[#00d9ff]">ID:</span> {selectedMission.id}
                                         </div>
                                     </div>
 
                                     {/* Data Grid */}
-                                    <div className="grid grid-cols-2 gap-3 mb-6">
-                                        <div className="bg-black/30 backdrop-blur-md p-3 rounded-lg border border-white/5">
-                                            <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">Launch Date</div>
+                                    <div className="grid grid-cols-2 gap-4 mb-6">
+                                        <div className="bg-white/5 border border-white/5 p-4 rounded-xl">
+                                            <div className="text-[10px] text-slate-500 uppercase font-bold mb-1 flex items-center gap-1"><MdAccessTime /> Launch Window</div>
                                             <div className="text-sm text-white font-mono">
-                                                {selectedMission.date?.toLocaleString() || "TBD"}
+                                                {selectedMission.date?.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }) || "TBD"}
                                             </div>
                                         </div>
-                                        <div className="bg-black/30 backdrop-blur-md p-3 rounded-lg border border-white/5">
-                                            <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">Location</div>
-                                            <div className="text-sm text-white truncate" title={selectedMission.location}>
-                                                {selectedMission.location || "Classified"}
+                                        <div className="bg-white/5 border border-white/5 p-4 rounded-xl">
+                                            <div className="text-[10px] text-slate-500 uppercase font-bold mb-1 flex items-center gap-1"><MdLocationOn /> Launch Site</div>
+                                            <div className="text-sm text-white font-mono truncate" title={selectedMission.location}>
+                                                {selectedMission.location || "Classified Site"}
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div className="bg-black/30 backdrop-blur-md border border-white/5 rounded-xl p-5 relative overflow-hidden">
-                                        <div className="absolute top-0 left-0 w-1 h-full bg-[#00d9ff]"></div>
-                                        <h4 className="text-sm font-bold text-white mb-2 flex items-center gap-2">
-                                            <MdOutlineInfo className="text-[#00d9ff]" /> Mission Details
-                                        </h4>
-                                        <p className="text-sm text-slate-400 leading-relaxed font-light">
+                                    {/* Description */}
+                                    <div className="flex-1 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-white/10">
+                                        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 border-b border-white/10 pb-2">Mission Briefing</h3>
+                                        <p className="text-sm text-slate-300 leading-7 font-light">
                                             {selectedMission.description}
                                         </p>
                                     </div>
 
-                                    {/* Raw Data Peek (Technical aesthetic) */}
-                                    <div className="mt-6 opacity-30 hover:opacity-100 transition-opacity">
-                                        <h5 className="text-[10px] text-slate-500 uppercase font-bold mb-1">Raw Telemetry ID</h5>
-                                        <div className="font-mono text-[10px] text-[#00d9ff] break-all">
-                                            {selectedMission.id}
-                                        </div>
+                                    {/* Footer Action */}
+                                    <div className="mt-6 pt-4 border-t border-white/5 flex justify-end">
+                                        <button className="px-6 py-2 bg-[#00d9ff]/10 hover:bg-[#00d9ff]/20 text-[#00d9ff] text-xs font-bold rounded-lg border border-[#00d9ff]/30 uppercase tracking-widest transition-all">
+                                            Download Telemetry
+                                        </button>
                                     </div>
+
                                 </div>
                             </div>
-                        )}
-                    </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
 
+// === COMPONENT: Countdown Timer ===
+const CountdownTimer = ({ targetDate }) => {
+    const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0, isPast: false });
+
+    useEffect(() => {
+        if (!targetDate) return;
+
+        const calculate = () => {
+            const now = new Date().getTime();
+            const target = new Date(targetDate).getTime();
+            let diff = target - now;
+            const isPast = diff < 0;
+
+            if (isPast) diff = Math.abs(diff);
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            setTimeLeft({ days, hours, minutes, seconds, isPast });
+        };
+
+        calculate();
+        const timer = setInterval(calculate, 1000);
+        return () => clearInterval(timer);
+    }, [targetDate]);
+
+    return (
+        <div className="flex flex-col items-center">
+            <div className={`text-[10px] font-bold uppercase tracking-[0.2em] mb-2 ${timeLeft.isPast ? 'text-[#00ff88]' : 'text-[#00d9ff]'}`}>
+                {timeLeft.isPast ? 'MISSION ELAPSED TIME (T+)' : 'T-MINUS COUNTDOWN'}
+            </div>
+            <div className="flex items-center gap-3 font-mono text-white">
+                <div className="text-center">
+                    <div className="text-2xl md:text-3xl font-bold leading-none">{String(timeLeft.days).padStart(2, '0')}</div>
+                    <div className="text-[9px] text-slate-500 uppercase mt-1">Days</div>
+                </div>
+                <div className="text-2xl text-slate-600">:</div>
+                <div className="text-center">
+                    <div className="text-2xl md:text-3xl font-bold leading-none">{String(timeLeft.hours).padStart(2, '0')}</div>
+                    <div className="text-[9px] text-slate-500 uppercase mt-1">Hrs</div>
+                </div>
+                <div className="text-2xl text-slate-600">:</div>
+                <div className="text-center">
+                    <div className="text-2xl md:text-3xl font-bold leading-none">{String(timeLeft.minutes).padStart(2, '0')}</div>
+                    <div className="text-[9px] text-slate-500 uppercase mt-1">Mins</div>
+                </div>
+                <div className="text-2xl text-slate-600">:</div>
+                <div className="text-center">
+                    <div className="text-2xl md:text-3xl font-bold leading-none text-[#00d9ff]">{String(timeLeft.seconds).padStart(2, '0')}</div>
+                    <div className="text-[9px] text-slate-500 uppercase mt-1">Secs</div>
                 </div>
             </div>
         </div>
