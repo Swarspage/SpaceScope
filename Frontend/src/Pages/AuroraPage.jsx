@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
     MapContainer,
     TileLayer,
@@ -9,22 +10,18 @@ import "leaflet/dist/leaflet.css";
 import {
     FiRefreshCw,
     FiLayers,
-    FiMaximize2,
-    FiMinus,
-    FiPlus,
     FiActivity,
     FiClock,
     FiMap,
-    FiAlertTriangle
+    FiAlertTriangle,
+    FiPlus,
+    FiMinus
 } from "react-icons/fi";
+import { MdChevronLeft } from "react-icons/md";
 import { getAuroraData } from "../services/api";
 
-/**
- * Singularity Utility: Color Mapping
- */
 const intensityToColor = (v) => {
     if (v <= 0) return "transparent";
-    // Singularity Thermal Gradient
     if (v <= 1) return "#00d9ff"; // Cyan (Low)
     if (v <= 3) return "#00ff88"; // Green
     if (v <= 6) return "#facc15"; // Yellow
@@ -32,9 +29,7 @@ const intensityToColor = (v) => {
     return "#ff3366";             // Red/Pink (Extreme)
 };
 
-const intensityToRadius = (v) => {
-    return Math.max(2, Math.min(25, Math.sqrt(v) * 4));
-};
+const intensityToRadius = (v) => Math.max(2, Math.min(25, Math.sqrt(v) * 4));
 
 const estimateKpFromIntensity = (maxIntensity) => {
     const maxPossible = 14;
@@ -42,55 +37,21 @@ const estimateKpFromIntensity = (maxIntensity) => {
     return Math.max(0, Math.min(9, kp));
 };
 
-const timeAgo = (iso) => {
-    if (!iso) return "Scanning...";
-    try {
-        const t = new Date(iso);
-        const diff = Math.floor((Date.now() - t.getTime()) / 1000);
-        if (diff < 60) return `${diff}s ago`;
-        if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-        return `${Math.floor(diff / 3600)}h ago`;
-    } catch {
-        return "Unknown";
-    }
-};
-
-// --- Sub-components for UI Cleanliness ---
-
-const StatCard = ({ label, value, subtext, icon: Icon, alertLevel = "normal" }) => {
-    const borderClass = alertLevel === "high" ? "border-error/50 shadow-[0_0_15px_rgba(255,51,102,0.2)]" : "border-white/5 hover:border-primary/30";
-    const textClass = alertLevel === "high" ? "text-error" : "text-white";
-
-    return (
-        <div className={`bg-black/20 backdrop-blur-md border ${borderClass} rounded-xl p-5 transition-all duration-300 group`}>
-            <div className="flex justify-between items-start mb-2">
-                <span className="text-secondary text-xs uppercase tracking-widest font-bold">{label}</span>
-                {Icon && <Icon className={`w-4 h-4 ${alertLevel === "high" ? "text-error" : "text-primary/70 group-hover:text-primary"} transition-colors`} />}
-            </div>
-            <div className={`font-display text-2xl font-bold ${textClass} tracking-wide`}>
-                {value}
-            </div>
-            {subtext && <div className="text-muted text-xs font-mono mt-1">{subtext}</div>}
+const StatCardOverlay = ({ label, value, subtext, icon: Icon, alertLevel = "normal" }) => (
+    <div className={`bg-black/60 backdrop-blur-md border ${alertLevel === "high" ? "border-red-500/50" : "border-white/10"} rounded-xl p-4 min-w-[160px]`}>
+        <div className="flex items-center gap-2 mb-1">
+            {Icon && <Icon className={`w-3 h-3 ${alertLevel === "high" ? "text-red-500" : "text-[#00d9ff]"}`} />}
+            <span className="text-[10px] uppercase font-bold text-slate-400">{label}</span>
         </div>
-    );
-};
-
-const MapControlBtn = ({ onClick, icon: Icon, label, active }) => (
-    <button
-        onClick={onClick}
-        className={`w-10 h-10 flex items-center justify-center rounded-lg border backdrop-blur-md transition-all duration-200
-      ${active
-                ? "bg-primary/20 border-primary text-primary shadow-glow"
-                : "bg-panel-dark/80 border-white/10 text-secondary hover:text-white hover:border-white/30"
-            }`}
-        title={label}
-    >
-        <Icon className="w-5 h-5" />
-    </button>
+        <div className={`font-mono text-xl font-bold ${alertLevel === "high" ? "text-red-400" : "text-white"}`}>
+            {value}
+        </div>
+        {subtext && <div className="text-[10px] text-slate-500 mt-1">{subtext}</div>}
+    </div>
 );
 
 const AuroraPage = () => {
-    // State
+    const navigate = useNavigate();
     const [coords, setCoords] = useState([]);
     const [loading, setLoading] = useState(true);
     const [dataFetching, setDataFetching] = useState(false);
@@ -100,168 +61,110 @@ const AuroraPage = () => {
     const [mapInstance, setMapInstance] = useState(null);
 
     // UI State
-    const [isFullscreen, setIsFullscreen] = useState(false);
     const [showAurora, setShowAurora] = useState(true);
     const [showCityLights, setShowCityLights] = useState(true);
     const [autoRefresh, setAutoRefresh] = useState(true);
-    const [lastUpdatedAt, setLastUpdatedAt] = useState(null);
+    const [cooldown, setCooldown] = useState(0);
 
-    // Fetch Logic
+    const fetchData = React.useCallback(async (isAuto = false, force = false) => {
+        if (!isAuto) setLoading(true);
+        else setDataFetching(true);
+        setError(null);
+        try {
+            const resp = await getAuroraData(force);
+            const data = resp.data || resp;
+            setObsTime(data["Observation Time"] || null);
+            setForecastTime(data["Forecast Time"] || null);
+
+            if (data && Array.isArray(data.coordinates)) {
+                const points = data.coordinates
+                    .map((c) => {
+                        if (!Array.isArray(c) || c.length < 3) return null;
+                        const [lon, lat, intensity] = c;
+                        return { lat: Number(lat), lon: Number(lon), intensity: Number(intensity) };
+                    })
+                    .filter(p => p && Number.isFinite(p.lat));
+                setCoords(points);
+            }
+        } catch (err) {
+            setError("Telemetry Uplink Failed");
+        } finally {
+            setLoading(false);
+            setDataFetching(false);
+        }
+    }, []);
+
     useEffect(() => {
         let mounted = true;
         let pollingId = null;
-
-        const fetchData = async (isAuto = false) => {
-            if (!isAuto) setLoading(true);
-            else setDataFetching(true);
-
-            setError(null);
-            try {
-                const resp = await getAuroraData();
-                const data = resp.data || resp;
-                if (!mounted) return;
-
-                setObsTime(data["Observation Time"] || null);
-                setForecastTime(data["Forecast Time"] || null);
-                setLastUpdatedAt(new Date().toISOString());
-
-                if (data && Array.isArray(data.coordinates)) {
-                    const points = data.coordinates
-                        .map((c) => {
-                            if (!Array.isArray(c) || c.length < 3) return null;
-                            const [lon, lat, intensity] = c;
-                            return { lat: Number(lat), lon: Number(lon), intensity: Number(intensity) };
-                        })
-                        .filter(p => p && Number.isFinite(p.lat)); // filter nulls
-                    setCoords(points);
-                }
-            } catch (err) {
-                setError("Telemetry Uplink Failed");
-            } finally {
-                setLoading(false);
-                setDataFetching(false);
-            }
-        };
-
         fetchData(false);
+        if (autoRefresh) pollingId = setInterval(() => fetchData(true), 60000);
+        return () => { mounted = false; if (pollingId) clearInterval(pollingId); };
+    }, [autoRefresh, fetchData]);
 
-        if (autoRefresh) {
-            pollingId = setInterval(() => fetchData(true), 60000);
+    // Refresh Cooldown Logic
+    useEffect(() => {
+        if (cooldown > 0) {
+            const timer = setInterval(() => setCooldown(p => Math.max(0, p - 1)), 1000);
+            return () => clearInterval(timer);
         }
+    }, [cooldown]);
 
-        return () => {
-            mounted = false;
-            if (pollingId) clearInterval(pollingId);
-        };
-    }, [autoRefresh]);
-
-    // Computed
-    const maxIntensity = useMemo(() => coords.reduce((mx, p) => Math.max(mx, p.intensity || 0), 0), [coords]);
-    const kp = useMemo(() => estimateKpFromIntensity(maxIntensity), [maxIntensity]);
-    const center = useMemo(() => (!coords.length ? [50, 0] : [coords[0].lat, coords[0].lon]), [coords]);
-
-    // Tile Layers
-    const tiles = {
-        base: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-        lights: "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}.png"
+    const handleForceRefresh = async () => {
+        if (cooldown > 0) return;
+        await fetchData(false, true);
+        setCooldown(600); // 10 min
     };
 
-    return (
-        <div className={`min-h-screen bg-transparent text-white font-sans selection:bg-primary/30 ${isFullscreen ? 'p-0' : 'p-4 lg:p-8'}`}>
+    const maxIntensity = useMemo(() => coords.reduce((mx, p) => Math.max(mx, p.intensity || 0), 0), [coords]);
+    const kp = useMemo(() => estimateKpFromIntensity(maxIntensity), [maxIntensity]);
 
-            {/* --- Header Section --- */}
-            {!isFullscreen && (
-                <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+    return (
+        <div className="flex flex-col h-screen bg-[#050714] text-slate-300 font-sans overflow-hidden relative">
+
+            {/* Header */}
+            <header className="h-20 flex items-center justify-between px-8 border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 z-50">
+                <div className="flex items-center gap-4">
+                    <button
+                        onClick={() => navigate('/dashboard')}
+                        className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-[#00d9ff]/30 text-slate-400 hover:text-[#00d9ff] transition-all"
+                    >
+                        <MdChevronLeft className="text-2xl" />
+                    </button>
                     <div>
-                        <div className="flex items-center gap-3 mb-1">
-                            <h1 className="text-h1 md:text-mega font-display tracking-tight text-white">
-                                Aurora <span className="text-transparent bg-clip-text bg-btn-gradient">Forecast</span>
-                            </h1>
-                            <span className={`px-2 py-0.5 rounded text-[10px] font-mono tracking-widest uppercase border ${dataFetching ? 'border-primary text-primary animate-pulse' : 'border-secondary text-secondary'}`}>
-                                {dataFetching ? 'SYNCING' : 'LIVE FEED'}
-                            </span>
-                        </div>
-                        <p className="text-secondary text-sm max-w-lg">
-                            Real-time magnetospheric particle precipitation visualization sourced via NOAA deep space satellites.
+                        <h1 className="text-2xl font-bold text-white tracking-wide flex items-center gap-2">
+                            <FiActivity className="text-[#00d9ff] text-2xl" />
+                            AURORA <span className="text-slate-500">FORECAST</span>
+                        </h1>
+                        <p className="text-xs text-[#00d9ff] font-mono tracking-widest uppercase">
+                            Magnetospheric Particle Map // NOAA Feed
                         </p>
                     </div>
-
-                    {/* Top Controls */}
-                    <div className="flex items-center gap-3">
-                        <button
-                            onClick={() => setAutoRefresh(!autoRefresh)}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold tracking-wide transition-all border
-                        ${autoRefresh ? 'bg-primary/10 border-primary text-primary' : 'bg-input-bg border-white/10 text-muted hover:text-white'}
-                      `}
-                        >
-                            <FiRefreshCw className={autoRefresh && dataFetching ? "animate-spin" : ""} />
-                            {autoRefresh ? "AUTO-SYNC ON" : "MANUAL"}
-                        </button>
-                    </div>
-                </header>
-            )}
-
-            {/* --- Extreme Alert Banner --- */}
-            {kp >= 7 && (
-                <div className="mb-6 w-full rounded-lg bg-alert-danger-bg border border-alert-danger-border p-4 flex items-center gap-4 animate-slideUp">
-                    <FiAlertTriangle className="text-error w-6 h-6 animate-pulse" />
-                    <div>
-                        <h3 className="text-error font-display font-bold uppercase tracking-wider">Geomagnetic Storm Warning</h3>
-                        <p className="text-xs text-white/80">Kp Index {kp} indicates potential high-latitude visibility.</p>
-                    </div>
-                </div>
-            )}
-
-            {/* --- Main Viewport (Map) --- */}
-            <main className={`relative group rounded-2xl overflow-hidden border border-white/10 shadow-glass bg-[#050714]/80 transition-all duration-500
-              ${isFullscreen ? 'fixed inset-0 z-50 rounded-none border-none h-screen' : 'h-[60vh] w-full'}`
-            }>
-
-                {/* Map Overlay Controls (Floating) */}
-                <div className="absolute top-6 right-6 z-[1000] flex flex-col gap-3">
-                    <MapControlBtn
-                        icon={FiPlus}
-                        label="Zoom In"
-                        onClick={() => mapInstance?.zoomIn()}
-                    />
-                    <MapControlBtn
-                        icon={FiMinus}
-                        label="Zoom Out"
-                        onClick={() => mapInstance?.zoomOut()}
-                    />
-                    <div className="h-4"></div> {/* Spacer */}
-                    <MapControlBtn
-                        icon={FiLayers}
-                        label="Toggle City Lights"
-                        active={showCityLights}
-                        onClick={() => setShowCityLights(!showCityLights)}
-                    />
-                    <MapControlBtn
-                        icon={FiActivity}
-                        label="Toggle Aurora Layer"
-                        active={showAurora}
-                        onClick={() => setShowAurora(!showAurora)}
-                    />
-                    <div className="h-4"></div>
-                    <MapControlBtn
-                        icon={FiMaximize2}
-                        label="Fullscreen"
-                        active={isFullscreen}
-                        onClick={() => setIsFullscreen(!isFullscreen)}
-                    />
                 </div>
 
-                {/* Loading State Overlay */}
-                {loading && (
-                    <div className="absolute inset-0 z-[1001] bg-background-dark/80 backdrop-blur-sm flex items-center justify-center">
-                        <div className="flex flex-col items-center gap-4">
-                            <div className="w-16 h-16 border-4 border-white/5 border-t-primary rounded-full animate-spin"></div>
-                            <span className="text-primary font-mono text-xs tracking-widest animate-pulse">ESTABLISHING UPLINK...</span>
-                        </div>
-                    </div>
-                )}
+                <div className="flex gap-3">
+                    <button
+                        onClick={() => setAutoRefresh(!autoRefresh)}
+                        className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider border transition-all flex items-center gap-2 ${autoRefresh ? 'bg-[#00d9ff]/10 border-[#00d9ff]/30 text-[#00d9ff]' : 'bg-black/40 border-white/10 text-slate-400'
+                            }`}
+                    >
+                        <FiRefreshCw className={dataFetching ? "animate-spin" : ""} />
+                        {autoRefresh ? "Auto-Sync" : "Manual"}
+                    </button>
 
-                {/* Leaflet Map */}
+                    <button
+                        onClick={handleForceRefresh}
+                        disabled={cooldown > 0}
+                        className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider border transition-all flex items-center gap-2 ${cooldown > 0 ? 'opacity-50 cursor-not-allowed border-white/5' : 'bg-white/5 border-white/20 hover:bg-white/10'
+                            }`}
+                    >
+                        {cooldown > 0 ? `Wait ${Math.floor(cooldown / 60)}:${(cooldown % 60).toString().padStart(2, '0')}` : "Force Refresh"}
+                    </button>
+                </div>
+            </header>
+
+            {/* Main Content (Fullscreen Map) */}
+            <div className="flex-1 relative bg-[#0a0e17]">
                 <MapContainer
                     center={[60, 0]}
                     zoom={2}
@@ -271,31 +174,30 @@ const AuroraPage = () => {
                     whenCreated={setMapInstance}
                 >
                     <TileLayer
-                        attribution='&copy; OpenStreetMap, CartoDB'
-                        url={showCityLights ? tiles.lights : tiles.base}
+                        attribution='&copy; OpenStreetMap'
+                        url={showCityLights
+                            ? "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}.png"
+                            : "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                        }
                     />
-
                     {showAurora && coords.map((p, idx) => {
                         if (p.intensity <= 0) return null;
-                        const color = intensityToColor(p.intensity);
-                        // Optimization: Only render significant points if array is massive
                         return (
                             <CircleMarker
                                 key={`${p.lat}-${p.lon}-${idx}`}
                                 center={[p.lat, p.lon]}
                                 radius={intensityToRadius(p.intensity)}
                                 pathOptions={{
-                                    color: color,
-                                    fillColor: color,
+                                    color: intensityToColor(p.intensity),
+                                    fillColor: intensityToColor(p.intensity),
                                     fillOpacity: 0.6,
                                     weight: 0,
-                                    className: "animate-pulseGlow" // Custom CSS class for subtle throb
+                                    className: "animate-pulse"
                                 }}
                             >
-                                <Tooltip direction="top" className="custom-leaflet-tooltip">
-                                    <div className="bg-panel-dark border border-white/10 p-2 rounded text-xs font-mono text-white">
-                                        <div className="text-primary font-bold">INTENSITY: {p.intensity.toFixed(1)}</div>
-                                        <div className="text-muted">[{p.lat.toFixed(1)}, {p.lon.toFixed(1)}]</div>
+                                <Tooltip direction="top">
+                                    <div className="text-xs font-mono">
+                                        Intensity: {p.intensity.toFixed(1)}
                                     </div>
                                 </Tooltip>
                             </CircleMarker>
@@ -303,76 +205,60 @@ const AuroraPage = () => {
                     })}
                 </MapContainer>
 
-                {/* Bottom Left: Data Timestamp Overlay */}
-                <div className="absolute bottom-6 left-6 z-[1000] pointer-events-none">
-                    <div className="bg-panel-dark/80 backdrop-blur border border-white/10 px-4 py-2 rounded-lg flex items-center gap-3">
-                        <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
-                        <div className="font-mono text-xs text-white">
-                            DATA AGE: <span className="text-primary">{timeAgo(lastUpdatedAt)}</span>
+                {/* Map Controls (Top Right) */}
+                <div className="absolute top-6 right-6 z-[1000] flex flex-col gap-2">
+                    <button onClick={() => mapInstance?.zoomIn()} className="w-10 h-10 bg-black/60 backdrop-blur border border-white/10 rounded-lg flex items-center justify-center hover:bg-white/10 text-white"><FiPlus /></button>
+                    <button onClick={() => mapInstance?.zoomOut()} className="w-10 h-10 bg-black/60 backdrop-blur border border-white/10 rounded-lg flex items-center justify-center hover:bg-white/10 text-white"><FiMinus /></button>
+                    <div className="h-2"></div>
+                    <button onClick={() => setShowCityLights(!showCityLights)} className={`w-10 h-10 backdrop-blur border rounded-lg flex items-center justify-center transition-all ${showCityLights ? 'bg-[#00d9ff]/20 border-[#00d9ff] text-[#00d9ff]' : 'bg-black/60 border-white/10 text-slate-400'}`}><FiLayers /></button>
+                </div>
+
+                {/* KPI Alert (Top Left Overlay) */}
+                {kp >= 5 && (
+                    <div className="absolute top-6 left-6 z-[1000] bg-red-500/10 border border-red-500/50 backdrop-blur-md px-4 py-3 rounded-xl flex items-center gap-3 animate-pulse">
+                        <FiAlertTriangle className="text-red-500 text-xl" />
+                        <div>
+                            <div className="text-red-400 font-bold uppercase text-xs tracking-wider">Geomagnetic Storm</div>
+                            <div className="text-white text-xs">Kp Index {kp} - High Visibility</div>
                         </div>
                     </div>
+                )}
+
+                {/* Stats HUD (Bottom Overlay) */}
+                <div className="absolute bottom-6 left-6 right-6 z-[1000] flex flex-wrap gap-4 items-end pointer-events-none">
+                    <div className="pointer-events-auto flex gap-4">
+                        <StatCardOverlay
+                            label="Planetary K-Index"
+                            value={kp}
+                            subtext={kp < 4 ? "Low Activity" : "Storm Watch"}
+                            icon={FiActivity}
+                            alertLevel={kp >= 5 ? "high" : "normal"}
+                        />
+                        <StatCardOverlay
+                            label="Max Intensity"
+                            value={`${maxIntensity.toFixed(1)} GW`}
+                            subtext="Hemispheric Power"
+                            icon={FiMap}
+                        />
+                        <StatCardOverlay
+                            label="Forecast Time"
+                            value={forecastTime ? new Date(forecastTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "--:--"}
+                            subtext="Updated just now"
+                            icon={FiClock}
+                        />
+                    </div>
                 </div>
-            </main>
 
-            {/* --- Data Dashboard Grid (Below Map) --- */}
-            {!isFullscreen && (
-                <section className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {/* KP Index Card */}
-                    <StatCard
-                        label="Planetary K-Index"
-                        value={kp}
-                        subtext={kp < 4 ? "Low Activity" : kp < 7 ? "Moderate Storm" : "Extreme Storm"}
-                        icon={FiActivity}
-                        alertLevel={kp >= 5 ? "high" : "normal"}
-                    />
-
-                    {/* Intensity Card */}
-                    <StatCard
-                        label="Max Intensity"
-                        value={maxIntensity.toFixed(1) + " GW"}
-                        subtext="Hemispheric Power"
-                        icon={FiMap}
-                    />
-
-                    {/* Forecast Time */}
-                    <StatCard
-                        label="Forecast Window"
-                        value={forecastTime ? new Date(forecastTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "--:--"}
-                        subtext={new Date().toLocaleDateString()}
-                        icon={FiClock}
-                    />
-
-                    {/* Action Panel */}
-                    <div className="bg-panel-dark/40 border border-white/5 rounded-xl p-5 flex flex-col justify-between">
-                        <span className="text-secondary text-xs uppercase tracking-widest font-bold mb-2">System Controls</span>
-                        <div className="flex gap-2 mt-auto">
-                            <button
-                                onClick={() => {
-                                    setLoading(true);
-                                    setTimeout(() => setLoading(false), 800); // Simulate re-calibrating
-                                }}
-                                className="flex-1 bg-btn-gradient text-background-dark font-bold py-2 rounded-lg text-sm hover:shadow-glow transition-all"
-                            >
-                                Calibrate
-                            </button>
-                            <button
-                                className="px-4 py-2 border border-white/10 rounded-lg text-white hover:bg-white/5 transition-colors text-sm"
-                                onClick={() => window.open("https://www.swpc.noaa.gov/", "_blank")}
-                            >
-                                Source
-                            </button>
+                {/* Loading Overlay */}
+                {loading && (
+                    <div className="absolute inset-0 z-[1001] bg-[#050714]/80 backdrop-blur-sm flex items-center justify-center">
+                        <div className="flex flex-col items-center gap-4">
+                            <div className="w-12 h-12 border-2 border-[#00d9ff] border-t-transparent rounded-full animate-spin"></div>
+                            <span className="text-[#00d9ff] font-mono text-xs tracking-widest animate-pulse">ESTABLISHING UPLINK...</span>
                         </div>
                     </div>
-                </section>
-            )}
-
-            {/* Error Toast */}
-            {error && (
-                <div className="fixed bottom-8 right-8 bg-panel-dark border border-error text-error px-6 py-4 rounded-xl shadow-lg animate-slideUp z-50 flex items-center gap-3">
-                    <div className="w-2 h-2 bg-error rounded-full animate-ping"></div>
-                    <span className="font-mono text-sm">{error}</span>
-                </div>
-            )}
+                )}
+            </div>
         </div>
     );
 };

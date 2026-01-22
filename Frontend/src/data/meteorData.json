@@ -1,0 +1,122 @@
+[
+    {
+        "id": "lyrids_2026",
+        "name": "Lyrids",
+        "peak_date_utc": "2026-04-22T04:00:00Z",
+        "zhr": 18,
+        "visibility_score": 85,
+        "geographic_visibility": {
+            "best_region": "Northern Hemisphere",
+            "notes": "Radiant (Lyra) rises high in the north."
+        },
+        "image_url": "https://images-assets.nasa.gov/image/GSFC_20171208_Archive_e000262/GSFC_20171208_Archive_e000262~orig.jpg",
+        "image_credit": "NASA/GSFC/D. Lennon",
+        "nasa_search_query": "https://images-api.nasa.gov/search?q=lyrids%20meteor",
+        "description": "Oldest recorded shower. Best seen from the Northern Hemisphere after midnight."
+    },
+    {
+        "id": "eta_aquariids_2026",
+        "name": "Eta Aquariids",
+        "peak_date_utc": "2026-05-06T03:00:00Z",
+        "zhr": 50,
+        "visibility_score": 30,
+        "geographic_visibility": {
+            "best_region": "Southern Hemisphere",
+            "notes": "Best shower of the year for the Southern Tropics."
+        },
+        "image_url": "https://images-assets.nasa.gov/image/PIA17046/PIA17046~orig.jpg",
+        "image_credit": "NASA/MSFC/B. Cooke",
+        "nasa_search_query": "https://images-api.nasa.gov/search?q=eta%20aquariids",
+        "description": "Debris from Halley's Comet. Strongest in the southern sky."
+    },
+    {
+        "id": "delta_aquariids_2026",
+        "name": "Southern Delta Aquariids",
+        "peak_date_utc": "2026-07-30T00:00:00Z",
+        "zhr": 25,
+        "visibility_score": 10,
+        "geographic_visibility": {
+            "best_region": "Southern Hemisphere & Tropics",
+            "notes": "Faint in northern latitudes."
+        },
+        "image_url": "https://images-assets.nasa.gov/image/PIA13259/PIA13259~orig.jpg",
+        "image_credit": "NASA/JPL",
+        "nasa_search_query": "https://images-api.nasa.gov/search?q=delta%20aquariids",
+        "description": "Faint meteors best seen from the south."
+    },
+    {
+        "id": "perseids_2026",
+        "name": "Perseids",
+        "peak_date_utc": "2026-08-12T14:00:00Z",
+        "zhr": 100,
+        "visibility_score": 100,
+        "geographic_visibility": {
+            "best_region": "Northern Hemisphere",
+            "notes": "The radiant (Perseus) never sets for most northern locations."
+        },
+        "image_url": "https://images-assets.nasa.gov/image/NHQ201908120002/NHQ201908120002~orig.jpg",
+        "image_credit": "NASA/Bill Ingalls",
+        "nasa_search_query": "https://images-api.nasa.gov/search?q=perseids",
+        "description": "The year's highlight. Dark skies (New Moon) make this unmissable."
+    },
+    {
+        "id": "orionids_2026",
+        "name": "Orionids",
+        "peak_date_utc": "2026-10-21T00:00:00Z",
+        "zhr": 20,
+        "visibility_score": 25,
+        "geographic_visibility": {
+            "best_region": "Global",
+            "notes": "Visible from almost everywhere."
+        },
+        "image_url": "https://images-assets.nasa.gov/image/PIA17601/PIA17601~orig.jpg",
+        "image_credit": "NASA/MSFC",
+        "nasa_search_query": "https://images-api.nasa.gov/search?q=orionids",
+        "description": "Fast meteors from Halley's Comet. Visible globally."
+    },
+    {
+        "id": "leonids_2026",
+        "name": "Leonids",
+        "peak_date_utc": "2026-11-17T12:00:00Z",
+        "zhr": 15,
+        "visibility_score": 60,
+        "geographic_visibility": {
+            "best_region": "Global",
+            "notes": "Radiant (Leo) rises after midnight."
+        },
+        "image_url": "https://images-assets.nasa.gov/image/PIA02600/PIA02600~orig.jpg",
+        "image_credit": "NASA/Ames",
+        "nasa_search_query": "https://images-api.nasa.gov/search?q=leonids%20meteor",
+        "description": "Famous for past storms, but currently quiet."
+    },
+    {
+        "id": "geminids_2026",
+        "name": "Geminids",
+        "peak_date_utc": "2026-12-14T10:00:00Z",
+        "zhr": 150,
+        "visibility_score": 80,
+        "geographic_visibility": {
+            "best_region": "Northern Hemisphere",
+            "notes": "Radiant is very high in the north."
+        },
+        "image_url": "https://images-assets.nasa.gov/image/NHQ201712130009/NHQ201712130009~orig.jpg",
+        "image_credit": "NASA/Bill Ingalls",
+        "nasa_search_query": "https://images-api.nasa.gov/search?q=geminids",
+        "description": "Reliable, bright, and colorful."
+    },
+    {
+        "id": "quadrantids_2027",
+        "name": "Quadrantids",
+        "peak_date_utc": "2027-01-03T18:00:00Z",
+        "zhr": 110,
+        "visibility_score": 90,
+        "geographic_visibility": {
+            "best_region": "Northern Hemisphere Only",
+            "notes": "Invisible to most of the Southern Hemisphere."
+        },
+        "image_url": "https://images-assets.nasa.gov/image/PIA13702/PIA13702~orig.jpg",
+        "image_credit": "NASA/JPL",
+        "nasa_search_query": "https://images-api.nasa.gov/search?q=quadrantids",
+        "description": "Intense but short peak."
+    }
+]

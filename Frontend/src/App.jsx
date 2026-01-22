@@ -34,6 +34,7 @@ import ProfilePage from "./Pages/ProfilePage";
 import AuroraPage from "./Pages/AuroraPage";
 import ISSTracker from "./Pages/ISSTracker";
 import MissionTimelines from "./Pages/MissionTimelines";
+import MeteorCalendar from "./Pages/MeteorCalender";
 import LearningPage from "./Pages/LearningPage";
 import HomePage from "./Pages/HomePage";
 import Applications from "./Pages/Applications";
@@ -103,6 +104,15 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <MissionTimelines />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/meteors"
+        element={
+          <ProtectedRoute>
+            <MeteorCalendar />
           </ProtectedRoute>
         }
       />

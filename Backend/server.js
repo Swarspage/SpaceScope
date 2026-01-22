@@ -73,14 +73,35 @@ setInterval(clearExpiredCache, 30 * 1000);
    ------------------------- */
 async function safeGet(url, opts = {}) {
   try {
-    const r = await axios.get(url, opts);
+    // Enforce 5s timeout unless specified
+    const config = { timeout: 5000, ...opts };
+    const r = await axios.get(url, config);
     return r.data;
   } catch (err) {
-    // return structured error so callers can handle
-    console.error(`GET ${url} failed:`, err?.message || err);
+    console.error(`GET ${url} failed:`, err?.message || err.code);
     throw err;
   }
 }
+
+/* -------------------------
+   Solar Flares Endpoint
+   ------------------------- */
+app.get("/api/solar-flares", async (req, res) => {
+  try {
+    const cacheKey = "noaa:solar-flares";
+    const cached = getCache(cacheKey);
+    if (cached) return res.json(cached);
+
+    // Fetch 6-hour X-ray flux (good for real-time dashboard)
+    const data = await safeGet("https://services.swpc.noaa.gov/json/goes/primary/xrays-6-hour.json");
+    setCache(cacheKey, data, 300); // 5 min cache
+    res.json(data);
+  } catch (e) {
+    // Return dummy/empty data on failure to prevent frontend crash
+    // Sending 2.4 flux (typical background)
+    res.json([{ time_tag: new Date().toISOString(), flux: 1e-7 }]);
+  }
+});
 
 /* -------------------------
    Existing basic endpoints
@@ -116,9 +137,38 @@ app.get("/api/iss-pass", async (req, res) => {
 
 app.get("/api/aurora", async (req, res) => {
   try {
+    const cacheKey = "noaa:aurora";
+    const force = req.query.force === "true";
+    const cached = getCache(cacheKey);
+
+    if (cached && !force) {
+      return res.json(cached);
+    }
+
     const data = await safeGet("https://services.swpc.noaa.gov/json/ovation_aurora_latest.json");
+
+    // Validate and Optimize Data
+    if (data && Array.isArray(data.coordinates)) {
+      // 1. Filter: Remove low intensity points (<= 2)
+      // This removes the "background noise" that isn't really visible anyway
+      let optimizedCoords = data.coordinates.filter(p => p[2] > 2);
+
+      // 2. Downsample: Ensure we don't send too many points (Target < 2000)
+      const MAX_POINTS = 2000;
+      if (optimizedCoords.length > MAX_POINTS) {
+        const step = Math.ceil(optimizedCoords.length / MAX_POINTS);
+        optimizedCoords = optimizedCoords.filter((_, i) => i % step === 0);
+      }
+
+      data.coordinates = optimizedCoords;
+
+      // Cache for 5 minutes (300 seconds)
+      setCache(cacheKey, data, 300);
+    }
+
     res.json(data);
   } catch (e) {
+    console.error("Aurora fetch error:", e?.message);
     res.status(500).json({ error: "Failed to get aurora data" });
   }
 });
@@ -393,10 +443,15 @@ app.get("/api/aggregate/launches", async (req, res) => {
 
     const [spacexData, isroData, nasaData] = await Promise.all([promises.spacex, promises.isro, promises.nasa]);
 
+    console.log(`[AGGREGATE] SpaceX: ${Array.isArray(spacexData) ? spacexData.length : 'Not Array'}, ISRO: ${Array.isArray(isroData) ? isroData.length : 'Not Array'}, NASA: ${Array.isArray(nasaData) ? nasaData.length : 'Not Array'}`);
+
+    const ensureArray = (d) => Array.isArray(d) ? d : [];
+
     const payload = {
-      spacex: spacexData || [],
-      isro: isroData || [],
-      nasa: nasaData || [],
+      // LIMIT: Only send top 20 missions per agency to reduce payload size
+      spacex: ensureArray(spacexData).slice(0, 20),
+      isro: ensureArray(isroData).slice(0, 20),
+      nasa: ensureArray(nasaData).slice(0, 20),
       generated_at: new Date().toISOString(),
     };
 

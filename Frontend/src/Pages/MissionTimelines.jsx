@@ -79,6 +79,34 @@ const MissionTimelines = () => {
     useEffect(() => {
         const fetchAggregatedData = async () => {
             setLoading(true);
+
+            // 1. Check Cache
+            const CACHE_KEY = 'mission_timeline_data_v3';
+            const CACHE_duration = 60 * 60 * 1000; // 1 Hour
+            const cached = localStorage.getItem(CACHE_KEY);
+
+            if (cached) {
+                try {
+                    const { data, timestamp } = JSON.parse(cached);
+                    const age = Date.now() - timestamp;
+                    if (age < CACHE_duration) {
+                        console.log("Loading missions from local cache");
+                        // We need to re-instantiate Date objects because JSON strings them
+                        const restored = data.map(m => ({
+                            ...m,
+                            date: new Date(m.date)
+                        }));
+                        setMasterData(restored);
+                        setLoading(false);
+                        return;
+                    }
+                } catch (e) {
+                    console.warn("Cache parse error", e);
+                    localStorage.removeItem(CACHE_KEY);
+                }
+            }
+
+            // 2. Network Fetch (if no cache or expired)
             try {
                 // Calling the backend aggregate endpoint
                 const res = await fetch('http://localhost:5000/api/aggregate/launches');
@@ -99,6 +127,14 @@ const MissionTimelines = () => {
                 // Sort globally by date (newest first)
                 allMissions.sort((a, b) => b.date - a.date);
                 setMasterData(allMissions);
+
+                // Save to Cache (ONLY IF DATA EXISTS)
+                if (allMissions.length > 0) {
+                    localStorage.setItem(CACHE_KEY, JSON.stringify({
+                        timestamp: Date.now(),
+                        data: allMissions
+                    }));
+                }
 
             } catch (err) {
                 console.error("Failed to load timeline data", err);

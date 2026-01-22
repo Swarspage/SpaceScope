@@ -20,7 +20,8 @@ export const getISSPass = (lat, lon) =>
 // Aurora & Space Weather
 // ============================
 
-export const getAuroraData = () => api.get("/aurora");
+export const getAuroraData = (force = false) =>
+  api.get(`/aurora${force ? "?force=true" : ""}`);
 export const getSolarFlares = () => api.get("/solar-flares");
 
 // ============================

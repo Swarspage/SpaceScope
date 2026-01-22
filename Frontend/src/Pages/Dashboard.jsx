@@ -4,6 +4,7 @@ import Globe from "react-globe.gl";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, CircleMarker } from "react-leaflet";
 import Sidebar from '../components/Sidebar';
+import meteorEvents from '../data/meteorData.json';
 import { useAuth } from '../../Context/AuthContext';
 import {
     MdRocketLaunch,
@@ -454,44 +455,66 @@ const Dashboard = () => {
                             {/* Meteor Calendar */}
                             <div className="lg:col-span-7 bg-black/30 backdrop-blur-xl border border-white/5 rounded-2xl p-6">
                                 <div className="flex justify-between items-center mb-4">
-                                    <h3 className="text-lg font-bold text-white flex items-center gap-2"><WiStars className="text-purple-400 text-2xl" /> Meteor Calendar</h3>
-                                    <button className="text-xs text-[#00d9ff] hover:text-white transition-colors">View All</button>
+                                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                                        <WiStars className="text-purple-400 text-2xl" /> Meteor Calendar
+                                    </h3>
+                                    {/* Navigate to the new full page */}
+                                    <button
+                                        onClick={() => navigate('/meteors')}
+                                        className="text-xs text-[#00d9ff] hover:text-white transition-colors uppercase tracking-wider font-bold"
+                                    >
+                                        View All Sequence
+                                    </button>
                                 </div>
+
                                 <div className="space-y-4">
-                                    <div className="bg-black/30 backdrop-blur-md border border-white/5 rounded-xl p-4 flex justify-between items-center group hover:border-white/10 transition-colors">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 rounded-lg bg-purple-900/20 text-purple-400 flex items-center justify-center"><WiStars className="text-2xl" /></div>
-                                            <div>
-                                                <h4 className="text-white font-bold text-lg">Geminids 2025</h4>
-                                                <div className="text-[#00d9ff] text-xs font-medium mb-1">Peaks in 8 days</div>
-                                                <div className="flex gap-3 text-[10px] text-slate-400">
-                                                    <span className="flex items-center gap-1"><MdPublic /> 85% Visibility</span>
-                                                    <span className="flex items-center gap-1"><WiMoonWaningCrescent6 /> Moon: Waning</span>
+                                    {/* Dynamic Mapping of first 2 events */}
+                                    {meteorEvents.slice(0, 2).map((event) => (
+                                        <div
+                                            key={event.id}
+                                            className="bg-black/30 backdrop-blur-md border border-white/5 rounded-xl p-4 flex justify-between items-center group hover:border-[#00d9ff]/30 hover:shadow-[0_0_15px_rgba(0,217,255,0.1)] transition-all duration-300 cursor-pointer"
+                                            onClick={() => navigate('/meteors')}
+                                        >
+                                            <div className="flex items-center gap-4">
+                                                {/* Date Box */}
+                                                <div className="w-12 h-12 rounded-lg bg-[#1a2036] border border-white/5 text-purple-400 flex flex-col items-center justify-center">
+                                                    <span className="text-[10px] text-slate-500 font-mono uppercase">Peak</span>
+                                                    <span className="text-sm font-bold text-white">
+                                                        {new Date(event.peak_date_utc).getDate()}
+                                                    </span>
+                                                </div>
+
+                                                <div>
+                                                    <h4 className="text-white font-bold text-lg group-hover:text-[#00d9ff] transition-colors">
+                                                        {event.name}
+                                                    </h4>
+                                                    <div className="text-slate-400 text-xs font-medium mb-1">
+                                                        {new Date(event.peak_date_utc).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} • {new Date(event.peak_date_utc).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} UTC
+                                                    </div>
+                                                    <div className="flex gap-3 text-[10px] text-slate-500 font-mono">
+                                                        <span className="flex items-center gap-1">
+                                                            <MdPublic /> {event.geographic_visibility.best_region.split(' ')[0]} Vis.
+                                                        </span>
+                                                        <span className="flex items-center gap-1 text-[#00d9ff]">
+                                                            <WiStars /> ZHR {event.zhr}
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div className="flex flex-col items-end gap-2">
-                                            <span className="px-2 py-1 bg-green-500/10 text-green-400 text-[10px] font-bold rounded border border-green-500/20">Optimal</span>
-                                            <button className="w-8 h-8 rounded-full bg-[#1a2036] text-slate-400 hover:text-white flex items-center justify-center"><MdNotifications /></button>
-                                        </div>
-                                    </div>
-                                    <div className="bg-black/30 backdrop-blur-md border border-white/5 rounded-xl p-4 flex justify-between items-center group hover:border-white/10 transition-colors">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 rounded-lg bg-blue-900/20 text-blue-400 flex items-center justify-center"><WiStars className="text-2xl" /></div>
-                                            <div>
-                                                <h4 className="text-white font-bold text-lg">Ursids</h4>
-                                                <div className="text-slate-400 text-xs font-medium mb-1">Peaks in 16 days</div>
-                                                <div className="flex gap-3 text-[10px] text-slate-400">
-                                                    <span className="flex items-center gap-1"><MdPublic /> 45% Visibility</span>
-                                                    <span className="flex items-center gap-1"><WiMoonFull /> Moon: Full</span>
-                                                </div>
+
+                                            <div className="flex flex-col items-end gap-2">
+                                                <span className={`px-2 py-1 text-[10px] font-bold rounded border ${event.visibility_score > 70
+                                                    ? 'bg-green-500/10 text-green-400 border-green-500/20'
+                                                    : 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
+                                                    }`}>
+                                                    {event.visibility_score > 70 ? 'OPTIMAL' : 'MODERATE'}
+                                                </span>
+                                                <button className="w-8 h-8 rounded-full bg-[#1a2036] text-slate-400 hover:text-white flex items-center justify-center hover:bg-[#00d9ff] hover:text-black transition-all">
+                                                    <MdNotifications />
+                                                </button>
                                             </div>
                                         </div>
-                                        <div className="flex flex-col items-end gap-2">
-                                            <span className="px-2 py-1 bg-yellow-500/10 text-yellow-400 text-[10px] font-bold rounded border border-yellow-500/20">Moderate</span>
-                                            <button className="w-8 h-8 rounded-full bg-[#1a2036] text-slate-400 hover:text-white flex items-center justify-center"><MdNotifications /></button>
-                                        </div>
-                                    </div>
+                                    ))}
                                 </div>
                             </div>
                         </div>
@@ -512,9 +535,9 @@ const Dashboard = () => {
                             {/* Dynamic Grid for SpaceX Data */}
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 {spacexData.length > 0 ? (
-                                    spacexData.map((launch) => (
+                                    spacexData.map((launch, idx) => (
                                         <div
-                                            key={launch.flight_number}
+                                            key={launch.id || idx}
                                             className="bg-black/30 backdrop-blur-md border border-white/5 rounded-xl p-4 hover:border-blue-500/30 transition-all duration-300 group"
                                         >
                                             <div className="flex items-center gap-3 mb-3">
