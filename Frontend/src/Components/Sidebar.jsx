@@ -13,8 +13,9 @@ import Logo from "../assets/Logo.png";
 const Sidebar = ({ activeTab = "Dashboard" }) => {
   const navigate = useNavigate();
 
-  const NavItem = ({ icon: Icon, label, active, onClick }) => (
+  const NavItem = ({ icon: Icon, label, active, onClick, id }) => (
     <button
+      id={id}
       onClick={onClick}
       className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium transition-all duration-200 border-l-2 ${active
         ? "border-[#00d9ff] text-white bg-gradient-to-r from-[#00d9ff]/10 to-transparent"
@@ -46,30 +47,35 @@ const Sidebar = ({ activeTab = "Dashboard" }) => {
         </div>
         <nav className="space-y-1 mb-6">
           <NavItem
+            id="nav-dashboard"
             icon={MdDashboard}
             label="Dashboard"
             active={activeTab === "Dashboard"}
             onClick={() => navigate("/dashboard")}
           />
           <NavItem
+            id="nav-missions"
             icon={MdRocketLaunch}
             label="Missions"
             active={activeTab === "Missions"}
             onClick={() => navigate("/missions")}
           />
           <NavItem
+            id="nav-learning"
             icon={MdSchool}
             label="Learning Zone"
             active={activeTab === "Learning Zone"}
             onClick={() => navigate("/learning")}
           />
           <NavItem
+            id="nav-applications"
             icon={MdSatelliteAlt}
             label="Applications"
             active={activeTab === "Applications"}
             onClick={() => navigate("/applications")}
           />
           <NavItem
+            id="nav-community"
             icon={MdPeople}
             label="Community"
             active={activeTab === "Community"}
@@ -81,6 +87,7 @@ const Sidebar = ({ activeTab = "Dashboard" }) => {
       {/* Bottom Navigation */}
       <div className="border-t border-white/5 p-4">
         <NavItem
+          id="nav-home"
           icon={MdHome}
           label="Home"
           active={activeTab === "Home"}

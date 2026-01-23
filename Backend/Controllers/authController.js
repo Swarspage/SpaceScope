@@ -36,7 +36,8 @@ export const register = async (req, res) => {
                 email: user.email,
                 fullName: user.fullName,
                 location: user.location,
-                createdAt: user.createdAt
+                createdAt: user.createdAt,
+                tutorialCompleted: user.tutorialCompleted
             }
         });
     } catch (error) {
@@ -78,7 +79,8 @@ export const login = async (req, res) => {
                 email: user.email,
                 fullName: user.fullName,
                 location: user.location,
-                createdAt: user.createdAt
+                createdAt: user.createdAt,
+                tutorialCompleted: user.tutorialCompleted
             }
         });
     } catch (error) {
@@ -128,5 +130,31 @@ export const updateProfile = async (req, res) => {
     } catch (error) {
         console.error('Update profile error:', error);
         res.status(500).json({ error: 'Failed to update profile' });
+    }
+};
+
+// Update tutorial status
+export const updateTutorialStatus = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const { tutorialCompleted } = req.body;
+
+        const user = await User.findByIdAndUpdate(
+            userId,
+            { tutorialCompleted },
+            { new: true }
+        ).select('-password');
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.status(200).json({
+            message: 'Tutorial status updated',
+            user
+        });
+    } catch (error) {
+        console.error('Update tutorial status error:', error);
+        res.status(500).json({ error: 'Failed to update tutorial status' });
     }
 };

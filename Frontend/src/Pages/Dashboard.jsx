@@ -4,6 +4,7 @@ import Globe from "react-globe.gl";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, CircleMarker } from "react-leaflet";
 import Sidebar from '../components/Sidebar';
+import Tutorial from '../components/Tutorial';
 import meteorEvents from '../data/meteorData.json';
 import { useAuth } from '../../Context/AuthContext';
 import {
@@ -50,7 +51,10 @@ const Dashboard = () => {
     const navigate = useNavigate();
 
     // Auth context for user data
-    const { user, loading: authLoading } = useAuth();
+    const { user, loading: authLoading, updateUser } = useAuth();
+
+    // Tutorial State
+    const [showTutorial, setShowTutorial] = useState(false);
 
     // State management
     const [issData, setIssData] = useState(null);
@@ -60,7 +64,65 @@ const Dashboard = () => {
     const [spacexData, setSpacexData] = useState([]); // New state for SpaceX
     const [currentTime, setCurrentTime] = useState(new Date());
     const [userLocation, setUserLocation] = useState({ lat: 45.23, lon: -122.45 });
+
     const [activeTab, setActiveTab] = useState('Dashboard');
+    const [quote, setQuote] = useState({ text: "The universe is under no obligation to make sense to you.", author: "Neil deGrasse Tyson" });
+
+    // Space Quotes Collection
+    const quotes = [
+        { text: "The universe is under no obligation to make sense to you.", author: "Neil deGrasse Tyson" },
+        { text: "Look up at the stars and not down at your feet.", author: "Stephen Hawking" },
+        { text: "Across the sea of space, the stars are other suns.", author: "Carl Sagan" },
+        { text: "To confine our attention to terrestrial matters would be to limit the human spirit.", author: "Stephen Hawking" },
+        { text: "Space is for everybody. It's not just for a few people in science or math, or for a select group of astronauts. That's our new frontier out there, and it's everybody's business to know about space.", author: "Christa McAuliffe" },
+        { text: "We are all in the gutter, but some of us are looking at the stars.", author: "Oscar Wilde" },
+    ];
+
+    useEffect(() => {
+        // Set random quote
+        setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
+    }, []);
+
+    // Check for tutorial
+    useEffect(() => {
+        if (!authLoading && user) {
+            if (user.tutorialCompleted === false || user.tutorialCompleted === undefined) {
+                // Short delay to ensure UI is ready
+                const timer = setTimeout(() => setShowTutorial(true), 1000);
+                return () => clearTimeout(timer);
+            }
+        }
+    }, [user, authLoading]);
+
+    const handleTutorialComplete = async () => {
+        setShowTutorial(false);
+        if (user) {
+            try {
+                // Update backend
+                await fetch(`http://localhost:5000/api/users/profile/${user.id}/tutorial`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tutorialCompleted: true })
+                });
+
+                // Update local context
+                updateUser({ ...user, tutorialCompleted: true });
+            } catch (error) {
+                console.error("Failed to update tutorial status", error);
+            }
+        }
+    };
+
+    const handleTutorialSkip = async () => {
+        await handleTutorialComplete();
+    };
+
+    const getGreeting = () => {
+        const hours = new Date().getHours();
+        if (hours < 12) return "Good Morning";
+        if (hours < 18) return "Good Afternoon";
+        return "Good Evening";
+    };
 
     // Refs for Visualizations
     const globeRef = useRef(null);
@@ -318,8 +380,12 @@ const Dashboard = () => {
                                     <span className="text-slate-400 font-mono text-xs">UTC {formatUTC()}</span>
                                 </div>
                                 <h2 className="text-3xl md:text-4xl font-black text-white uppercase tracking-tight leading-none">
-                                    Mission Control <br /> Center
+                                    {getGreeting()}, <br />
+                                    <span className="text-[#00d9ff]">{user?.fullName?.split(' ')[0] || user?.username || "Explorer"}</span>
                                 </h2>
+                                <div className="mt-2 text-slate-400 text-sm italic border-l-2 border-[#00d9ff] pl-3 py-1">
+                                    "{quote.text}" <span className="text-slate-600 block text-xs not-italic mt-0.5">— {quote.author}</span>
+                                </div>
                             </div>
                             <div className="flex gap-4">
                                 <div className="px-6 py-3 rounded-xl border border-white/10 bg-black/30 backdrop-blur-md">
@@ -591,6 +657,13 @@ const Dashboard = () => {
                     </div>
                 </main>
             </div>
+            {showTutorial && (
+                <Tutorial
+                    user={user}
+                    onComplete={handleTutorialComplete}
+                    onSkip={handleTutorialSkip}
+                />
+            )}
         </div>
     );
 };

@@ -31,6 +31,10 @@ const userSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    tutorialCompleted: {
+        type: Boolean,
+        default: false
     }
 });
 
