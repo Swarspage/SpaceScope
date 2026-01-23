@@ -1,30 +1,33 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../Context/AuthContext";
 import {
   MdRocketLaunch,
   MdDashboard,
   MdSchool,
   MdSatelliteAlt,
-  MdHome,
+  MdPerson,
+  MdLogout,
   MdPeople,
 } from "react-icons/md";
 import Logo from "../assets/Logo.png";
 
 const Sidebar = ({ activeTab = "Dashboard" }) => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
-  const NavItem = ({ icon: Icon, label, active, onClick, id }) => (
+  const NavItem = ({ icon: Icon, label, active, onClick, id, customClasses = "" }) => (
     <div className="px-3 mb-1">
       <button
         id={id}
         onClick={onClick}
         className={`w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium transition-all duration-300 rounded-xl border ${active
           ? "bg-[#00d9ff]/10 border-[#00d9ff]/50 text-[#00d9ff] shadow-[0_0_15px_rgba(0,217,255,0.15)]"
-          : "border-transparent text-slate-400 hover:text-white hover:bg-white/5 hover:translate-x-1"
+          : customClasses || "border-transparent text-slate-400 hover:text-white hover:bg-white/5 hover:translate-x-1"
           }`}
       >
         <Icon
-          className={`text-xl ${active ? "text-[#00d9ff]" : "text-slate-400 group-hover:text-white"}`}
+          className={`text-xl ${active ? "text-[#00d9ff]" : customClasses ? "text-inherit" : "text-slate-400 group-hover:text-white"}`}
         />
         {label}
       </button>
@@ -95,13 +98,21 @@ const Sidebar = ({ activeTab = "Dashboard" }) => {
       </div>
 
       {/* Bottom Navigation */}
-      <div className="p-4 border-t border-gray-500/10 bg-black/20 rounded-br-3xl">
+      <div className="p-4 border-t border-gray-500/10 bg-black/20 rounded-br-3xl space-y-1">
         <NavItem
-          id="nav-home"
-          icon={MdHome}
-          label="Home"
-          active={activeTab === "Home"}
-          onClick={() => navigate("/")}
+          id="nav-profile"
+          icon={MdPerson}
+          label="Profile"
+          active={activeTab === "Profile"}
+          onClick={() => navigate("/profile")}
+        />
+        <NavItem
+          id="nav-logout"
+          icon={MdLogout}
+          label="Logout"
+          active={false}
+          onClick={logout}
+          customClasses="border-transparent text-red-500/80 hover:text-red-400 hover:bg-red-500/10 hover:translate-x-1"
         />
       </div>
     </aside>
