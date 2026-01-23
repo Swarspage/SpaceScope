@@ -4,10 +4,10 @@ import { MapContainer, TileLayer, Polygon, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
 import { Layers, Cloud, Calendar, AlertTriangle, Loader2, ArrowLeftRight, Activity, Wind, Info, Map as MapIcon, Thermometer, ChevronLeft } from 'lucide-react';
-import CO2Chart from '../Components/CO2Chart';
-import TempAnomalyChart from '../Components/TempAnomalyChart';
-import LightPollutionMap from '../Components/LightPollutionMap';
-import CloudCoverMap from '../Components/CloudCoverMap';
+import CO2Chart from '../components/CO2Chart';
+import TempAnomalyChart from '../components/TempAnomalyChart';
+import LightPollutionMap from '../components/LightPollutionMap';
+import CloudCoverMap from '../components/CloudCoverMap';
 
 // --- CONFIGURATION ---
 const API_KEY = import.meta.env.VITE_AGROMONITORING_API_KEY;
@@ -545,3 +545,4 @@ const NDVIMap = () => {
 };
 
 export default NDVIMap;
+

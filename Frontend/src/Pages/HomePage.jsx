@@ -35,7 +35,7 @@ import {
 import Logo from "../assets/Logo.png";
 import dashboardPreview from "../assets/dashboard-preview.png";
 import ambienceAudio from "../assets/ambience.mp3";
-import Particles from "../Components/Particles";
+import Particles from "../components/Particles";
 
 /* FONTS INJECTION
   (Include this in your index.css or within a <style> tag in the root)
@@ -1759,3 +1759,4 @@ const HomePage = () => {
 };
 
 export default HomePage;
+

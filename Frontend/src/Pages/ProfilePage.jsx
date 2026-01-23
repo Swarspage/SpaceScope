@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api'; // Import centralized api
-import { useAuth } from '../Context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import Sidebar from '../Components/Sidebar';
+import Sidebar from '../components/Sidebar';
 import { MdPerson, MdEmail, MdLocationOn, MdCalendarToday, MdEdit, MdLogout, MdSave, MdCancel, MdCameraAlt, MdFavorite } from 'react-icons/md';
 import { FaUserAstronaut } from 'react-icons/fa';
 

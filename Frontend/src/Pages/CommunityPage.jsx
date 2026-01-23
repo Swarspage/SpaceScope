@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Sidebar from '../Components/Sidebar';
-import { useAuth } from '../Context/AuthContext';
+import Sidebar from '../components/Sidebar';
+import { useAuth } from '../context/AuthContext';
 import { MdAddPhotoAlternate, MdFavorite, MdFavoriteBorder, MdDelete, MdLocationOn, MdClose } from 'react-icons/md';
 import { FaUserAstronaut, FaSpinner, FaRegComment, FaRetweet, FaShare } from 'react-icons/fa';
 import { Camera, X, Upload, Heart, MessageCircle, Repeat, Share2, MapPin } from 'lucide-react';
@@ -396,3 +396,4 @@ const CommunityPage = () => {
 };
 
 export default CommunityPage;
+

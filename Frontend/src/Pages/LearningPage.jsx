@@ -26,8 +26,8 @@ import {
     MdSettings,
 } from 'react-icons/md';
 import { FaUserAstronaut } from 'react-icons/fa';
-import Sidebar from '../Components/Sidebar';
-import { useAuth } from '../Context/AuthContext';
+import Sidebar from '../components/Sidebar';
+import { useAuth } from '../context/AuthContext';
 import QuizActiveView from './QuizActiveView';
 import api from '../services/api';
 
