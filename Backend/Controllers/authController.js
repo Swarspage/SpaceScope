@@ -158,3 +158,19 @@ export const updateTutorialStatus = async (req, res) => {
         res.status(500).json({ error: 'Failed to update tutorial status' });
     }
 };
+
+// Get leaderboard
+export const getLeaderboard = async (req, res) => {
+    try {
+        // Fetch top 50 users sorted by XP in descending order
+        const leaderboard = await User.find({})
+            .select('username xp avatar') // Select fields to display
+            .sort({ xp: -1 }) // Sort by XP descending
+            .limit(50); // Limit to top 50
+
+        res.status(200).json({ leaderboard });
+    } catch (error) {
+        console.error('Get leaderboard error:', error);
+        res.status(500).json({ error: 'Failed to fetch leaderboard' });
+    }
+};

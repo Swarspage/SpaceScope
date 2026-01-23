@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     GraduationCap,
@@ -257,13 +257,37 @@ const LearningPage = () => {
         };
     }, [topicCards]);
 
-    const leaderboardData = [
-        { rank: 1, name: "AstroAlex", xp: 15420, avatar: "👨‍🚀" },
-        { rank: 2, name: "CosmicKate", xp: 14850, avatar: "👩‍🚀" },
-        { rank: 3, name: "StarLord_99", xp: 14200, avatar: "👽" },
-        { rank: 4, name: "NebulaNova", xp: 13500, avatar: "👾" },
-        { rank: 5, name: "Cmdr. Shepard", xp: 12800, avatar: "🤖", isUser: true },
-    ];
+    // --- LEADERBOARD STATE & LOGIC ---
+    const [leaderboardData, setLeaderboardData] = useState([]);
+
+    useEffect(() => {
+        const fetchLeaderboard = async () => {
+            try {
+                const response = await fetch('http://localhost:5000/api/auth/leaderboard');
+                if (response.ok) {
+                    const data = await response.json();
+
+                    // Transform data to match UI requirements
+                    const formattedData = data.leaderboard.map((userItem, index) => ({
+                        rank: index + 1,
+                        name: userItem.username,
+                        xp: userItem.xp || 0,
+                        avatar: userItem.avatar || "👨‍🚀", // Fallback avatar if none
+                        isUser: user?.username === userItem.username
+                    }));
+
+                    setLeaderboardData(formattedData);
+                }
+            } catch (error) {
+                console.error("Failed to fetch leaderboard:", error);
+            }
+        };
+
+        if (user) {
+            fetchLeaderboard();
+        }
+    }, [user]);
+
 
     function getImageForTopic(topic) {
         // Mapping topics to specific, reliable high-quality Unsplash images
@@ -1005,6 +1029,66 @@ const LearningPage = () => {
 
                                     {/* Video Player Modal */}
                                     {activeVideo && <VideoPlayerModal video={activeVideo} onClose={() => setActiveVideo(null)} />}
+                                </div>
+                            )}
+
+                            {activeTab === 'Leaderboard' && (
+                                <div className="max-w-4xl mx-auto animate-fade-in pb-20">
+                                    <div className="text-center mb-10">
+                                        <h2 className="text-3xl font-bold text-white mb-2">Space Explorers Leaderboard</h2>
+                                        <p className="text-slate-400">Compete with fellow astronauts and climb the ranks!</p>
+                                    </div>
+
+                                    <div className="bg-[#0f1322] border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
+                                        {/* Header */}
+                                        <div className="grid grid-cols-12 gap-4 p-4 bg-white/5 border-b border-white/5 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                            <div className="col-span-2 text-center">Rank</div>
+                                            <div className="col-span-6">Explorer</div>
+                                            <div className="col-span-4 text-right">XP</div>
+                                        </div>
+
+                                        {/* List */}
+                                        <div className="divide-y divide-white/5">
+                                            {leaderboardData.length > 0 ? (
+                                                leaderboardData.map((userItem) => (
+                                                    <div
+                                                        key={userItem.rank}
+                                                        className={`grid grid-cols-12 gap-4 p-4 items-center hover:bg-white/5 transition-colors ${userItem.isUser ? 'bg-[#00d9ff]/10 hover:bg-[#00d9ff]/15' : ''}`}
+                                                    >
+                                                        <div className="col-span-2 flex justify-center">
+                                                            <div className={`
+                                                                w-8 h-8 flex items-center justify-center rounded-full font-bold
+                                                                ${userItem.rank === 1 ? 'bg-yellow-500/20 text-yellow-500' : ''}
+                                                                ${userItem.rank === 2 ? 'bg-slate-300/20 text-slate-300' : ''}
+                                                                ${userItem.rank === 3 ? 'bg-amber-600/20 text-amber-600' : ''}
+                                                                ${userItem.rank > 3 ? 'text-slate-500' : ''}
+                                                            `}>
+                                                                {userItem.rank <= 3 ? (userItem.rank === 1 ? '🥇' : userItem.rank === 2 ? '🥈' : '🥉') : userItem.rank}
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-span-6 flex items-center gap-3">
+                                                            <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-xl border border-white/10">
+                                                                {userItem.avatar}
+                                                            </div>
+                                                            <div>
+                                                                <div className={`font-bold ${userItem.isUser ? 'text-[#00d9ff]' : 'text-white'}`}>
+                                                                    {userItem.name} {userItem.isUser && '(You)'}
+                                                                </div>
+                                                                <div className="text-xs text-slate-500">Explorer</div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-span-4 text-right">
+                                                            <div className="font-mono font-bold text-[#00ff88]">{userItem.xp.toLocaleString()} XP</div>
+                                                        </div>
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                <div className="p-8 text-center text-slate-500">
+                                                    Loading rankings or no explorers found yet...
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
                                 </div>
                             )}
                         </div>

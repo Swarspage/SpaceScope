@@ -35,6 +35,10 @@ const userSchema = new mongoose.Schema({
     tutorialCompleted: {
         type: Boolean,
         default: false
+    },
+    xp: {
+        type: Number,
+        default: 0
     }
 });
 
