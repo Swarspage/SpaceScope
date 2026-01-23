@@ -1,0 +1,4 @@
+# Force lowercase folder names
+Frontend/src/context/** text
+Frontend/src/components/** text
+Frontend/src/pages/** text
