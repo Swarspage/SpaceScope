@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { MapContainer, TileLayer, Polygon, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
-import { Layers, Cloud, Calendar, AlertTriangle, Loader2, ArrowLeftRight, Activity, Wind, Info, Map as MapIcon, Thermometer } from 'lucide-react';
+import { Layers, Cloud, Calendar, AlertTriangle, Loader2, ArrowLeftRight, Activity, Wind, Info, Map as MapIcon, Thermometer, ChevronLeft } from 'lucide-react';
 import CO2Chart from '../components/CO2Chart';
 import TempAnomalyChart from '../components/TempAnomalyChart';
 import LightPollutionMap from '../components/LightPollutionMap';
@@ -165,6 +166,7 @@ const SplitLayer = ({ leftTileUrl, rightTileUrl, sliderPosition }) => {
 };
 
 const NDVIMap = () => {
+    const navigate = useNavigate();
     const [activeChannel, setActiveChannel] = useState('ndvi');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -285,6 +287,12 @@ const NDVIMap = () => {
             {/* --- LEFT: CONTROL PANEL --- */}
             <div className="w-64 flex-shrink-0 flex flex-col gap-4">
                 <div className="bg-[#0a0e17] rounded-xl border border-white/10 p-4 flex flex-col h-full shadow-xl">
+                    <button
+                        onClick={() => navigate(-1)}
+                        className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-4 text-sm font-bold"
+                    >
+                        <ChevronLeft size={16} /> Back
+                    </button>
                     <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-[#00ff88]">
                         <Activity size={20} />
                         Control Panel
