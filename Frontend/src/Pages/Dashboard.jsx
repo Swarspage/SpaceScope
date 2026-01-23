@@ -8,7 +8,7 @@ import { MapContainer, TileLayer, CircleMarker } from "react-leaflet";
 import Sidebar from '../components/Sidebar';
 import Tutorial from '../components/Tutorial';
 import meteorEvents from '../data/meteorData.json';
-import { useAuth } from '../../Context/AuthContext';
+import { useAuth } from '../Context/AuthContext';
 import api from '../services/api';
 import {
     MdRocketLaunch,
