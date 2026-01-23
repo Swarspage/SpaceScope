@@ -1,0 +1,153 @@
+
+[
+    {
+        "title": "Exoplanets",
+        "url": "https://science.nasa.gov/exoplanets",
+        "domain": "science.nasa.gov",
+        "source": "NASA",
+        "category": "Overview",
+        "preview": "An exoplanet is any planet beyond our solar system. Most of them orbit other stars, but some free-floating exoplanets, called rogue planets, are untethered to any star. We’ve confirmed more than 6,000 exoplanets, out of the billions that we believe exist.",
+        "reading_time": "5 min",
+        "published_date": null
+    },
+    {
+        "title": "What Is an Exoplanet?",
+        "url": "https://spaceplace.nasa.gov/all-about-exoplanets",
+        "domain": "spaceplace.nasa.gov",
+        "source": "NASA Space Place",
+        "category": "Explainer",
+        "preview": "Planets that orbit around other stars are called exoplanets. Exoplanets are very hard to see directly with telescopes. They are hidden by the bright glare of the stars they orbit. So far, thousands of planets have been discovered by the Kepler mission and more by TESS.",
+        "reading_time": "3 min",
+        "published_date": null
+    },
+    {
+        "title": "Black Hole Basics",
+        "url": "https://science.nasa.gov/universe/black-holes",
+        "domain": "science.nasa.gov",
+        "source": "NASA",
+        "category": "Explainer",
+        "preview": "Black holes are among the most mysterious cosmic objects, much studied but not fully understood. These objects aren't really holes. They're huge concentrations of matter packed so tightly that gravity overwhelms every other force.",
+        "reading_time": "4 min",
+        "published_date": null
+    },
+    {
+        "title": "James Webb Space Telescope",
+        "url": "https://science.nasa.gov/mission/webb",
+        "domain": "science.nasa.gov",
+        "source": "NASA",
+        "category": "Overview",
+        "preview": "Webb is the premier observatory of the next decade, serving thousands of astronomers worldwide. It studies every phase in the history of our Universe, from the first luminous glows after the Big Bang to the formation of solar systems and the evolution of our own Solar System.",
+        "reading_time": "6 min",
+        "published_date": null
+    },
+    {
+        "title": "Mars",
+        "url": "https://science.nasa.gov/mars",
+        "domain": "science.nasa.gov",
+        "source": "NASA",
+        "category": "Overview",
+        "preview": "Despite being inhospitable to humans, robotic explorers like NASA's Perseverance rover and Mars Reconnaissance Orbiter serve as pathfinders to eventually get astronauts to the surface of the Red Planet. NASA has five active missions at the Red Planet.",
+        "reading_time": "5 min",
+        "published_date": null
+    },
+    {
+        "title": "Black holes",
+        "url": "https://www.esa.int/Science_Exploration/Space_Science/Black_holes",
+        "domain": "esa.int",
+        "source": "ESA",
+        "category": "Explainer",
+        "preview": "A black hole is an extremely dense object whose gravity is so strong that nothing, not even light, can escape it. A black hole’s gravitational field is so strong that its escape velocity is greater than the speed of light.",
+        "reading_time": "4 min",
+        "published_date": "2024-02-19"
+    },
+    {
+        "title": "How We Find and Classify Exoplanets",
+        "url": "https://science.nasa.gov/exoplanets/how-we-find-and-characterize",
+        "domain": "science.nasa.gov",
+        "source": "NASA",
+        "category": "Explainer",
+        "preview": "Since the first confirmation of an exoplanet orbiting a Sun-like star in 1995, we’ve already struck many rich veins. A statistical estimate based on data from NASA’s Kepler Space Telescope revealed that there are more planets than stars in our galaxy.",
+        "reading_time": "7 min",
+        "published_date": "2024-10-29"
+    },
+    {
+        "title": "Mars Exploration",
+        "url": "https://science.nasa.gov/planetary-science/programs/mars-exploration",
+        "domain": "science.nasa.gov",
+        "source": "NASA",
+        "category": "Overview",
+        "preview": "For more than 60 years, NASA has pursued answers to whether Mars was — or is — a habitable world. The science and technology developed through Mars Exploration missions will enable humans to one day explore the Red Planet in person.",
+        "reading_time": "6 min",
+        "published_date": null
+    },
+    {
+        "title": "Webb spots greedy supermassive black hole in early Universe",
+        "url": "https://www.esa.int/Science_Exploration/Space_Science/Webb/Webb_spots_greedy_supermassive_black_hole_in_early_Universe",
+        "domain": "esa.int",
+        "source": "ESA",
+        "category": "News",
+        "preview": "Researchers using the NASA/ESA/CSA James Webb Space Telescope have confirmed an actively growing supermassive black hole within a galaxy just 570 million years after the Big Bang. This discovery challenges existing theories about the formation of galaxies and black holes in the early Universe.",
+        "reading_time": "5 min",
+        "published_date": "2025-11-19"
+    },
+    {
+        "title": "Rule-breaking supermassive black hole discovered in the early universe",
+        "url": "https://phys.org/news/2026-01-supermassive-black-hole-early-universe.html",
+        "domain": "phys.org",
+        "source": "Phys.org",
+        "category": "News",
+        "preview": "An international research team has discovered an extraordinary quasar in the early universe that hosts one of the fastest-growing supermassive black holes known. The quasar is undergoing extremely rapid accretion while shining brightly in X-rays and producing strong radio emission from a jet.",
+        "reading_time": "6 min",
+        "published_date": null
+    },
+    {
+        "title": "Massive cloud with metallic winds discovered orbiting mystery object",
+        "url": "https://phys.org/news/2026-01-massive-cloud-metallic-orbiting-mystery.html",
+        "domain": "phys.org",
+        "source": "Phys.org",
+        "category": "News",
+        "preview": "Sweeping winds of vaporized metals have been found in a massive cloud that dimmed the light of a star for nearly nine months. This is the first time astronomers have measured the internal gas motions of a disk orbiting a secondary object such as a planet or low-mass star.",
+        "reading_time": "5 min",
+        "published_date": null
+    },
+    {
+        "title": "Supernova from the dawn of the universe captured by James Webb Space Telescope",
+        "url": "https://phys.org/news/2025-12-supernova-dawn-universe-captured-james.html",
+        "domain": "phys.org",
+        "source": "Phys.org",
+        "category": "News",
+        "preview": "An international team has detected a supernova at an unprecedented cosmic distance using JWST. The explosion occurred when the universe was only about 730 million years old, providing a direct look at the final moments of a massive star from the era of reionization.",
+        "reading_time": "6 min",
+        "published_date": "2025-12-25"
+    },
+    {
+        "title": "Solar System Exploration",
+        "url": "https://science.nasa.gov/solar-system",
+        "domain": "science.nasa.gov",
+        "source": "NASA",
+        "category": "Overview",
+        "preview": "The solar system has one star, eight planets, five dwarf planets, at least 290 moons, more than 1.3 million asteroids, and about 3900 comets. NASA explores the objects in our solar system to better understand its history and the distribution of life within.",
+        "reading_time": "4 min",
+        "published_date": null
+    },
+    {
+        "title": "'Exoplanets' and the Search for Habitable Worlds",
+        "url": "https://www.jpl.nasa.gov/edu/resources/teachable-moment/exoplanets-and-the-search-for-habitable-worlds",
+        "domain": "jpl.nasa.gov",
+        "source": "NASA JPL Education",
+        "category": "Explainer",
+        "preview": "Scientists have discovered the most Earth-like exoplanet ever: Kepler-452b. Located in the habitable zone of a star very much like our sun, Kepler-452b is only about 60 percent wider than Earth and represents a key target in the search for habitable worlds.",
+        "reading_time": "5 min",
+        "published_date": "2024-10-10"
+    },
+    {
+        "title": "These Are the Most Exciting Space Science Events for 2026",
+        "url": "https://www.scientificamerican.com/article/these-are-the-most-exciting-space-science-events-for-2026",
+        "domain": "scientificamerican.com",
+        "source": "Scientific American",
+        "category": "News",
+        "preview": "From crewed lunar voyages to flight tests of fully reusable rockets and launches of new orbital telescopes, 2026 should be a banner year for space science and exploration. It includes NASA's Artemis II mission and advancements in understanding the cosmos.",
+        "reading_time": "7 min",
+        "published_date": "2025-12-30"
+    }
+]

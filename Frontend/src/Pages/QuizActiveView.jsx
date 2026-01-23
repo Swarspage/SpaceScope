@@ -138,7 +138,7 @@ const QuizActiveView = ({
 
     // --- ACTIVE QUIZ VIEW ---
     return (
-        <div className="fixed inset-0 z-[100] bg-[#050714]/90 flex flex-col animate-fade-in">
+        <div className="fixed inset-0 z-[100] bg-[#050714] flex flex-col animate-fade-in">
 
             {/* HEADER */}
             <div className="h-20 shrink-0 px-6 md:px-12 flex items-center justify-between border-b border-white/5 bg-[#0a0e17]/80 backdrop-blur-xl">
