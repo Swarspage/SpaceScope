@@ -29,7 +29,7 @@ import { useAuth } from '../../Context/AuthContext';
 import QuizActiveView from './QuizActiveView';
 
 // --- IMPORTANT: DATA IMPORT ---
-import quizData from '../../Quiz.json';
+import quizData from '../data/Quiz.json';
 import learningVideos from '../data/learningZoneYtVideos.json';
 
 const LearningPage = () => {

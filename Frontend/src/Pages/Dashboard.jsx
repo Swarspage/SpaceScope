@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Globe from "react-globe.gl";
 import "leaflet/dist/leaflet.css";
+import axios from 'axios';
+import { X, Calendar as CalendarIcon, Info, Moon } from 'lucide-react';
 import { MapContainer, TileLayer, CircleMarker } from "react-leaflet";
 import Sidebar from '../components/Sidebar';
 import Tutorial from '../components/Tutorial';
@@ -20,8 +22,14 @@ import {
 import {
     WiDaySunny,
     WiStars,
-    WiMoonWaningCrescent6,
+    WiMoonNew,
+    WiMoonWaxingCrescent3,
+    WiMoonFirstQuarter,
+    WiMoonWaxingGibbous3,
     WiMoonFull,
+    WiMoonWaningGibbous3,
+    WiMoonThirdQuarter,
+    WiMoonWaningCrescent3,
 } from 'react-icons/wi';
 import { BsFillLightningChargeFill } from 'react-icons/bs';
 import { FaUserAstronaut } from 'react-icons/fa';
@@ -64,6 +72,11 @@ const Dashboard = () => {
     const [spacexData, setSpacexData] = useState([]); // New state for SpaceX
     const [currentTime, setCurrentTime] = useState(new Date());
     const [userLocation, setUserLocation] = useState({ lat: 45.23, lon: -122.45 });
+
+    // Moon Phase State
+    const [moonData, setMoonData] = useState(null);
+    const [moonImage, setMoonImage] = useState(null);
+    const [showMoonModal, setShowMoonModal] = useState(false);
 
     const [activeTab, setActiveTab] = useState('Dashboard');
     const [quote, setQuote] = useState({ text: "The universe is under no obligation to make sense to you.", author: "Neil deGrasse Tyson" });
@@ -208,6 +221,86 @@ const Dashboard = () => {
         fetchSpaceXData();
     }, []);
 
+    // --- Moon Phase Logic ---
+
+    // 1. Geolocation
+    useEffect(() => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    setUserLocation({
+                        lat: position.coords.latitude,
+                        lon: position.coords.longitude
+                    });
+                },
+                (error) => {
+                    console.error("Geolocation denied or error:", error);
+                }
+            );
+        }
+    }, []);
+
+    // 2. Fetch Moon Data (Visual Crossing)
+    useEffect(() => {
+        const fetchMoonData = async () => {
+            try {
+                const apiKey = import.meta.env.VITE_VISUAL_CROSSING_KEY;
+                if (!apiKey) return;
+
+                const { lat, lon } = userLocation;
+                const url = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${lat},${lon}/next7days?key=${apiKey}&include=days&elements=datetime,moonphase,moonphasename`;
+
+                const res = await axios.get(url);
+                if (res.data && res.data.days) {
+                    setMoonData(res.data.days);
+                }
+            } catch (err) {
+                console.error("Moon Data Error:", err);
+            }
+        };
+
+        fetchMoonData();
+    }, [userLocation]);
+
+    // 3. Fetch Moon Image (Unsplash) - Cached
+    useEffect(() => {
+        if (!moonData || moonData.length === 0) return;
+
+        const fetchMoonImage = async () => {
+            // Use derived name if API one is missing
+            const currentPhaseVal = moonData[0].moonphase;
+            const derived = getMoonPhaseDetails(currentPhaseVal);
+            const todayPhase = moonData[0].moonphasename || derived.name;
+            const cacheKey = `moon_image_${new Date().toISOString().split('T')[0]}_${todayPhase.replace(/\s/g, '')}`;
+            const cached = localStorage.getItem(cacheKey);
+
+            if (cached) {
+                setMoonImage(JSON.parse(cached));
+                return;
+            }
+
+            try {
+                const accessKey = import.meta.env.VITE_UNSPLASH_ACCESS_KEY;
+                if (!accessKey) return;
+
+                const res = await axios.get(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(todayPhase)} moon&client_id=${accessKey}&per_page=1&orientation=landscape`);
+
+                if (res.data.results && res.data.results.length > 0) {
+                    const imgData = {
+                        url: res.data.results[0].urls.regular,
+                        credit: res.data.results[0].user.name
+                    };
+                    setMoonImage(imgData);
+                    localStorage.setItem(cacheKey, JSON.stringify(imgData));
+                }
+            } catch (err) {
+                console.error("Unsplash Error:", err);
+            }
+        };
+
+        fetchMoonImage();
+    }, [moonData]);
+
     // Clock
     useEffect(() => {
         const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -282,6 +375,19 @@ const Dashboard = () => {
     const formatDate = (isoString) => {
         const date = new Date(isoString);
         return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    };
+
+    // Helper: Calculate Phase Name and Icon locally if API fails or for better icons
+    const getMoonPhaseDetails = (value) => {
+        // defined as 0..1
+        if (value === 0 || value === 1) return { name: 'New Moon', icon: <WiMoonNew className="text-3xl text-slate-500" /> };
+        if (value < 0.25) return { name: 'Waxing Crescent', icon: <WiMoonWaxingCrescent3 className="text-3xl text-slate-400" /> };
+        if (value === 0.25) return { name: 'First Quarter', icon: <WiMoonFirstQuarter className="text-3xl text-[#00d9ff]" /> };
+        if (value < 0.5) return { name: 'Waxing Gibbous', icon: <WiMoonWaxingGibbous3 className="text-3xl text-[#00d9ff]" /> };
+        if (value === 0.5) return { name: 'Full Moon', icon: <WiMoonFull className="text-3xl text-[#00d9ff] drop-shadow-[0_0_10px_rgba(0,217,255,0.5)]" /> };
+        if (value < 0.75) return { name: 'Waning Gibbous', icon: <WiMoonWaningGibbous3 className="text-3xl text-[#00d9ff]" /> };
+        if (value === 0.75) return { name: 'Last Quarter', icon: <WiMoonThirdQuarter className="text-3xl text-[#00d9ff]" /> };
+        return { name: 'Waning Crescent', icon: <WiMoonWaningCrescent3 className="text-3xl text-slate-400" /> };
     };
 
 
@@ -496,25 +602,50 @@ const Dashboard = () => {
                         {/* Middle Grid: Solar & Meteors */}
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                             {/* Solar Activity */}
-                            <div className="lg:col-span-5 bg-black/30 backdrop-blur-xl border border-white/5 rounded-2xl p-6">
-                                <div className="flex justify-between items-center mb-6">
-                                    <h3 className="text-lg font-bold text-white flex items-center gap-2"><WiDaySunny className="text-orange-400 text-2xl" /> Solar Activity</h3>
-                                    <span className="px-2 py-1 rounded bg-orange-500/10 border border-orange-500/20 text-orange-400 text-[10px] font-bold uppercase">Moderate</span>
-                                </div>
-                                <div className="flex justify-between mb-6">
+                            {/* Moon Phases Widget (Replaces Solar Activity) */}
+                            <div
+                                onClick={() => setShowMoonModal(true)}
+                                className="lg:col-span-5 bg-black/30 backdrop-blur-xl border border-white/5 rounded-2xl p-0 relative overflow-hidden group hover:border-[#00d9ff]/30 transition-all cursor-pointer h-[300px]"
+                            >
+                                {/* Background Image */}
+                                {moonImage ? (
+                                    <div className="absolute inset-0 z-0">
+                                        <img src={moonImage.url} alt="Moon Phase" className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-[#050810] via-[#050810]/50 to-transparent" />
+                                    </div>
+                                ) : (
+                                    <div className="absolute inset-0 bg-[#0f1322] z-0" />
+                                )}
+
+                                <div className="relative z-10 p-6 h-full flex flex-col justify-between">
+                                    <div className="flex justify-between items-start">
+                                        <div className="bg-black/40 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-lg flex items-center gap-2">
+                                            <Moon size={16} className="text-[#00d9ff]" />
+                                            <span className="text-white text-sm font-bold">Moon Phase</span>
+                                        </div>
+                                        <span className="px-2 py-1 rounded bg-[#00d9ff]/10 border border-[#00d9ff]/20 text-[#00d9ff] text-[10px] font-bold uppercase">
+                                            Today
+                                        </span>
+                                    </div>
+
                                     <div>
-                                        <div className="text-xs text-slate-400">X-ray Flux (24h)</div>
-                                        <div className="text-2xl font-bold text-white mt-1">{getSolarFlareClass()} <span className="text-sm font-normal text-slate-500">Class Flare</span></div>
+                                        {moonData && moonData.length > 0 ? (
+                                            <>
+                                                <h3 className="text-3xl font-black text-white mb-1">
+                                                    {moonData[0].moonphasename || getMoonPhaseDetails(moonData[0].moonphase).name}
+                                                </h3>
+                                                <div className="flex items-center gap-4 text-slate-300 text-sm">
+                                                    <span>illumination: {Math.round(moonData[0].moonphase * 100)}%</span>
+                                                    <span className="w-1 h-1 rounded-full bg-slate-500" />
+                                                    <span className="text-[#00d9ff] font-bold flex items-center gap-1">
+                                                        View Calendar <MdChevronRight />
+                                                    </span>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <div className="text-slate-400 animate-pulse">Loading lunar data...</div>
+                                        )}
                                     </div>
-                                    <div className="text-right">
-                                        <div className="text-xs text-slate-400">Solar Wind</div>
-                                        <div className="text-2xl font-bold text-[#00d9ff] mt-1">420 <span className="text-sm font-normal text-slate-500">km/s</span></div>
-                                    </div>
-                                </div>
-                                <div className="h-32 w-full bg-gradient-to-b from-transparent to-orange-500/5 rounded-lg border-b border-l border-white/10 relative p-2">
-                                    <svg className="w-full h-full overflow-visible" preserveAspectRatio="none">
-                                        <polyline fill="none" stroke="#f97316" strokeWidth="2" points="0,80 30,75 60,78 90,60 120,65 150,40 180,55 210,50 240,20 270,40 300,30 330,50" vectorEffect="non-scaling-stroke" />
-                                    </svg>
                                 </div>
                             </div>
 
@@ -663,6 +794,77 @@ const Dashboard = () => {
                     onComplete={handleTutorialComplete}
                     onSkip={handleTutorialSkip}
                 />
+            )}
+
+            {/* Moon Phase Modal */}
+            {showMoonModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+                    <div className="bg-[#0a0e17] border border-white/10 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto relative shadow-2xl">
+                        <button
+                            onClick={() => setShowMoonModal(false)}
+                            className="absolute top-4 right-4 text-slate-400 hover:text-white z-10 p-2 bg-black/50 rounded-full"
+                        >
+                            <X size={24} />
+                        </button>
+
+                        <div className="p-8">
+                            <div className="flex items-center gap-3 mb-8">
+                                <Moon className="text-[#00d9ff]" size={32} />
+                                <h2 className="text-2xl font-bold text-white">7-Day Moon Forecast</h2>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                {/* Left: Today's Detail */}
+                                <div className="md:col-span-1 flex flex-col items-center text-center p-6 bg-white/5 rounded-xl border border-white/5">
+                                    <h3 className="text-[#00d9ff] font-bold uppercase text-sm mb-4">Current Phase</h3>
+                                    <div className="w-48 h-48 rounded-full border-4 border-[#00d9ff]/20 overflow-hidden mb-6 shadow-[0_0_50px_rgba(0,217,255,0.2)] relative">
+                                        {moonImage ? (
+                                            <img src={moonImage.url} alt="Moon" className="w-full h-full object-cover scale-125" />
+                                        ) : (
+                                            <div className="w-full h-full bg-slate-800" />
+                                        )}
+                                    </div>
+                                    <h2 className="text-2xl font-bold text-white mb-2">
+                                        {moonData?.[0]?.moonphasename || getMoonPhaseDetails(moonData?.[0]?.moonphase).name || "Loading..."}
+                                    </h2>
+                                    <p className="text-slate-400 text-sm">
+                                        Illumination: <span className="text-white">{Math.round((moonData?.[0]?.moonphase || 0) * 100)}%</span>
+                                    </p>
+                                    <div className="mt-6 w-full text-xs text-slate-500 border-t border-white/5 pt-4">
+                                        Data provided by Visual Crossing
+                                        <br />
+                                        Image by {moonImage?.credit || "Unsplash"}
+                                    </div>
+                                </div>
+
+                                {/* Right: Calendar Grid */}
+                                <div className="md:col-span-2">
+                                    <h3 className="text-slate-400 font-bold uppercase text-sm mb-4 flex items-center gap-2">
+                                        <CalendarIcon size={14} /> Upcoming Phases
+                                    </h3>
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                                        {moonData && moonData.slice(1, 7).map((day, idx) => {
+                                            const details = getMoonPhaseDetails(day.moonphase);
+                                            return (
+                                                <div key={idx} className="bg-black/40 border border-white/5 rounded-lg p-4 flex flex-col items-center text-center hover:border-[#00d9ff]/30 transition-colors">
+                                                    <div className="text-slate-500 text-xs font-mono mb-2">
+                                                        {new Date(day.datetime).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+                                                    </div>
+                                                    <div className="my-2">
+                                                        {details.icon}
+                                                    </div>
+                                                    <div className="text-white font-bold text-sm leading-tight">
+                                                        {day.moonphasename || details.name}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );
