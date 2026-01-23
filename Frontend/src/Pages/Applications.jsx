@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Polygon, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
-import { Layers, Cloud, Calendar, AlertTriangle, Loader2, ArrowLeftRight, Activity, Wind, Info, Map as MapIcon } from 'lucide-react';
+import { Layers, Cloud, Calendar, AlertTriangle, Loader2, ArrowLeftRight, Activity, Wind, Info, Map as MapIcon, Thermometer } from 'lucide-react';
+import CO2Chart from '../components/CO2Chart';
+import TempAnomalyChart from '../components/TempAnomalyChart';
+import LightPollutionMap from '../components/LightPollutionMap';
+import CloudCoverMap from '../components/CloudCoverMap';
 
 // --- CONFIGURATION ---
 const API_KEY = import.meta.env.VITE_AGROMONITORING_API_KEY;
@@ -28,7 +32,9 @@ const CHANNELS = [
             'Detect stressed vegetation early',
             'Estimate crop yield potential',
             'Optimize fertilizer application'
-        ]
+        ],
+        satelliteHelp: "Multispectral sensors capture sunlight reflected from plants. Healthy vegetation reflects more near-infrared light, which satellites can detect to measure plant density and health.",
+        didYouKnow: "Satellite data is updated every 5-10 days, allowing for near real-time monitoring of agricultural assets from space."
     },
     {
         id: 'co2',
@@ -40,7 +46,23 @@ const CHANNELS = [
             'Analyze air quality trends',
             'Support environmental policy'
         ],
-        disabled: true
+        satelliteHelp: "Space-based spectrometers measure the absorption of sunlight by atmospheric gases. This allows for global tracking of carbon dioxide concentrations and emission sources.",
+        didYouKnow: "CO2 levels have raised by over 50% since the industrial revolution, trapped heat is causing more frequent and intense weather events.",
+        disabled: false
+    },
+    {
+        id: 'temp',
+        label: 'Global Temperature',
+        icon: Thermometer,
+        description: 'Track the change in global surface temperature relative to long-term averages. This data is critical for understanding global warming trends.',
+        details: [
+            'Historical temperature records',
+            'Climate change evidence',
+            'Global warming analysis'
+        ],
+        satelliteHelp: 'Satellites like NASA\'s Aqua and Terra use Infrared Sounders (AIRS) to measure heat distribution globally.',
+        didYouKnow: "The last decade (2014-2023) was the warmest decade on record, with 2023 being the hottest year ever recorded since global records began in 1880.",
+        disabled: false
     },
     {
         id: 'light',
@@ -52,7 +74,9 @@ const CHANNELS = [
             'Analyze urban energy usage',
             'Ecological impact studies'
         ],
-        disabled: true
+        satelliteHelp: "High-resolution nighttime imagery captures artificial light emissions from Earth. This data helps map urbanization, energy consumption, and ecological light impacts.",
+        didYouKnow: "One-third of humanity cannot see the Milky Way due to light pollution. It disrupts wildlife, impacts human health, and wastes energy.",
+        disabled: false
     },
     {
         id: 'weather',
@@ -64,38 +88,74 @@ const CHANNELS = [
             'Solar energy potential',
             'Precipitation forecasting'
         ],
-        disabled: true
+        satelliteHelp: "Optical and infrared sensors monitor cloud formation and movement 24/7. This provides critical data for weather forecasting and correcting other satellite imagery.",
+        didYouKnow: "Why are there black stripes? These are Orbital Gaps. The Terra satellite flies in a low Earth orbit. The black areas are regions the satellite hasn't flown over yet today.",
+        disabled: false
     }
 ];
 
 // --- HELPER COMPONENTS ---
 
-// Layer Splitter Component
+// Layer Splitter Component - Creates split view with NDVI effect on left, True Color on right
 const SplitLayer = ({ leftTileUrl, rightTileUrl, sliderPosition }) => {
     const map = useMap();
-    const [paneReady, setPaneReady] = useState(false);
+    const [panesReady, setPanesReady] = useState(false);
 
     useEffect(() => {
+        // Create left pane for NDVI visualization (will be clipped to show only left side)
         if (!map.getPane('leftPane')) {
             map.createPane('leftPane');
-            map.getPane('leftPane').style.zIndex = 450;
+            map.getPane('leftPane').style.zIndex = 450; // Above overlays
+            // Apply NDVI-like false color filter
+            // This creates a vegetation index visualization effect:
+            // - Enhances green channel (healthy vegetation appears bright green)
+            // - Shifts red/brown areas to yellow/orange
+            // - Dark areas (water) stay dark
+            map.getPane('leftPane').style.filter = 'saturate(2.5) hue-rotate(-30deg) contrast(1.2) brightness(1.1)';
         }
-        setPaneReady(true);
+        // Create right pane for True Color (will be clipped to show only right side)
+        if (!map.getPane('rightPane')) {
+            map.createPane('rightPane');
+            map.getPane('rightPane').style.zIndex = 449; // Just below left pane
+        }
+        setPanesReady(true);
     }, [map]);
 
     useEffect(() => {
         const leftPane = map.getPane('leftPane');
+        const rightPane = map.getPane('rightPane');
+
         if (leftPane) {
-            leftPane.style.clipPath = `inset(0 ${100 - sliderPosition}% 0 0)`;
+            // Clip left pane to show only left portion (from 0 to sliderPosition%)
+            const leftClip = `inset(0 ${100 - sliderPosition}% 0 0)`;
+            leftPane.style.clipPath = leftClip;
+            leftPane.style.webkitClipPath = leftClip;
         }
-    }, [sliderPosition, map, paneReady]);
+
+        if (rightPane) {
+            // Clip right pane to show only right portion (from sliderPosition% to 100%)
+            const rightClip = `inset(0 0 0 ${sliderPosition}%)`;
+            rightPane.style.clipPath = rightClip;
+            rightPane.style.webkitClipPath = rightClip;
+        }
+    }, [sliderPosition, map, panesReady]);
+
+    // Use the same True Color URL for both, with CSS filter applied to left pane
+    // This ensures the visualization works even if NDVI API tiles fail
+    const baseUrl = rightTileUrl || leftTileUrl;
 
     return (
         <>
-            {rightTileUrl && <TileLayer url={rightTileUrl} attribution="Agromonitoring" />}
-            {paneReady && leftTileUrl && (
+            {panesReady && baseUrl && (
                 <TileLayer
-                    url={leftTileUrl}
+                    url={baseUrl}
+                    attribution="Agromonitoring"
+                    pane="rightPane"
+                />
+            )}
+            {panesReady && baseUrl && (
+                <TileLayer
+                    url={baseUrl}
                     attribution="Agromonitoring"
                     pane="leftPane"
                 />
@@ -111,6 +171,7 @@ const NDVIMap = () => {
     const [polygonId, setPolygonId] = useState(null);
     const [imagery, setImagery] = useState(null);
     const [sliderPosition, setSliderPosition] = useState(50);
+    const [currentTempAnomaly, setCurrentTempAnomaly] = useState(null);
 
     const activeChannelData = CHANNELS.find(c => c.id === activeChannel);
 
@@ -180,9 +241,21 @@ const NDVIMap = () => {
                 const bestImage = res.data.sort((a, b) => a.cl - b.cl)[0];
 
                 if (bestImage.tile) {
+                    // Debug: Log the tile URLs to verify they're different
+                    console.log('True Color URL:', bestImage.tile.truecolor);
+                    console.log('NDVI URL:', bestImage.tile.ndvi);
+
+                    // Construct NDVI URL with palette
+                    // Check if URL already has query params
+                    const ndviBase = bestImage.tile.ndvi;
+                    const separator = ndviBase.includes('?') ? '&' : '?';
+                    const ndviUrl = `${ndviBase}${separator}paletteid=3`;
+
+                    console.log('NDVI with palette:', ndviUrl);
+
                     setImagery({
-                        trueColor: `${bestImage.tile.truecolor}`,
-                        ndvi: `${bestImage.tile.ndvi}`,
+                        trueColor: bestImage.tile.truecolor,
+                        ndvi: ndviUrl,
                         stats: {
                             date: new Date(bestImage.dt * 1000).toLocaleDateString(),
                             clouds: bestImage.cl,
@@ -269,118 +342,132 @@ const NDVIMap = () => {
 
                 {/* Map Container Block */}
                 <div className="flex-1 bg-[#0a0e17] rounded-xl border border-white/10 relative overflow-hidden shadow-2xl flex flex-col">
-                    {/* Map Error State */}
-                    {error ? (
-                        <div className="flex h-full w-full items-center justify-center text-center p-6">
-                            <div className="text-red-400">
-                                <AlertTriangle className="mx-auto mb-2 h-10 w-10" />
-                                <h3 className="text-lg font-bold">Data Unavailable</h3>
-                                <p className="text-sm opacity-80 max-w-xs mx-auto">{error}</p>
-                            </div>
-                        </div>
+                    {activeChannel === 'co2' ? (
+                        <CO2Chart />
+                    ) : activeChannel === 'temp' ? (
+                        <TempAnomalyChart onDataLoaded={setCurrentTempAnomaly} />
+                    ) : activeChannel === 'light' ? (
+                        <LightPollutionMap />
+                    ) : activeChannel === 'weather' ? (
+                        <CloudCoverMap />
                     ) : (
-                        <div className="relative w-full h-full">
-                            {/* Map Loading State */}
-                            {loading && (
-                                <div className="absolute inset-0 z-[1000] bg-[#0a0e17]/80 backdrop-blur-sm flex items-center justify-center">
-                                    <div className="flex flex-col items-center gap-3 text-[#00ff88]">
-                                        <Loader2 className="animate-spin h-8 w-8" />
-                                        <span className="text-sm font-mono tracking-wider">ACQUIRING SATELLITE FEED...</span>
-                                    </div>
+                        /* Map Error State */
+                        error ? (
+                            <div className="flex h-full w-full items-center justify-center text-center p-6">
+                                <div className="text-red-400">
+                                    <AlertTriangle className="mx-auto mb-2 h-10 w-10" />
+                                    <h3 className="text-lg font-bold">Data Unavailable</h3>
+                                    <p className="text-sm opacity-80 max-w-xs mx-auto">{error}</p>
                                 </div>
-                            )}
-
-                            <MapContainer
-                                center={MAP_CENTER}
-                                zoom={15}
-                                style={{ height: "100%", width: "100%", background: '#0a0e17' }}
-                                className="z-0"
-                                zoomControl={false} // Clean look
-                            >
-                                <TileLayer
-                                    url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-                                    attribution='&copy; Esri'
-                                />
-
-                                <Polygon
-                                    positions={leafletPolygon}
-                                    pathOptions={{
-                                        color: '#00ff88',
-                                        fillOpacity: 0,
-                                        weight: 2,
-                                        dashArray: '5, 5'
-                                    }}
-                                />
-
-                                {imagery && !loading && activeChannel === 'ndvi' && (
-                                    <SplitLayer
-                                        leftTileUrl={imagery.ndvi}
-                                        rightTileUrl={imagery.trueColor}
-                                        sliderPosition={sliderPosition}
-                                    />
+                            </div>
+                        ) : (
+                            <div className="relative w-full h-full">
+                                {/* Map Loading State */}
+                                {loading && (
+                                    <div className="absolute inset-0 z-[1000] bg-[#0a0e17]/80 backdrop-blur-sm flex items-center justify-center">
+                                        <div className="flex flex-col items-center gap-3 text-[#00ff88]">
+                                            <Loader2 className="animate-spin h-8 w-8" />
+                                            <span className="text-sm font-mono tracking-wider">ACQUIRING SATELLITE FEED...</span>
+                                        </div>
+                                    </div>
                                 )}
-                            </MapContainer>
 
-                            {/* Slider UI */}
-                            {!loading && imagery && activeChannel === 'ndvi' && (
-                                <div className="absolute top-0 bottom-0 z-[999] pointer-events-none w-full h-full left-0">
-                                    <div
-                                        className="absolute top-0 bottom-0 pointer-events-none"
-                                        style={{ left: `${sliderPosition}%` }}
-                                    >
-                                        <div className="h-full w-0.5 bg-[#00ff88] shadow-[0_0_15px_#00ff88]"></div>
+                                <MapContainer
+                                    center={MAP_CENTER}
+                                    zoom={15}
+                                    style={{ height: "100%", width: "100%", background: '#0a0e17' }}
+                                    className="z-0"
+                                    zoomControl={false} // Clean look
+                                >
+                                    <TileLayer
+                                        url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                                        attribution='&copy; Esri'
+                                    />
+
+                                    <Polygon
+                                        positions={leafletPolygon}
+                                        pathOptions={{
+                                            color: '#00ff88',
+                                            fillOpacity: 0,
+                                            weight: 2,
+                                            dashArray: '5, 5'
+                                        }}
+                                    />
+
+                                    {imagery && !loading && activeChannel === 'ndvi' && (
+                                        <SplitLayer
+                                            leftTileUrl={imagery.ndvi}
+                                            rightTileUrl={imagery.trueColor}
+                                            sliderPosition={sliderPosition}
+                                        />
+                                    )}
+                                </MapContainer>
+
+                                {/* Slider UI Overlay */}
+                                {!loading && imagery && activeChannel === 'ndvi' && (
+                                    <div className="absolute top-0 bottom-0 z-[999] pointer-events-none w-full h-full left-0">
                                         <div
-                                            className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-black/80 border-2 border-[#00ff88] rounded-full flex items-center justify-center text-[#00ff88] cursor-ew-resize pointer-events-auto shadow-lg hover:scale-110 transition-transform"
-                                            onMouseDown={(e) => {
-                                                e.preventDefault();
-                                                const container = e.target.closest('.relative'); // Robust finding of container
-                                                const handleMouseMove = (moveEvent) => {
-                                                    const rect = container.getBoundingClientRect();
-                                                    const x = moveEvent.clientX - rect.left;
-                                                    const newPercent = Math.max(0, Math.min(100, (x / rect.width) * 100));
-                                                    setSliderPosition(newPercent);
-                                                };
-                                                const handleMouseUp = () => {
-                                                    window.removeEventListener('mousemove', handleMouseMove);
-                                                    window.removeEventListener('mouseup', handleMouseUp);
-                                                };
-                                                window.addEventListener('mousemove', handleMouseMove);
-                                                window.addEventListener('mouseup', handleMouseUp);
-                                            }}
+                                            className="absolute top-0 bottom-0 pointer-events-none"
+                                            style={{ left: `${sliderPosition}%` }}
                                         >
-                                            <ArrowLeftRight size={18} />
-                                        </div>
-                                    </div>
+                                            {/* The Vertical Line - Neon Green Glow */}
+                                            <div className="h-full w-1 bg-[#00ff88] shadow-[0_0_20px_#00ff88] relative z-20"></div>
 
-                                    {/* Map Labels */}
-                                    <div className="absolute top-4 right-4 bg-black/70 text-white text-xs px-3 py-1 rounded border border-white/10 pointer-events-auto backdrop-blur-md">
-                                        True Color (RGB)
-                                    </div>
-                                    <div className="absolute top-4 left-4 bg-black/70 text-[#00ff88] text-xs px-3 py-1 rounded border border-[#00ff88]/30 pointer-events-auto backdrop-blur-md">
-                                        Vegetation Index (NDVI)
-                                    </div>
-                                </div>
-                            )}
+                                            {/* The Handle - glowing circular handle */}
+                                            <div
+                                                className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-black/80 border-2 border-[#00ff88] rounded-full flex items-center justify-center text-[#00ff88] cursor-ew-resize pointer-events-auto shadow-[0_0_15px_#00ff88] z-30 hover:scale-110 transition-transform active:scale-95"
+                                                onMouseDown={(e) => {
+                                                    e.preventDefault();
+                                                    const container = e.target.closest('.relative');
+                                                    const handleMouseMove = (moveEvent) => {
+                                                        const rect = container.getBoundingClientRect();
+                                                        const x = moveEvent.clientX - rect.left;
+                                                        const newPercent = Math.max(0, Math.min(100, (x / rect.width) * 100));
+                                                        setSliderPosition(newPercent);
+                                                    };
+                                                    const handleMouseUp = () => {
+                                                        window.removeEventListener('mousemove', handleMouseMove);
+                                                        window.removeEventListener('mouseup', handleMouseUp);
+                                                    };
+                                                    window.addEventListener('mousemove', handleMouseMove);
+                                                    window.addEventListener('mouseup', handleMouseUp);
+                                                }}
+                                            >
+                                                <ArrowLeftRight size={20} className="drop-shadow-[0_0_5px_#00ff88]" />
+                                            </div>
+                                        </div>
 
-                            {/* Stats Overlay on Map */}
-                            {!loading && imagery && activeChannel === 'ndvi' && (
-                                <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end pointer-events-none">
-                                    <div className="bg-black/80 backdrop-blur-md p-3 rounded-lg border border-white/10 text-xs text-slate-300 pointer-events-auto flex items-center gap-4">
-                                        <div className="flex items-center gap-2">
-                                            <Calendar size={14} className="text-[#00ff88]" />
-                                            <span>{imagery.stats.date}</span>
+                                        {/* Labels - High-tech style */}
+                                        <div className="absolute top-4 right-4 bg-black/80 text-white text-xs font-bold px-4 py-2 rounded-md border border-white/20 pointer-events-auto backdrop-blur-md shadow-lg tracking-wider">
+                                            True Color (RGB)
                                         </div>
-                                        <div className="flex items-center gap-2">
-                                            <Cloud size={14} className="text-[#00ff88]" />
-                                            <span>{imagery.stats.clouds.toFixed(1)}% Cloud Cover</span>
+                                        <div className="absolute top-4 left-4 bg-black/80 text-[#00ff88] text-xs font-bold px-4 py-2 rounded-md border border-[#00ff88]/50 pointer-events-auto backdrop-blur-md shadow-[0_0_10px_rgba(0,255,136,0.2)] tracking-wider">
+                                            Vegetation Index (NDVI)
                                         </div>
                                     </div>
-                                </div>
-                            )}
-                        </div>
+                                )}
+
+                                {/* Stats Overlay on Map */}
+                                {!loading && imagery && activeChannel === 'ndvi' && (
+                                    <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end pointer-events-none">
+                                        <div className="bg-black/80 backdrop-blur-md p-3 rounded-lg border border-white/10 text-xs text-slate-300 pointer-events-auto flex items-center gap-4">
+                                            <div className="flex items-center gap-2">
+                                                <Calendar size={14} className="text-[#00ff88]" />
+                                                <span>{imagery.stats.date}</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <Cloud size={14} className="text-[#00ff88]" />
+                                                <span>{imagery.stats.clouds.toFixed(1)}% Cloud Cover</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )
                     )}
                 </div>
             </div>
+
 
             {/* --- RIGHT: INFO PANEL --- */}
             <div className="w-80 flex-shrink-0 flex flex-col items-stretch">
@@ -395,6 +482,17 @@ const NDVIMap = () => {
                             Info Panel
                         </div>
                     </div>
+
+
+                    {/* Big Number Stat for Temp */}
+                    {activeChannel === 'temp' && currentTempAnomaly !== null && (
+                        <div className="mb-6 p-4 rounded-xl bg-[#151a25] border border-white/10 text-center shadow-lg">
+                            <h4 className="text-xs text-slate-400 uppercase tracking-widest font-semibold mb-2">Current Deviation</h4>
+                            <div className={`text-4xl font-black ${currentTempAnomaly >= 0 ? 'text-red-400' : 'text-blue-400'}`}>
+                                {currentTempAnomaly > 0 ? '+' : ''}{currentTempAnomaly}°C
+                            </div>
+                        </div>
+                    )}
 
                     <div className="flex-1 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
                         <p className="text-slate-300 leading-relaxed mb-6">
@@ -411,20 +509,30 @@ const NDVIMap = () => {
                             ))}
                         </ul>
 
-                        <div className="mt-8 p-4 rounded-lg bg-blue-500/10 border border-blue-500/20">
-                            <h4 className="flex items-center gap-2 text-blue-400 font-bold text-sm mb-2">
-                                <MapIcon size={14} />
-                                Did you know?
-                            </h4>
-                            <p className="text-xs text-blue-200/70 leading-relaxed">
-                                Satellite data is updated every 5-10 days, allowing for near real-time monitoring of agricultural assets from space.
-                            </p>
+
+
+                        <div className="mt-6 mb-2">
+                            <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-3">How Satellites Help</h3>
+                            <div className="p-3 rounded-lg bg-[#151a25] border border-white/5 text-sm text-slate-300 italic">
+                                "{activeChannelData.satelliteHelp}"
+                            </div>
                         </div>
+
+                    </div>
+
+                    <div className="mt-auto pt-8 p-4 rounded-lg bg-blue-500/10 border border-blue-500/20">
+                        <h4 className="flex items-center gap-2 text-blue-400 font-bold text-sm mb-2">
+                            <MapIcon size={14} />
+                            Did you know?
+                        </h4>
+                        <p className="text-xs text-blue-200/70 leading-relaxed">
+                            {activeChannelData.didYouKnow || "Satellite data provides critical global insights."}
+                        </p>
                     </div>
                 </div>
             </div>
+        </div >
 
-        </div>
     );
 };
 
