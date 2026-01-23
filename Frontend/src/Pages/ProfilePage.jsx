@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../services/api'; // Import centralized api
 import { useAuth } from '../../Context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
@@ -23,7 +23,7 @@ const ProfilePage = () => {
         const fetchUserPosts = async () => {
             if (!user?.username) return;
             try {
-                const res = await axios.get('http://localhost:5000/api/posts');
+                const res = await api.get('/posts');
                 // Filter for current user's posts
                 const myPosts = res.data.filter(p => p.user === user.username);
                 setUserPosts(myPosts);
@@ -45,17 +45,13 @@ const ProfilePage = () => {
     const handleUpdate = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`http://localhost:5000/api/auth/profile/${user.id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            });
+            const response = await api.put(`/auth/profile/${user.id}`, formData);
 
-            const data = await response.json();
-            if (response.ok) {
-                updateUser(data.user);
-                setIsEditing(false);
-            }
+            const data = response.data;
+            // Axios response.status is checked automatically or we check data
+            updateUser(data.user);
+            setIsEditing(false);
+
         } catch (error) {
             console.error('Update failed:', error);
         }

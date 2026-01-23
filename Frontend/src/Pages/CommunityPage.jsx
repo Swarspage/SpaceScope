@@ -4,7 +4,7 @@ import { useAuth } from '../../Context/AuthContext';
 import { MdAddPhotoAlternate, MdFavorite, MdFavoriteBorder, MdDelete, MdLocationOn, MdClose } from 'react-icons/md';
 import { FaUserAstronaut, FaSpinner, FaRegComment, FaRetweet, FaShare } from 'react-icons/fa';
 import { Camera, X, Upload, Heart, MessageCircle, Repeat, Share2, MapPin } from 'lucide-react';
-import axios from 'axios';
+import api from '../services/api';
 import { formatDistanceToNow, format } from 'date-fns';
 
 const CommunityPage = () => {
@@ -33,7 +33,7 @@ const CommunityPage = () => {
 
     const fetchPosts = async () => {
         try {
-            const res = await axios.get('http://localhost:5000/api/posts');
+            const res = await api.get('/posts');
             setPosts(res.data);
             setLoading(false);
         } catch (err) {
@@ -66,7 +66,7 @@ const CommunityPage = () => {
         formData.append('user', user?.username || 'CosmicExplorer');
 
         try {
-            await axios.post('http://localhost:5000/api/posts', formData, {
+            await api.post('/posts', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             // Reset
@@ -102,7 +102,7 @@ const CommunityPage = () => {
         }
 
         try {
-            await axios.post(`http://localhost:5000/api/posts/${post._id}/like`, { userId: user.username });
+            await api.post(`/posts/${post._id}/like`, { userId: user.username });
         } catch (err) {
             console.error("Like failed", err);
             fetchPosts(); // Revert on error
@@ -119,7 +119,7 @@ const CommunityPage = () => {
                 setPosts(posts.filter(p => p._id !== postId));
                 if (selectedPost?._id === postId) setSelectedPost(null);
 
-                await axios.delete(`http://localhost:5000/api/posts/${postId}`, {
+                await api.delete(`/posts/${postId}`, {
                     data: { userId: user.username }
                 });
             } catch (err) {

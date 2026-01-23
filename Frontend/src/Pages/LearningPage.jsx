@@ -29,6 +29,7 @@ import { FaUserAstronaut } from 'react-icons/fa';
 import Sidebar from '../components/Sidebar';
 import { useAuth } from '../../Context/AuthContext';
 import QuizActiveView from './QuizActiveView';
+import api from '../services/api';
 
 // --- IMPORTANT: DATA IMPORT ---
 import quizData from '../data/Quiz.json';
@@ -263,21 +264,20 @@ const LearningPage = () => {
     useEffect(() => {
         const fetchLeaderboard = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/auth/leaderboard');
-                if (response.ok) {
-                    const data = await response.json();
+                const response = await api.get('/auth/leaderboard');
+                const data = response.data;
 
-                    // Transform data to match UI requirements
-                    const formattedData = data.leaderboard.map((userItem, index) => ({
-                        rank: index + 1,
-                        name: userItem.username,
-                        xp: userItem.xp || 0,
-                        avatar: userItem.avatar || "👨‍🚀", // Fallback avatar if none
-                        isUser: user?.username === userItem.username
-                    }));
+                // Transform data to match UI requirements
+                const formattedData = data.leaderboard.map((userItem, index) => ({
+                    rank: index + 1,
+                    name: userItem.username,
+                    xp: userItem.xp || 0,
+                    avatar: userItem.avatar || "👨‍🚀", // Fallback avatar if none
+                    isUser: user?.username === userItem.username
+                }));
 
-                    setLeaderboardData(formattedData);
-                }
+                setLeaderboardData(formattedData);
+
             } catch (error) {
                 console.error("Failed to fetch leaderboard:", error);
             }

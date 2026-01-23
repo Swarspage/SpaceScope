@@ -319,6 +319,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Context/AuthContext';
+import api from '../services/api';
 import {
   MdRocketLaunch,
   MdEmail,
@@ -389,22 +390,17 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(loginData)
-      });
+      // Use the centralized api service
+      const response = await api.post('/auth/login', loginData);
+      const data = response.data;
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Login failed');
-      }
-
+      // Axios throws on 4xx/5xx, so if we get here, it succeeded
       login(data.user);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.message);
+      // Axios error object structure
+      const msg = err.response?.data?.error || err.message || 'Login failed';
+      setError(msg);
     } finally {
       setLoading(false);
     }
@@ -417,17 +413,8 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(registerData)
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Registration failed');
-      }
+      const response = await api.post('/auth/register', registerData);
+      // const data = response.data; // data not always needed if just status 200
 
       // Show success message and switch to login
       setShowVerifyOverlay(true);
@@ -439,7 +426,8 @@ const LoginPage = () => {
         location: ''
       });
     } catch (err) {
-      setError(err.message);
+      const msg = err.response?.data?.error || err.message || 'Registration failed';
+      setError(msg);
     } finally {
       setLoading(false);
     }

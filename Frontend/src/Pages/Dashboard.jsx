@@ -9,6 +9,7 @@ import Sidebar from '../components/Sidebar';
 import Tutorial from '../components/Tutorial';
 import meteorEvents from '../data/meteorData.json';
 import { useAuth } from '../../Context/AuthContext';
+import api from '../services/api';
 import {
     MdRocketLaunch,
     MdNotifications,
@@ -112,11 +113,7 @@ const Dashboard = () => {
         if (user) {
             try {
                 // Update backend
-                await fetch(`http://localhost:5000/api/users/profile/${user.id}/tutorial`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ tutorialCompleted: true })
-                });
+                await api.put(`/users/profile/${user.id}/tutorial`, { tutorialCompleted: true });
 
                 // Update local context
                 updateUser({ ...user, tutorialCompleted: true });
@@ -198,19 +195,15 @@ const Dashboard = () => {
         const fetchSpaceXData = async () => {
             try {
                 // Using the backend query endpoint to get upcoming launches
-                const response = await fetch('http://localhost:5000/api/spacex/launches/query', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        query: { upcoming: true },
-                        options: {
-                            limit: 3,
-                            sort: { date_utc: 'asc' },
-                            select: ['name', 'date_utc', 'details', 'links', 'flight_number', 'rocket']
-                        }
-                    })
+                const response = await api.post('/spacex/launches/query', {
+                    query: { upcoming: true },
+                    options: {
+                        limit: 3,
+                        sort: { date_utc: 'asc' },
+                        select: ['name', 'date_utc', 'details', 'links', 'flight_number', 'rocket']
+                    }
                 });
-                const data = await response.json();
+                const data = response.data;
                 if (data.docs) {
                     setSpacexData(data.docs);
                 }
