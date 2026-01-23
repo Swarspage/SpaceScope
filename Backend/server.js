@@ -26,6 +26,9 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/spacescop
 // Auth Routes - ADD THIS
 app.use('/api/auth', authRoutes);
 
+import postRoutes from "./Routes/postRoutes.js";
+app.use('/api/posts', postRoutes);
+
 
 // Basic logger for visibility
 app.use((req, res, next) => {

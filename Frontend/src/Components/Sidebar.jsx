@@ -6,6 +6,7 @@ import {
   MdSchool,
   MdSatelliteAlt,
   MdHome,
+  MdPeople,
 } from "react-icons/md";
 import Logo from "../assets/Logo.png";
 
@@ -15,11 +16,10 @@ const Sidebar = ({ activeTab = "Dashboard" }) => {
   const NavItem = ({ icon: Icon, label, active, onClick }) => (
     <button
       onClick={onClick}
-      className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium transition-all duration-200 border-l-2 ${
-        active
-          ? "border-[#00d9ff] text-white bg-gradient-to-r from-[#00d9ff]/10 to-transparent"
-          : "border-transparent text-slate-400 hover:text-white hover:bg-white/5"
-      }`}
+      className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium transition-all duration-200 border-l-2 ${active
+        ? "border-[#00d9ff] text-white bg-gradient-to-r from-[#00d9ff]/10 to-transparent"
+        : "border-transparent text-slate-400 hover:text-white hover:bg-white/5"
+        }`}
     >
       <Icon
         className={`text-xl ${active ? "text-[#00d9ff]" : "text-slate-400"}`}
@@ -68,6 +68,12 @@ const Sidebar = ({ activeTab = "Dashboard" }) => {
             label="Applications"
             active={activeTab === "Applications"}
             onClick={() => navigate("/applications")}
+          />
+          <NavItem
+            icon={MdPeople}
+            label="Community"
+            active={activeTab === "Community"}
+            onClick={() => navigate("/community")}
           />
         </nav>
       </div>

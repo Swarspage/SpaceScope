@@ -1,31 +1,3 @@
-// import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-// import Dashboard from "./Pages/Dashboard";
-// import LoginPage from "./Pages/LoginPage";
-// import AuroraPage from "./Pages/AuroraPage";
-// import ISSTracker from "./Pages/ISSTracker";
-// import MissionTimelines from "./Pages/MissionTimelines";
-
-// function App() {
-//   return (
-//     <Router>
-//       <Routes>
-//         {/* Main Dashboard - Default Route */}
-//         <Route path="/" element={<Dashboard />} />
-
-//         {/* Authentication */}
-//         <Route path="/login" element={<LoginPage />} />
-
-//         {/* Feature Pages */}
-//         <Route path="/aurora" element={<AuroraPage />} />
-//         <Route path="/iss" element={<ISSTracker />} />
-//         <Route path="/missions" element={<MissionTimelines />} />
-//       </Routes>
-//     </Router>
-//   );
-// }
-
-// export default App;
-
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "../Context/AuthContext";
 import Dashboard from "./Pages/Dashboard";
@@ -38,6 +10,7 @@ import MeteorCalendar from "./Pages/MeteorCalender";
 import LearningPage from "./Pages/LearningPage";
 import HomePage from "./Pages/HomePage";
 import Applications from "./Pages/Applications";
+import CommunityPage from "./Pages/CommunityPage"; // Add this
 
 // Protected Route Component - must be used inside AuthProvider
 const ProtectedRoute = ({ children }) => {
@@ -131,6 +104,15 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <Applications />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/community"
+        element={
+          <ProtectedRoute>
+            <CommunityPage />
           </ProtectedRoute>
         }
       />
