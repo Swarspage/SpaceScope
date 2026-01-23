@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Sidebar from '../components/Sidebar';
+import Sidebar from '../Components/Sidebar';
 import { useAuth } from '../Context/AuthContext';
 import { MdAddPhotoAlternate, MdFavorite, MdFavoriteBorder, MdDelete, MdLocationOn, MdClose } from 'react-icons/md';
 import { FaUserAstronaut, FaSpinner, FaRegComment, FaRetweet, FaShare } from 'react-icons/fa';
