@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { MapContainer, TileLayer, Polygon, useMap, ImageOverlay } from 'react-leaflet';
+import React, { useState, useEffect } from 'react';
+import { MapContainer, TileLayer, Polygon, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
-import { Layers, Cloud, Calendar, AlertTriangle, Loader2, ArrowLeftRight } from 'lucide-react';
+import { Layers, Cloud, Calendar, AlertTriangle, Loader2, ArrowLeftRight, Activity, Wind, Info, Map as MapIcon } from 'lucide-react';
 
 // --- CONFIGURATION ---
 const API_KEY = import.meta.env.VITE_AGROMONITORING_API_KEY;
@@ -16,14 +16,65 @@ const POLYGON_COORDINATES = [
 // Center map roughly on the polygon
 const MAP_CENTER = [37.6737, -121.1865];
 
+// --- CONTENT DATA ---
+const CHANNELS = [
+    {
+        id: 'ndvi',
+        label: 'Vegetation (NDVI)',
+        icon: Layers,
+        description: 'Normalized Difference Vegetation Index (NDVI) analyzes remote sensing measurements to determine the health of vegetation. It compares the red and near-infrared light reflected by vegetation. Healthy plants absorb red light and reflect near-infrared light.',
+        details: [
+            'Monitor crop health and density',
+            'Detect stressed vegetation early',
+            'Estimate crop yield potential',
+            'Optimize fertilizer application'
+        ]
+    },
+    {
+        id: 'co2',
+        label: 'CO₂ Measurement',
+        icon: Cloud,
+        description: 'Carbon Dioxide (CO₂) monitoring helps track greenhouse gas emissions and air quality. This data is vital for understanding climate change impact and industrial compliance.',
+        details: [
+            'Track regional emissions',
+            'Analyze air quality trends',
+            'Support environmental policy'
+        ],
+        disabled: true
+    },
+    {
+        id: 'light',
+        label: 'Light Pollution',
+        icon: Activity,
+        description: 'Light pollution maps show the artificial sky brightness. This is crucial for astronomical observations and understanding energy consumption patterns in urban areas.',
+        details: [
+            'Identify dark sky preserves',
+            'Analyze urban energy usage',
+            'Ecological impact studies'
+        ],
+        disabled: true
+    },
+    {
+        id: 'weather',
+        label: 'Cloud Cover',
+        icon: Wind,
+        description: 'Real-time and historical cloud cover data. Essential for various agricultural assessments and validating other satellite imagery data accuracy.',
+        details: [
+            'Weather pattern analysis',
+            'Solar energy potential',
+            'Precipitation forecasting'
+        ],
+        disabled: true
+    }
+];
+
 // --- HELPER COMPONENTS ---
 
-// Layer Splitter Component (Custom implementation without external plugins)
+// Layer Splitter Component
 const SplitLayer = ({ leftTileUrl, rightTileUrl, sliderPosition }) => {
     const map = useMap();
     const [paneReady, setPaneReady] = useState(false);
 
-    // Create the custom pane once
     useEffect(() => {
         if (!map.getPane('leftPane')) {
             map.createPane('leftPane');
@@ -32,21 +83,16 @@ const SplitLayer = ({ leftTileUrl, rightTileUrl, sliderPosition }) => {
         setPaneReady(true);
     }, [map]);
 
-    // Update clip path of the left pane
     useEffect(() => {
         const leftPane = map.getPane('leftPane');
         if (leftPane) {
             leftPane.style.clipPath = `inset(0 ${100 - sliderPosition}% 0 0)`;
         }
-    }, [sliderPosition, map, paneReady]); // Add paneReady dependency
+    }, [sliderPosition, map, paneReady]);
 
     return (
         <>
-            {/* Right Layer (Base / True Color) - Standard Z-Index */}
             {rightTileUrl && <TileLayer url={rightTileUrl} attribution="Agromonitoring" />}
-
-            {/* Left Layer (Overlay / NDVI) - Higher Z-Index + Clipped Pane */}
-            {/* Only render if custom pane is confirmed ready to avoid 'appendChild' errors */}
             {paneReady && leftTileUrl && (
                 <TileLayer
                     url={leftTileUrl}
@@ -58,29 +104,26 @@ const SplitLayer = ({ leftTileUrl, rightTileUrl, sliderPosition }) => {
     );
 };
 
-const NDVIMap = ({ apiKey = API_KEY }) => {
-    // State
+const NDVIMap = () => {
+    const [activeChannel, setActiveChannel] = useState('ndvi');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [polygonId, setPolygonId] = useState(null);
-    const [imagery, setImagery] = useState(null); // { trueColor: url, ndvi: url, stats: {} }
-    const [sliderPosition, setSliderPosition] = useState(50); // 0 to 100%
+    const [imagery, setImagery] = useState(null);
+    const [sliderPosition, setSliderPosition] = useState(50);
+
+    const activeChannelData = CHANNELS.find(c => c.id === activeChannel);
 
     // --- STEP 1: CREATE/FETCH POLYGON ---
     useEffect(() => {
         const setupPolygon = async () => {
             try {
-                // 1. Try to fetch existing polygons first (to avoid duplicate/limit errors)
-                const listRes = await axios.get(`https://api.agromonitoring.com/agro/1.0/polygons?appid=${apiKey}`);
-
+                const listRes = await axios.get(`https://api.agromonitoring.com/agro/1.0/polygons?appid=${API_KEY}`);
                 if (listRes.data && listRes.data.length > 0) {
-                    // Use the first existing polygon
                     setPolygonId(listRes.data[0].id);
-                    console.log("Using existing Polygon ID:", listRes.data[0].id);
                     return;
                 }
 
-                // 2. If no polygons exist, create a new one
                 const payload = {
                     name: "SpaceScope Test Farm",
                     geo_json: {
@@ -94,21 +137,17 @@ const NDVIMap = ({ apiKey = API_KEY }) => {
                 };
 
                 const createRes = await axios.post(
-                    `https://api.agromonitoring.com/agro/1.0/polygons?appid=${apiKey}`,
+                    `https://api.agromonitoring.com/agro/1.0/polygons?appid=${API_KEY}`,
                     payload
                 );
 
                 if (createRes.data && createRes.data.id) {
                     setPolygonId(createRes.data.id);
-                    console.log("Created new Polygon ID:", createRes.data.id);
                 } else {
                     throw new Error("Failed to create polygon ID");
                 }
-
             } catch (err) {
                 console.error("Polygon Setup Error:", err);
-                // If it's a 422, it might mean we hit a limit but didn't get a list (edge case), 
-                // or the geometry is invalid. We'll show a more helpful error.
                 if (err.response?.status === 422) {
                     setError("API limit reached or invalid data. Using existing polygon if available.");
                 } else {
@@ -119,19 +158,17 @@ const NDVIMap = ({ apiKey = API_KEY }) => {
         };
 
         setupPolygon();
-    }, [apiKey]);
+    }, []);
 
     // --- STEP 2: SEARCH IMAGERY ---
     useEffect(() => {
-        if (!polygonId) return;
+        if (!polygonId || activeChannel !== 'ndvi') return;
 
         const findImagery = async () => {
             try {
                 const end = Math.floor(Date.now() / 1000);
                 const start = 1609459200; // Jan 1, 2021
-
-                // Search for images
-                const searchUrl = `https://api.agromonitoring.com/agro/1.0/image/search?start=${start}&end=${end}&polyid=${polygonId}&appid=${apiKey}`;
+                const searchUrl = `https://api.agromonitoring.com/agro/1.0/image/search?start=${start}&end=${end}&polyid=${polygonId}&appid=${API_KEY}`;
                 const res = await axios.get(searchUrl);
 
                 if (!res.data || res.data.length === 0) {
@@ -140,19 +177,11 @@ const NDVIMap = ({ apiKey = API_KEY }) => {
                     return;
                 }
 
-                // Filter: Find lowest cloud coverage
-                // Sort by 'cl' (clouds) ascending
                 const bestImage = res.data.sort((a, b) => a.cl - b.cl)[0];
-
-                // Construct Tile URLs
-                // API returns 'tile' object with 'truecolor' and 'ndvi' templates (usually). 
-                // However, Agromonitoring sometimes returns specific full URLs or templates.
-                // The documentation says it returns a URL template like:
-                // .../tile/1.0/{z}/{x}/{y}/{image_id}?appid={api_key}
 
                 if (bestImage.tile) {
                     setImagery({
-                        trueColor: `${bestImage.tile.truecolor}`, // Usually already a template or URL
+                        trueColor: `${bestImage.tile.truecolor}`,
                         ndvi: `${bestImage.tile.ndvi}`,
                         stats: {
                             date: new Date(bestImage.dt * 1000).toLocaleDateString(),
@@ -161,11 +190,8 @@ const NDVIMap = ({ apiKey = API_KEY }) => {
                         }
                     });
                 } else {
-                    // Fallback to manual construction if simple search result (sometimes varies by account tier)
-                    // But usually search results include the 'tile' block.
                     throw new Error("Image found but no tile URL available.");
                 }
-
             } catch (err) {
                 console.error("Imagery Search Error:", err);
                 setError("Failed to retrieve satellite imagery.");
@@ -175,135 +201,229 @@ const NDVIMap = ({ apiKey = API_KEY }) => {
         };
 
         findImagery();
-    }, [polygonId, apiKey]);
+    }, [polygonId, activeChannel]);
 
 
-    // --- RENDER ---
-
-    // Convert Polygon for Leaflet (Lat, Lon) - input is (Lon, Lat)
     const leafletPolygon = POLYGON_COORDINATES.map(idx => [idx[1], idx[0]]);
 
-    if (error) {
-        return (
-            <div className="flex h-[600px] w-full items-center justify-center rounded-xl bg-[#0f1322] border border-white/10 text-center p-6">
-                <div className="text-red-400">
-                    <AlertTriangle className="mx-auto mb-2 h-10 w-10" />
-                    <h3 className="text-lg font-bold">Data Unavailable</h3>
-                    <p className="text-sm opacity-80">{error}</p>
-                    <p className="text-xs mt-4 text-slate-500">Check API Key or Quota</p>
-                </div>
-            </div>
-        );
-    }
-
     return (
-        <div className="flex flex-col h-screen w-full bg-[#050714] text-white">
+        <div className="flex h-screen w-full bg-[#050714] text-white p-4 gap-4 overflow-hidden font-inter">
 
-            {/* Header */}
-            <div className="p-6 border-b border-white/10 flex justify-between items-center bg-[#0a0e17]">
-                <div>
-                    <h1 className="text-2xl font-bold flex items-center gap-2">
-                        <Layers className="text-[#00ff88]" />
-                        Precision Agriculture
+            {/* --- LEFT: CONTROL PANEL --- */}
+            <div className="w-64 flex-shrink-0 flex flex-col gap-4">
+                <div className="bg-[#0a0e17] rounded-xl border border-white/10 p-4 flex flex-col h-full shadow-xl">
+                    <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-[#00ff88]">
+                        <Activity size={20} />
+                        Control Panel
+                    </h2>
+
+                    <div className="space-y-3">
+                        {CHANNELS.map((channel) => (
+                            <button
+                                key={channel.id}
+                                onClick={() => !channel.disabled && setActiveChannel(channel.id)}
+                                disabled={channel.disabled}
+                                className={`w-full p-4 rounded-lg border flex items-center gap-3 transition-all duration-300 text-left group relative overflow-hidden
+                                    ${activeChannel === channel.id
+                                        ? 'bg-[#00ff88]/10 border-[#00ff88] text-white shadow-[0_0_15px_rgba(0,255,136,0.2)]'
+                                        : 'bg-[#151a25] border-white/5 text-slate-400 hover:border-white/20'
+                                    }
+                                    ${channel.disabled ? 'opacity-50 cursor-not-allowed grayscale' : ''}
+                                `}
+                            >
+                                <div className={`p-2 rounded-md ${activeChannel === channel.id ? 'bg-[#00ff88] text-black' : 'bg-slate-800'}`}>
+                                    <channel.icon size={18} />
+                                </div>
+                                <div className="flex-1">
+                                    <span className="font-semibold text-sm block">{channel.label}</span>
+                                    {channel.disabled && <span className="text-[10px] uppercase tracking-wider text-slate-500">Coming Soon</span>}
+                                </div>
+                                {activeChannel === channel.id && (
+                                    <div className="absolute right-0 top-0 bottom-0 w-1 bg-[#00ff88]" />
+                                )}
+                            </button>
+                        ))}
+                    </div>
+
+                    <div className="mt-auto pt-6 border-t border-white/10">
+                        <div className="text-xs text-slate-500 text-center">
+                            Select a channel to visualize different satellite data layers.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* --- CENTER: MAIN MAP AREA --- */}
+            <div className="flex-1 flex flex-col gap-4 min-w-0"> {/* min-w-0 ensures flex child shrinks properly */}
+
+                {/* Header Block */}
+                <div className="bg-[#0a0e17] rounded-xl border border-white/10 p-6 flex flex-col justify-center items-center text-center shadow-lg relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#00ff88]/5 via-transparent to-[#00d9ff]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                    <h1 className="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 z-10">
+                        Check out how space data helps us.
                     </h1>
-                    <p className="text-slate-400 text-sm">NDVI vs True Color Analysis • Sentinel-2 Satellite Data</p>
+                    <p className="text-slate-400 mt-2 z-10">
+                        Explore real-time insights derived from satellite imagery.
+                    </p>
                 </div>
 
-                {loading ? (
-                    <div className="flex items-center gap-2 text-[#00d9ff] animate-pulse">
-                        <Loader2 className="animate-spin" size={18} />
-                        <span className="text-sm">Acquiring Satellite Feed...</span>
-                    </div>
-                ) : imagery ? (
-                    <div className="flex gap-6 text-sm">
-                        <div className="flex items-center gap-2">
-                            <Calendar size={16} className="text-slate-500" />
-                            <span className="font-mono">{imagery.stats.date}</span>
+                {/* Map Container Block */}
+                <div className="flex-1 bg-[#0a0e17] rounded-xl border border-white/10 relative overflow-hidden shadow-2xl flex flex-col">
+                    {/* Map Error State */}
+                    {error ? (
+                        <div className="flex h-full w-full items-center justify-center text-center p-6">
+                            <div className="text-red-400">
+                                <AlertTriangle className="mx-auto mb-2 h-10 w-10" />
+                                <h3 className="text-lg font-bold">Data Unavailable</h3>
+                                <p className="text-sm opacity-80 max-w-xs mx-auto">{error}</p>
+                            </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                            <Cloud size={16} className="text-slate-500" />
-                            <span className="font-mono">{imagery.stats.clouds.toFixed(2)}% Cover</span>
+                    ) : (
+                        <div className="relative w-full h-full">
+                            {/* Map Loading State */}
+                            {loading && (
+                                <div className="absolute inset-0 z-[1000] bg-[#0a0e17]/80 backdrop-blur-sm flex items-center justify-center">
+                                    <div className="flex flex-col items-center gap-3 text-[#00ff88]">
+                                        <Loader2 className="animate-spin h-8 w-8" />
+                                        <span className="text-sm font-mono tracking-wider">ACQUIRING SATELLITE FEED...</span>
+                                    </div>
+                                </div>
+                            )}
+
+                            <MapContainer
+                                center={MAP_CENTER}
+                                zoom={15}
+                                style={{ height: "100%", width: "100%", background: '#0a0e17' }}
+                                className="z-0"
+                                zoomControl={false} // Clean look
+                            >
+                                <TileLayer
+                                    url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                                    attribution='&copy; Esri'
+                                />
+
+                                <Polygon
+                                    positions={leafletPolygon}
+                                    pathOptions={{
+                                        color: '#00ff88',
+                                        fillOpacity: 0,
+                                        weight: 2,
+                                        dashArray: '5, 5'
+                                    }}
+                                />
+
+                                {imagery && !loading && activeChannel === 'ndvi' && (
+                                    <SplitLayer
+                                        leftTileUrl={imagery.ndvi}
+                                        rightTileUrl={imagery.trueColor}
+                                        sliderPosition={sliderPosition}
+                                    />
+                                )}
+                            </MapContainer>
+
+                            {/* Slider UI */}
+                            {!loading && imagery && activeChannel === 'ndvi' && (
+                                <div className="absolute top-0 bottom-0 z-[999] pointer-events-none w-full h-full left-0">
+                                    <div
+                                        className="absolute top-0 bottom-0 pointer-events-none"
+                                        style={{ left: `${sliderPosition}%` }}
+                                    >
+                                        <div className="h-full w-0.5 bg-[#00ff88] shadow-[0_0_15px_#00ff88]"></div>
+                                        <div
+                                            className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-black/80 border-2 border-[#00ff88] rounded-full flex items-center justify-center text-[#00ff88] cursor-ew-resize pointer-events-auto shadow-lg hover:scale-110 transition-transform"
+                                            onMouseDown={(e) => {
+                                                e.preventDefault();
+                                                const container = e.target.closest('.relative'); // Robust finding of container
+                                                const handleMouseMove = (moveEvent) => {
+                                                    const rect = container.getBoundingClientRect();
+                                                    const x = moveEvent.clientX - rect.left;
+                                                    const newPercent = Math.max(0, Math.min(100, (x / rect.width) * 100));
+                                                    setSliderPosition(newPercent);
+                                                };
+                                                const handleMouseUp = () => {
+                                                    window.removeEventListener('mousemove', handleMouseMove);
+                                                    window.removeEventListener('mouseup', handleMouseUp);
+                                                };
+                                                window.addEventListener('mousemove', handleMouseMove);
+                                                window.addEventListener('mouseup', handleMouseUp);
+                                            }}
+                                        >
+                                            <ArrowLeftRight size={18} />
+                                        </div>
+                                    </div>
+
+                                    {/* Map Labels */}
+                                    <div className="absolute top-4 right-4 bg-black/70 text-white text-xs px-3 py-1 rounded border border-white/10 pointer-events-auto backdrop-blur-md">
+                                        True Color (RGB)
+                                    </div>
+                                    <div className="absolute top-4 left-4 bg-black/70 text-[#00ff88] text-xs px-3 py-1 rounded border border-[#00ff88]/30 pointer-events-auto backdrop-blur-md">
+                                        Vegetation Index (NDVI)
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Stats Overlay on Map */}
+                            {!loading && imagery && activeChannel === 'ndvi' && (
+                                <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end pointer-events-none">
+                                    <div className="bg-black/80 backdrop-blur-md p-3 rounded-lg border border-white/10 text-xs text-slate-300 pointer-events-auto flex items-center gap-4">
+                                        <div className="flex items-center gap-2">
+                                            <Calendar size={14} className="text-[#00ff88]" />
+                                            <span>{imagery.stats.date}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Cloud size={14} className="text-[#00ff88]" />
+                                            <span>{imagery.stats.clouds.toFixed(1)}% Cloud Cover</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
-                    </div>
-                ) : null}
-            </div>
-
-            {/* Map Container */}
-            <div className="relative flex-grow w-full overflow-hidden">
-                <MapContainer
-                    center={MAP_CENTER}
-                    zoom={15}
-                    style={{ height: "100%", width: "100%", background: '#0a0e17' }}
-                    className="z-0"
-                >
-                    <TileLayer
-                        url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-                        attribution='&copy; Esri'
-                    />
-
-                    {/* The Farm Polygon Outline */}
-                    <Polygon
-                        positions={leafletPolygon}
-                        pathOptions={{
-                            color: '#00ff88',
-                            fillOpacity: 0,
-                            weight: 2,
-                            dashArray: '5, 5'
-                        }}
-                    />
-
-                    {/* Compare Layers */}
-                    {imagery && !loading && (
-                        <SplitLayer
-                            leftTileUrl={imagery.ndvi}
-                            rightTileUrl={imagery.trueColor}
-                            sliderPosition={sliderPosition}
-                        />
                     )}
+                </div>
+            </div>
 
-                </MapContainer>
-
-                {/* Slider UI Overlay */}
-                {!loading && imagery && (
-                    <div
-                        className="absolute top-0 bottom-0 z-[1000] pointer-events-none"
-                        style={{ left: `${sliderPosition}%` }}
-                    >
-                        {/* The Vertical Line */}
-                        <div className="h-full w-0.5 bg-[#00ff88] shadow-[0_0_15px_#00ff88]"></div>
-
-                        {/* The Handle */}
-                        <div
-                            className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-black/80 border-2 border-[#00ff88] rounded-full flex items-center justify-center text-[#00ff88] cursor-ew-resize pointer-events-auto shadow-lg hover:scale-110 transition-transform"
-                            onMouseDown={(e) => {
-                                e.preventDefault();
-                                const handleMouseMove = (moveEvent) => {
-                                    const rect = e.target.parentElement.parentElement.getBoundingClientRect();
-                                    const x = moveEvent.clientX - rect.left;
-                                    const newPercent = Math.max(0, Math.min(100, (x / rect.width) * 100));
-                                    setSliderPosition(newPercent);
-                                };
-                                const handleMouseUp = () => {
-                                    window.removeEventListener('mousemove', handleMouseMove);
-                                    window.removeEventListener('mouseup', handleMouseUp);
-                                };
-                                window.addEventListener('mousemove', handleMouseMove);
-                                window.addEventListener('mouseup', handleMouseUp);
-                            }}
-                        >
-                            <ArrowLeftRight size={18} />
+            {/* --- RIGHT: INFO PANEL --- */}
+            <div className="w-80 flex-shrink-0 flex flex-col items-stretch">
+                <div className="bg-[#0a0e17] rounded-xl border border-white/10 p-6 flex flex-col h-full shadow-xl">
+                    <div className="mb-6 pb-6 border-b border-white/10">
+                        <div className="w-12 h-12 rounded-lg bg-[#00ff88]/10 text-[#00ff88] flex items-center justify-center mb-4">
+                            <activeChannelData.icon size={24} />
                         </div>
-
-                        {/* Labels */}
-                        <div className="absolute top-4 right-4 bg-black/70 text-white text-xs px-3 py-1 rounded border border-white/10 pointer-events-auto">
-                            True Color (RGB)
-                        </div>
-                        <div className="absolute top-4 left-[-120px] bg-black/70 text-[#00ff88] text-xs px-3 py-1 rounded border border-[#00ff88]/30 pointer-events-auto">
-                            Vegetation Index (NDVI)
+                        <h2 className="text-2xl font-bold text-white mb-2">{activeChannelData.label}</h2>
+                        <div className="flex items-center gap-2 text-xs text-slate-500 uppercase tracking-widest font-semibold">
+                            <Info size={12} />
+                            Info Panel
                         </div>
                     </div>
-                )}
+
+                    <div className="flex-1 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
+                        <p className="text-slate-300 leading-relaxed mb-6">
+                            {activeChannelData.description}
+                        </p>
+
+                        <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-3">Key Benefits</h3>
+                        <ul className="space-y-3">
+                            {activeChannelData.details.map((detail, idx) => (
+                                <li key={idx} className="flex items-start gap-3 p-3 rounded-lg bg-[#151a25] border border-white/5 text-sm text-slate-300">
+                                    <div className="min-w-[6px] h-[6px] rounded-full bg-[#00ff88] mt-1.5" />
+                                    {detail}
+                                </li>
+                            ))}
+                        </ul>
+
+                        <div className="mt-8 p-4 rounded-lg bg-blue-500/10 border border-blue-500/20">
+                            <h4 className="flex items-center gap-2 text-blue-400 font-bold text-sm mb-2">
+                                <MapIcon size={14} />
+                                Did you know?
+                            </h4>
+                            <p className="text-xs text-blue-200/70 leading-relaxed">
+                                Satellite data is updated every 5-10 days, allowing for near real-time monitoring of agricultural assets from space.
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
+
         </div>
     );
 };
