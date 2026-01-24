@@ -4,6 +4,16 @@ import axios from "axios";
 import dotenv from "dotenv";
 import mongoose from "mongoose"; // ADD THIS
 import authRoutes from "./Routes/authRoutes.js"; // ADD THIS
+import { readFileSync } from "fs";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+
+// Get current directory for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Load NASA backup data
+const NASABackupData = JSON.parse(readFileSync(join(__dirname, 'data', 'NASA.json'), 'utf-8'));
 
 dotenv.config();
 
@@ -370,23 +380,38 @@ app.get("/api/nasa/launches", async (req, res) => {
 
     const limit = Number(req.query.limit) || 100;
     const url = `https://ll.thespacedevs.com/2.2.0/launch/?limit=${limit}&ordering=-window_start`;
-    const resp = await safeGet(url);
 
-    // resp.results is expected; be defensive
-    const results = resp?.results || resp?.launches || [];
-    // filter launches where launch_service_provider or agencies contain NASA
-    const nasaMatches = results.filter((l) => {
-      const providerName = l?.launch_service_provider?.name || "";
-      if (providerName && /nasa/i.test(providerName)) return true;
+    try {
+      const resp = await safeGet(url);
 
-      // some entries include agencies in payloads/mission; be permissive
-      const agencies = (l?.rocket?.second_stage?.payloads || []).map((p) => p?.agencies || []).flat();
-      if (agencies.some((a) => a?.name && /nasa/i.test(a.name))) return true;
-      return false;
-    });
+      // resp.results is expected; be defensive
+      const results = resp?.results || resp?.launches || [];
+      // filter launches where launch_service_provider or agencies contain NASA
+      const nasaMatches = results.filter((l) => {
+        const providerName = l?.launch_service_provider?.name || "";
+        if (providerName && /nasa/i.test(providerName)) return true;
 
-    setCache(cacheKey, nasaMatches, SPACEX_CACHE_TTL_SECONDS);
-    res.json(nasaMatches);
+        // some entries include agencies in payloads/mission; be permissive
+        const agencies = (l?.rocket?.second_stage?.payloads || []).map((p) => p?.agencies || []).flat();
+        if (agencies.some((a) => a?.name && /nasa/i.test(a.name))) return true;
+        return false;
+      });
+
+      // If we got NASA data, return it; otherwise use backup
+      if (nasaMatches.length > 0) {
+        console.log("✅ NASA launches API returned data:", nasaMatches.length, "missions");
+        setCache(cacheKey, nasaMatches, SPACEX_CACHE_TTL_SECONDS);
+        res.json(nasaMatches);
+      } else {
+        console.log("⚠️ NASA launches API returned no missions, using backup data");
+        setCache(cacheKey, NASABackupData, SPACEX_CACHE_TTL_SECONDS);
+        res.json(NASABackupData);
+      }
+    } catch (apiError) {
+      console.error("NASA launches API error, using backup data:", apiError?.message || apiError);
+      setCache(cacheKey, NASABackupData, SPACEX_CACHE_TTL_SECONDS);
+      res.json(NASABackupData);
+    }
   } catch (e) {
     console.error("NASA launches error:", e?.message || e);
     res.status(500).json({ error: "Failed to fetch NASA launches" });
@@ -436,10 +461,28 @@ app.get("/api/aggregate/launches", async (req, res) => {
           // re-use the same Launch Library approach as /api/nasa/launches
           const url = `https://ll.thespacedevs.com/2.2.0/launch/?limit=1000&ordering=-window_start`;
           const r = await safeGet(url);
-          return r?.results || [];
+          const results = r?.results || [];
+
+          // Filter for NASA missions
+          const nasaMatches = results.filter((l) => {
+            const providerName = l?.launch_service_provider?.name || "";
+            if (providerName && /nasa/i.test(providerName)) return true;
+            const agencies = (l?.rocket?.second_stage?.payloads || []).map((p) => p?.agencies || []).flat();
+            if (agencies.some((a) => a?.name && /nasa/i.test(a.name))) return true;
+            return false;
+          });
+
+          // If we got NASA data, return it; otherwise use backup
+          if (nasaMatches.length > 0) {
+            console.log("✅ NASA API returned data:", nasaMatches.length, "missions");
+            return nasaMatches;
+          } else {
+            console.log("⚠️ NASA API returned no missions, using backup data");
+            return NASABackupData;
+          }
         } catch (e) {
-          console.error("agg: nasa fetch failed", e?.message || e);
-          return [];
+          console.error("agg: nasa fetch failed, using backup data", e?.message || e);
+          return NASABackupData;
         }
       })(),
     };

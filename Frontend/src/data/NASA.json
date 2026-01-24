@@ -1,0 +1,242 @@
+[
+    {
+        "id": "nasa-backup-1",
+        "name": "Artemis I - Moon Mission",
+        "window_start": "2022-11-16T06:47:44Z",
+        "net": "2022-11-16T06:47:44Z",
+        "status": {
+            "abbrev": "Success"
+        },
+        "mission": {
+            "description": "Artemis I is an uncrewed Moon-orbiting mission that is the first spaceflight in NASA's Artemis program. The Orion spacecraft will spend approximately 3 weeks in space, including 6 days in a distant retrograde orbit around the Moon."
+        },
+        "image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/launcher_images/space2520laun_image_20200805185319.jpeg",
+        "pad": {
+            "name": "Kennedy Space Center, FL"
+        }
+    },
+    {
+        "id": "nasa-backup-2",
+        "name": "James Webb Space Telescope",
+        "window_start": "2021-12-25T12:20:00Z",
+        "net": "2021-12-25T12:20:00Z",
+        "status": {
+            "abbrev": "Success"
+        },
+        "mission": {
+            "description": "The James Webb Space Telescope (JWST) is a space telescope designed primarily to conduct infrared astronomy. It is the most powerful telescope ever launched into space and serves as the scientific successor to the Hubble Space Telescope."
+        },
+        "image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/launcher_images/ariane2520525_image_20200222191033.jpg",
+        "pad": {
+            "name": "Centre Spatial Guyanais, French Guiana"
+        }
+    },
+    {
+        "id": "nasa-backup-3",
+        "name": "Perseverance Mars Rover",
+        "window_start": "2020-07-30T11:50:00Z",
+        "net": "2020-07-30T11:50:00Z",
+        "status": {
+            "abbrev": "Success"
+        },
+        "mission": {
+            "description": "Perseverance is a car-sized Mars rover designed to explore the Jezero crater on Mars as part of NASA's Mars 2020 mission. It carries the Ingenuity helicopter drone, which achieved the first powered flight on another planet."
+        },
+        "image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/launcher_images/atlas2520v25_image_20200829175654.jpg",
+        "pad": {
+            "name": "Cape Canaveral Space Force Station, FL"
+        }
+    },
+    {
+        "id": "nasa-backup-4",
+        "name": "Parker Solar Probe",
+        "window_start": "2018-08-12T07:31:00Z",
+        "net": "2018-08-12T07:31:00Z",
+        "status": {
+            "abbrev": "Success"
+        },
+        "mission": {
+            "description": "The Parker Solar Probe is a NASA space probe launched to study the outer corona of the Sun. It will approach to within 9.86 solar radii from the center of the Sun and will travel at speeds up to 430,000 mph (690,000 km/h), making it the fastest human-made object."
+        },
+        "image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/launcher_images/delta2520iv25_image_20190222030340.jpg",
+        "pad": {
+            "name": "Cape Canaveral Space Force Station, FL"
+        }
+    },
+    {
+        "id": "nasa-backup-5",
+        "name": "Lucy Mission to Trojan Asteroids",
+        "window_start": "2021-10-16T09:34:00Z",
+        "net": "2021-10-16T09:34:00Z",
+        "status": {
+            "abbrev": "Success"
+        },
+        "mission": {
+            "description": "Lucy is a NASA space mission to study Jupiter Trojan asteroids. Over its 12-year mission, Lucy will visit eight asteroids, including five Trojans, to study the diversity and characteristics of these ancient remnants of the early solar system."
+        },
+        "image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/launcher_images/atlas2520v25_image_20200829175654.jpg",
+        "pad": {
+            "name": "Cape Canaveral Space Force Station, FL"
+        }
+    },
+    {
+        "id": "nasa-backup-6",
+        "name": "DART - Double Asteroid Redirection Test",
+        "window_start": "2021-11-24T06:21:00Z",
+        "net": "2021-11-24T06:21:00Z",
+        "status": {
+            "abbrev": "Success"
+        },
+        "mission": {
+            "description": "DART is NASA's first planetary defense test mission. It successfully impacted the asteroid moonlet Dimorphos in September 2022, demonstrating that a spacecraft can autonomously navigate to a target asteroid and kinetically impact it to alter its orbit."
+        },
+        "image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/launcher_images/falcon25209_image_20200907192227.jpeg",
+        "pad": {
+            "name": "Vandenberg Space Force Base, CA"
+        }
+    },
+    {
+        "id": "nasa-backup-7",
+        "name": "Europa Clipper",
+        "window_start": "2024-10-10T12:00:00Z",
+        "net": "2024-10-10T12:00:00Z",
+        "status": {
+            "abbrev": "Upcoming"
+        },
+        "mission": {
+            "description": "Europa Clipper is a planned mission to Jupiter's moon Europa to investigate its habitability. The spacecraft will conduct detailed reconnaissance to investigate whether the icy moon has conditions suitable for life, focusing on understanding the nature of its ice shell and ocean."
+        },
+        "image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/launcher_images/falcon2520heavy_image_20200229225442.jpg",
+        "pad": {
+            "name": "Kennedy Space Center, FL"
+        }
+    },
+    {
+        "id": "nasa-backup-8",
+        "name": "OSIRIS-REx Sample Return",
+        "window_start": "2016-09-08T23:05:00Z",
+        "net": "2016-09-08T23:05:00Z",
+        "status": {
+            "abbrev": "Success"
+        },
+        "mission": {
+            "description": "OSIRIS-REx is a NASA asteroid study and sample-return mission. The spacecraft successfully collected a sample from asteroid Bennu and returned it to Earth in September 2023, providing scientists with pristine material from the early solar system."
+        },
+        "image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/launcher_images/atlas2520v25_image_20200829175654.jpg",
+        "pad": {
+            "name": "Cape Canaveral Space Force Station, FL"
+        }
+    },
+    {
+        "id": "nasa-backup-9",
+        "name": "Psyche Mission",
+        "window_start": "2023-10-13T14:19:00Z",
+        "net": "2023-10-13T14:19:00Z",
+        "status": {
+            "abbrev": "Success"
+        },
+        "mission": {
+            "description": "Psyche is a NASA mission to explore the unique metal-rich asteroid 16 Psyche. This asteroid may be the exposed core of an early planet, offering a unique window into the violent history of collisions and accretion that created terrestrial planets."
+        },
+        "image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/launcher_images/falcon2520heavy_image_20200229225442.jpg",
+        "pad": {
+            "name": "Kennedy Space Center, FL"
+        }
+    },
+    {
+        "id": "nasa-backup-10",
+        "name": "Artemis II - Crewed Lunar Flyby",
+        "window_start": "2025-09-01T12:00:00Z",
+        "net": "2025-09-01T12:00:00Z",
+        "status": {
+            "abbrev": "Upcoming"
+        },
+        "mission": {
+            "description": "Artemis II is the first crewed mission of NASA's Artemis program. Four astronauts will fly around the Moon, testing critical systems in preparation for future lunar landings. This mission marks humanity's return to lunar vicinity after more than 50 years."
+        },
+        "image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/launcher_images/space2520laun_image_20200805185319.jpeg",
+        "pad": {
+            "name": "Kennedy Space Center, FL"
+        }
+    },
+    {
+        "id": "nasa-backup-11",
+        "name": "Mars Sample Return Mission",
+        "window_start": "2028-07-15T10:00:00Z",
+        "net": "2028-07-15T10:00:00Z",
+        "status": {
+            "abbrev": "Upcoming"
+        },
+        "mission": {
+            "description": "The Mars Sample Return mission is a planned multi-mission campaign to bring rock, sediment, and atmospheric samples from Mars back to Earth. These samples, collected by the Perseverance rover, could provide definitive answers about whether life ever existed on Mars."
+        },
+        "image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/launcher_images/falcon2520heavy_image_20200229225442.jpg",
+        "pad": {
+            "name": "Cape Canaveral Space Force Station, FL"
+        }
+    },
+    {
+        "id": "nasa-backup-12",
+        "name": "Nancy Grace Roman Space Telescope",
+        "window_start": "2027-05-01T12:00:00Z",
+        "net": "2027-05-01T12:00:00Z",
+        "status": {
+            "abbrev": "Upcoming"
+        },
+        "mission": {
+            "description": "The Nancy Grace Roman Space Telescope is a NASA infrared space telescope. With a field of view 100 times greater than Hubble, it will survey the sky to answer fundamental questions about dark energy, exoplanets, and infrared astrophysics."
+        },
+        "image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/launcher_images/falcon2520heavy_image_20200229225442.jpg",
+        "pad": {
+            "name": "Kennedy Space Center, FL"
+        }
+    },
+    {
+        "id": "nasa-backup-13",
+        "name": "Dragonfly - Titan Exploration Mission",
+        "window_start": "2028-06-05T14:00:00Z",
+        "net": "2028-06-05T14:00:00Z",
+        "status": {
+            "abbrev": "Upcoming"
+        },
+        "mission": {
+            "description": "Dragonfly is a NASA rotorcraft lander mission to Titan, Saturn's largest moon. This revolutionary mission will fly to multiple locations on Titan, sampling and examining sites around the moon for prebiotic chemical processes common on both Titan and early Earth."
+        },
+        "image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/launcher_images/falcon2520heavy_image_20200229225442.jpg",
+        "pad": {
+            "name": "Kennedy Space Center, FL"
+        }
+    },
+    {
+        "id": "nasa-backup-14",
+        "name": "VIPER - Volatiles Investigating Polar Exploration Rover",
+        "window_start": "2025-11-01T08:00:00Z",
+        "net": "2025-11-01T08:00:00Z",
+        "status": {
+            "abbrev": "Upcoming"
+        },
+        "mission": {
+            "description": "VIPER is a mobile robot that will roam several miles across the Moon's South Pole. It will collect data about the location and concentration of water ice, which could be harvested to sustain human exploration on the Moon."
+        },
+        "image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/launcher_images/falcon2520heavy_image_20200229225442.jpg",
+        "pad": {
+            "name": "Kennedy Space Center, FL"
+        }
+    },
+    {
+        "id": "nasa-backup-15",
+        "name": "Hubble Space Telescope Deployment",
+        "window_start": "1990-04-24T12:33:51Z",
+        "net": "1990-04-24T12:33:51Z",
+        "status": {
+            "abbrev": "Success"
+        },
+        "mission": {
+            "description": "The Hubble Space Telescope is one of the largest and most versatile space telescopes. Launched in 1990, it has provided groundbreaking views of the universe and has been instrumental in numerous astronomical discoveries over three decades."
+        },
+        "image": "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/launcher_images/space2520shut_image_20190222030000.jpg",
+        "pad": {
+            "name": "Kennedy Space Center, FL"
+        }
+    }
+]

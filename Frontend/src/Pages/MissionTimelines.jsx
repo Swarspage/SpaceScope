@@ -12,6 +12,7 @@ import {
 } from 'react-icons/md';
 import { SiSpacex, SiNasa } from 'react-icons/si';
 import { GiIndiaGate } from 'react-icons/gi';
+import NASABackupData from '../data/NASA.json';
 
 const MissionTimelines = () => {
     const navigate = useNavigate();
@@ -120,8 +121,15 @@ const MissionTimelines = () => {
                 if (data.isro && Array.isArray(data.isro)) {
                     allMissions = [...allMissions, ...data.isro.map(m => normalizeMission(m, 'ISRO'))];
                 }
-                if (data.nasa && Array.isArray(data.nasa)) {
+
+                // NASA data with fallback to local backup
+                if (data.nasa && Array.isArray(data.nasa) && data.nasa.length > 0) {
                     allMissions = [...allMissions, ...data.nasa.map(m => normalizeMission(m, 'NASA'))];
+                    console.log('✅ Using NASA data from API');
+                } else {
+                    // Use backup data if API fails or returns empty
+                    console.log('⚠️ NASA API unavailable or empty, using backup data from NASA.json');
+                    allMissions = [...allMissions, ...NASABackupData.map(m => normalizeMission(m, 'NASA'))];
                 }
 
                 // Sort globally by date (newest first)
@@ -138,6 +146,10 @@ const MissionTimelines = () => {
 
             } catch (err) {
                 console.error("Failed to load timeline data", err);
+                // If complete network failure, try to use backup NASA data anyway
+                console.log('🔄 Complete API failure, loading NASA backup data only');
+                const backupMissions = NASABackupData.map(m => normalizeMission(m, 'NASA'));
+                setMasterData(backupMissions);
             } finally {
                 setLoading(false);
             }
