@@ -39,6 +39,8 @@ import {
     getAuroraData,
     getSolarFlares,
 } from '../services/api';
+import SpaceDebrisGlobe from '../components/SpaceDebrisGlobe';
+import TempAnomalyChart from '../components/TempAnomalyChart';
 
 // --- Helpers copied from AuroraPage.jsx for the Map ---
 const intensityToColor = (v) => {
@@ -712,6 +714,41 @@ const Dashboard = () => {
                                             </div>
                                         </div>
                                     ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* New Section: Debris & Temperature */}
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            {/* Orbital Debris Globe */}
+                            <div className="h-[500px] bg-black/30 backdrop-blur-xl border border-white/5 rounded-2xl p-6 flex flex-col">
+                                <div className="flex justify-between items-center mb-4">
+                                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                                        <MdSatelliteAlt className="text-red-500" />
+                                        Orbital Debris Tracker
+                                    </h3>
+                                    <div className="text-[10px] uppercase font-bold text-slate-500 border border-white/10 px-2 py-1 rounded">
+                                        Real-time Data
+                                    </div>
+                                </div>
+                                <div className="flex-1 rounded-xl overflow-hidden relative border border-white/5">
+                                    <SpaceDebrisGlobe />
+                                </div>
+                            </div>
+
+                            {/* Global Temperature Chart */}
+                            <div className="h-[500px] bg-black/30 backdrop-blur-xl border border-white/5 rounded-2xl p-6 flex flex-col">
+                                <div className="flex justify-between items-center mb-4">
+                                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                                        <WiDaySunny className="text-orange-500 text-2xl" />
+                                        Global Temperature Anomaly
+                                    </h3>
+                                    <div className="text-[10px] uppercase font-bold text-slate-500 border border-white/10 px-2 py-1 rounded">
+                                        1880 - Present
+                                    </div>
+                                </div>
+                                <div className="flex-1 w-full h-full relative">
+                                    <TempAnomalyChart />
                                 </div>
                             </div>
                         </div>
