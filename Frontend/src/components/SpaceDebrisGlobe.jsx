@@ -49,7 +49,7 @@ const REAL_FALLBACKS = [
 ];
 
 
-const SpaceDebrisGlobe = () => {
+const SpaceDebrisGlobe = ({ realLimit = 2000, syntheticLimit = 400 }) => {
     const globeRef = useRef();
     const containerRef = useRef();
     const [dimensions, setDimensions] = useState({ width: 100, height: 100 });
@@ -98,10 +98,21 @@ const SpaceDebrisGlobe = () => {
                     ]);
                 };
 
-                const [activeRes, debrisRes] = await Promise.allSettled([
-                    fetchWithTimeout(PROXY_URL + encodeURIComponent(activeUrl)),
-                    fetchWithTimeout(PROXY_URL + encodeURIComponent(debrisUrl))
-                ]);
+                // CHECK CACHE
+                const cachedActive = sessionStorage.getItem('cached_tle_active');
+                const cachedDebris = sessionStorage.getItem('cached_tle_debris');
+
+                let activeRes, debrisRes;
+
+                if (cachedActive && cachedDebris) {
+                    activeRes = { status: 'fulfilled', value: { ok: true, text: () => Promise.resolve(cachedActive) } };
+                    debrisRes = { status: 'fulfilled', value: { ok: true, text: () => Promise.resolve(cachedDebris) } };
+                } else {
+                    [activeRes, debrisRes] = await Promise.allSettled([
+                        fetchWithTimeout(PROXY_URL + encodeURIComponent(activeUrl)),
+                        fetchWithTimeout(PROXY_URL + encodeURIComponent(debrisUrl))
+                    ]);
+                }
 
                 const parseTLE = (text, type, limit = 1000) => {
                     const lines = text.split('\n');
@@ -126,11 +137,13 @@ const SpaceDebrisGlobe = () => {
                 if (activeRes.status === 'fulfilled' && activeRes.value.ok) {
                     const text = await activeRes.value.text();
                     activeData = parseTLE(text, 'active', 800);
+                    if (!cachedActive) sessionStorage.setItem('cached_tle_active', text);
                 }
 
                 if (debrisRes.status === 'fulfilled' && debrisRes.value.ok) {
                     const text = await debrisRes.value.text();
-                    debrisData = parseTLE(text, 'debris', 2000);
+                    debrisData = parseTLE(text, 'debris', realLimit);
+                    if (!cachedDebris) sessionStorage.setItem('cached_tle_debris', text);
                 }
 
                 // --- LABELING LOGIC ---
@@ -170,7 +183,7 @@ const SpaceDebrisGlobe = () => {
                 }
 
                 if (debrisData.length < 10) {
-                    debrisData = generateSyntheticTLEs(400, 'debris');
+                    debrisData = generateSyntheticTLEs(syntheticLimit, 'debris');
                 }
 
                 setSatellites(activeData);
@@ -185,7 +198,7 @@ const SpaceDebrisGlobe = () => {
                     isFamous: true
                 }));
                 setSatellites([...real, ...generateSyntheticTLEs(100, 'active')]);
-                setDebris(generateSyntheticTLEs(400, 'debris'));
+                setDebris(generateSyntheticTLEs(syntheticLimit, 'debris'));
                 setLoading(false);
             }
         };
@@ -389,4 +402,4 @@ const SpaceDebrisGlobe = () => {
     );
 };
 
-export default SpaceDebrisGlobe;
+export default React.memo(SpaceDebrisGlobe);

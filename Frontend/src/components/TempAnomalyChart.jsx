@@ -22,7 +22,7 @@ ChartJS.register(
     Legend
 );
 
-const TempAnomalyChart = ({ onDataLoaded }) => {
+const TempAnomalyChart = ({ onDataLoaded, downsampleFactor = 1 }) => {
     const [chartData, setChartData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -30,16 +30,26 @@ const TempAnomalyChart = ({ onDataLoaded }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('https://global-warming.org/api/temperature-api');
-                // API returns { result: [ { "time": "1880.04", "station": "-0.29" }, ... ] }
-                const data = response.data.result;
+                let data;
+                // CHECK CACHE FIRST
+                const cached = sessionStorage.getItem('cached_temp_data');
+                if (cached) {
+                    data = JSON.parse(cached);
+                } else {
+                    const response = await axios.get('https://global-warming.org/api/temperature-api');
+                    data = response.data.result;
+                    sessionStorage.setItem('cached_temp_data', JSON.stringify(data));
+                }
 
                 // Process data
                 const labels = [];
                 const values = [];
                 const backgroundColors = [];
 
-                data.forEach(item => {
+                data.forEach((item, index) => {
+                    // Downsample logic: Skip items based on factor
+                    if (index % downsampleFactor !== 0) return;
+
                     const year = parseInt(item.time);
                     const anomaly = parseFloat(item.station);
 
