@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { MapContainer, TileLayer, Polygon, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
-import { Layers, Cloud, Calendar, AlertTriangle, Loader2, ArrowLeftRight, Activity, Wind, Info, Map as MapIcon, Thermometer, ChevronLeft } from 'lucide-react';
+import { Layers, Cloud, Calendar, AlertTriangle, Loader2, ArrowLeftRight, Activity, Wind, Info, Map as MapIcon, Thermometer, ChevronLeft, Search } from 'lucide-react';
 import CO2Chart from '../components/CO2Chart';
 import TempAnomalyChart from '../components/TempAnomalyChart';
 import LightPollutionMap from '../components/LightPollutionMap';
@@ -98,71 +98,21 @@ const CHANNELS = [
 // --- HELPER COMPONENTS ---
 
 // Layer Splitter Component - Creates split view with NDVI effect on left, True Color on right
-const SplitLayer = ({ leftTileUrl, rightTileUrl, sliderPosition }) => {
+// Layer Splitter Component Removed
+
+
+// Map Updater Component - Handles programmatic map moves
+const MapUpdater = ({ center }) => {
     const map = useMap();
-    const [panesReady, setPanesReady] = useState(false);
-
     useEffect(() => {
-        // Create left pane for NDVI visualization (will be clipped to show only left side)
-        if (!map.getPane('leftPane')) {
-            map.createPane('leftPane');
-            map.getPane('leftPane').style.zIndex = 450; // Above overlays
-            // Apply NDVI-like false color filter
-            // This creates a vegetation index visualization effect:
-            // - Enhances green channel (healthy vegetation appears bright green)
-            // - Shifts red/brown areas to yellow/orange
-            // - Dark areas (water) stay dark
-            map.getPane('leftPane').style.filter = 'saturate(2.5) hue-rotate(-30deg) contrast(1.2) brightness(1.1)';
+        if (center) {
+            map.flyTo(center, 13, {
+                animate: true,
+                duration: 1.5
+            });
         }
-        // Create right pane for True Color (will be clipped to show only right side)
-        if (!map.getPane('rightPane')) {
-            map.createPane('rightPane');
-            map.getPane('rightPane').style.zIndex = 449; // Just below left pane
-        }
-        setPanesReady(true);
-    }, [map]);
-
-    useEffect(() => {
-        const leftPane = map.getPane('leftPane');
-        const rightPane = map.getPane('rightPane');
-
-        if (leftPane) {
-            // Clip left pane to show only left portion (from 0 to sliderPosition%)
-            const leftClip = `inset(0 ${100 - sliderPosition}% 0 0)`;
-            leftPane.style.clipPath = leftClip;
-            leftPane.style.webkitClipPath = leftClip;
-        }
-
-        if (rightPane) {
-            // Clip right pane to show only right portion (from sliderPosition% to 100%)
-            const rightClip = `inset(0 0 0 ${sliderPosition}%)`;
-            rightPane.style.clipPath = rightClip;
-            rightPane.style.webkitClipPath = rightClip;
-        }
-    }, [sliderPosition, map, panesReady]);
-
-    // Use the same True Color URL for both, with CSS filter applied to left pane
-    // This ensures the visualization works even if NDVI API tiles fail
-    const baseUrl = rightTileUrl || leftTileUrl;
-
-    return (
-        <>
-            {panesReady && baseUrl && (
-                <TileLayer
-                    url={baseUrl}
-                    attribution="Agromonitoring"
-                    pane="rightPane"
-                />
-            )}
-            {panesReady && baseUrl && (
-                <TileLayer
-                    url={baseUrl}
-                    attribution="Agromonitoring"
-                    pane="leftPane"
-                />
-            )}
-        </>
-    );
+    }, [center, map]);
+    return null;
 };
 
 const NDVIMap = () => {
@@ -172,8 +122,9 @@ const NDVIMap = () => {
     const [error, setError] = useState(null);
     const [polygonId, setPolygonId] = useState(null);
     const [imagery, setImagery] = useState(null);
-    const [sliderPosition, setSliderPosition] = useState(50);
     const [currentTempAnomaly, setCurrentTempAnomaly] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [mapCenter, setMapCenter] = useState(MAP_CENTER);
 
     const activeChannelData = CHANNELS.find(c => c.id === activeChannel);
 
@@ -278,6 +229,48 @@ const NDVIMap = () => {
         findImagery();
     }, [polygonId, activeChannel]);
 
+    const handleSearch = async () => {
+        if (!searchQuery.trim()) return;
+
+        setLoading(true);
+        setError(null);
+
+        // Check if input is coordinates (lat, lon)
+        const coordRegex = /^(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)$/;
+        const match = searchQuery.match(coordRegex);
+
+        if (match) {
+            const lat = parseFloat(match[1]);
+            const lon = parseFloat(match[3]);
+            setMapCenter([lat, lon]);
+            setLoading(false);
+            return;
+        }
+
+        // Otherwise search by name using Nominatim
+        try {
+            const response = await axios.get(`https://nominatim.openstreetmap.org/search`, {
+                params: {
+                    q: searchQuery,
+                    format: 'json',
+                    limit: 1
+                }
+            });
+
+            if (response.data && response.data.length > 0) {
+                const { lat, lon } = response.data[0];
+                setMapCenter([parseFloat(lat), parseFloat(lon)]);
+            } else {
+                setError("Location not found.");
+            }
+        } catch (err) {
+            console.error("Search Error:", err);
+            setError("Failed to search location.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     const leafletPolygon = POLYGON_COORDINATES.map(idx => [idx[1], idx[0]]);
 
@@ -370,6 +363,28 @@ const NDVIMap = () => {
                             </div>
                         ) : (
                             <div className="relative w-full h-full">
+                                {/* Search Bar Overlay */}
+                                <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1001] w-full max-w-md px-4">
+                                    <div className="flex gap-2">
+                                        <div className="relative flex-1">
+                                            <input
+                                                type="text"
+                                                value={searchQuery}
+                                                onChange={(e) => setSearchQuery(e.target.value)}
+                                                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                                                placeholder="Enter city, district or coordinates (lat, lon)"
+                                                className="w-full bg-[#0a0e17]/90 backdrop-blur-md border border-white/20 text-white rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:border-[#00ff88] transition-colors shadow-lg placeholder:text-slate-500 text-sm"
+                                            />
+                                            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                        </div>
+                                        <button
+                                            onClick={handleSearch}
+                                            className="bg-[#00ff88] text-black font-bold px-4 py-2 rounded-lg hover:bg-[#00ff88]/90 transition-colors shadow-lg text-sm whitespace-nowrap"
+                                        >
+                                            Search
+                                        </button>
+                                    </div>
+                                </div>
                                 {/* Map Loading State */}
                                 {loading && (
                                     <div className="absolute inset-0 z-[1000] bg-[#0a0e17]/80 backdrop-blur-sm flex items-center justify-center">
@@ -387,6 +402,7 @@ const NDVIMap = () => {
                                     className="z-0"
                                     zoomControl={false} // Clean look
                                 >
+                                    <MapUpdater center={mapCenter} />
                                     <TileLayer
                                         url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
                                         attribution='&copy; Esri'
@@ -396,64 +412,22 @@ const NDVIMap = () => {
                                         positions={leafletPolygon}
                                         pathOptions={{
                                             color: '#00ff88',
-                                            fillOpacity: 0,
+                                            fillOpacity: 0.1,
                                             weight: 2,
                                             dashArray: '5, 5'
                                         }}
                                     />
 
                                     {imagery && !loading && activeChannel === 'ndvi' && (
-                                        <SplitLayer
-                                            leftTileUrl={imagery.ndvi}
-                                            rightTileUrl={imagery.trueColor}
-                                            sliderPosition={sliderPosition}
+                                        <TileLayer
+                                            url={imagery.ndvi}
+                                            attribution="Agromonitoring"
                                         />
                                     )}
                                 </MapContainer>
 
-                                {/* Slider UI Overlay */}
-                                {!loading && imagery && activeChannel === 'ndvi' && (
-                                    <div className="absolute top-0 bottom-0 z-[999] pointer-events-none w-full h-full left-0">
-                                        <div
-                                            className="absolute top-0 bottom-0 pointer-events-none"
-                                            style={{ left: `${sliderPosition}%` }}
-                                        >
-                                            {/* The Vertical Line - Neon Green Glow */}
-                                            <div className="h-full w-1 bg-[#00ff88] shadow-[0_0_20px_#00ff88] relative z-20"></div>
 
-                                            {/* The Handle - glowing circular handle */}
-                                            <div
-                                                className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-black/80 border-2 border-[#00ff88] rounded-full flex items-center justify-center text-[#00ff88] cursor-ew-resize pointer-events-auto shadow-[0_0_15px_#00ff88] z-30 hover:scale-110 transition-transform active:scale-95"
-                                                onMouseDown={(e) => {
-                                                    e.preventDefault();
-                                                    const container = e.target.closest('.relative');
-                                                    const handleMouseMove = (moveEvent) => {
-                                                        const rect = container.getBoundingClientRect();
-                                                        const x = moveEvent.clientX - rect.left;
-                                                        const newPercent = Math.max(0, Math.min(100, (x / rect.width) * 100));
-                                                        setSliderPosition(newPercent);
-                                                    };
-                                                    const handleMouseUp = () => {
-                                                        window.removeEventListener('mousemove', handleMouseMove);
-                                                        window.removeEventListener('mouseup', handleMouseUp);
-                                                    };
-                                                    window.addEventListener('mousemove', handleMouseMove);
-                                                    window.addEventListener('mouseup', handleMouseUp);
-                                                }}
-                                            >
-                                                <ArrowLeftRight size={20} className="drop-shadow-[0_0_5px_#00ff88]" />
-                                            </div>
-                                        </div>
 
-                                        {/* Labels - High-tech style */}
-                                        <div className="absolute top-4 right-4 bg-black/80 text-white text-xs font-bold px-4 py-2 rounded-md border border-white/20 pointer-events-auto backdrop-blur-md shadow-lg tracking-wider">
-                                            True Color (RGB)
-                                        </div>
-                                        <div className="absolute top-4 left-4 bg-black/80 text-[#00ff88] text-xs font-bold px-4 py-2 rounded-md border border-[#00ff88]/50 pointer-events-auto backdrop-blur-md shadow-[0_0_10px_rgba(0,255,136,0.2)] tracking-wider">
-                                            Vegetation Index (NDVI)
-                                        </div>
-                                    </div>
-                                )}
 
                                 {/* Stats Overlay on Map */}
                                 {!loading && imagery && activeChannel === 'ndvi' && (
