@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { MapContainer, TileLayer, Polygon, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
-import { Layers, Cloud, Calendar, AlertTriangle, Loader2, ArrowLeftRight, Activity, Wind, Info, Map as MapIcon, Thermometer, ChevronLeft, Search } from 'lucide-react';
+import { Layers, Cloud, Calendar, AlertTriangle, Loader2, ArrowLeftRight, Activity, Wind, Info, Map as MapIcon, Thermometer, ChevronLeft, Search, Satellite } from 'lucide-react';
 import CO2Chart from '../components/CO2Chart';
 import TempAnomalyChart from '../components/TempAnomalyChart';
 import LightPollutionMap from '../components/LightPollutionMap';
 import CloudCoverMap from '../components/CloudCoverMap';
+import SpaceDebrisGlobe from '../components/SpaceDebrisGlobe';
 
 // --- CONFIGURATION ---
 const API_KEY = import.meta.env.VITE_AGROMONITORING_API_KEY;
@@ -91,6 +92,20 @@ const CHANNELS = [
         ],
         satelliteHelp: "Optical and infrared sensors monitor cloud formation and movement 24/7. This provides critical data for weather forecasting and correcting other satellite imagery.",
         didYouKnow: "Why are there black stripes? These are Orbital Gaps. The Terra satellite flies in a low Earth orbit. The black areas are regions the satellite hasn't flown over yet today.",
+        disabled: false
+    },
+    {
+        id: 'debris',
+        label: 'Orbital Debris',
+        icon: Satellite,
+        description: 'Visualizes the increasing density of man-made objects in Earth\'s orbit. This phenomenon, known as Kessler Syndrome, poses a significant risk to future space exploration.',
+        details: [
+            'Real-time Debris Tracking',
+            'Collision Avoidance Analysis',
+            'Low Earth Orbit (LEO) Congestion'
+        ],
+        satelliteHelp: "Radar and optical telescopes track over 27,000 pieces of space junk larger than a softball. Millions of smaller pieces are untrackable but still dangerous.",
+        didYouKnow: "A screw travelling at orbital velocity (17,500 mph) hits with the force of a hand grenade. The Kessler Syndrome predicts a point where one collision cascades into many, making orbit unusable.",
         disabled: false
     }
 ];
@@ -351,6 +366,8 @@ const NDVIMap = () => {
                         <LightPollutionMap />
                     ) : activeChannel === 'weather' ? (
                         <CloudCoverMap />
+                    ) : activeChannel === 'debris' ? (
+                        <SpaceDebrisGlobe />
                     ) : (
                         /* Map Error State */
                         error ? (
