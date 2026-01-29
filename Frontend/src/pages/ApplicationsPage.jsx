@@ -663,10 +663,10 @@ const NDVIMap = () => {
                         </div>
                         <button
                             onClick={() => setShowInfoModal(true)}
-                            className="mt-4 w-full py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs font-bold uppercase tracking-wider text-[#00ff88] transition-colors flex items-center justify-center gap-2 group"
+                            className="relative mt-4 w-full py-3 bg-[#00ff88]/20 hover:bg-[#00ff88]/40 border-2 border-[#00ff88] rounded-full text-white text-sm font-black uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2 group shadow-[0_0_20px_rgba(0,255,136,0.4)] hover:shadow-[0_0_40px_rgba(0,255,136,0.6)] animate-pulse"
                         >
-                            <Info size={14} className="group-hover:scale-110 transition-transform" />
-                            Learn More
+                            <Info size={18} className="group-hover:scale-110 transition-transform relative z-10" />
+                            <span className="relative z-10">Learn More</span>
                         </button>
                     </div>
 

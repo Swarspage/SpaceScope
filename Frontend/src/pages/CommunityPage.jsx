@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
-import { useAuth } from "../../Context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import {
   MdAddPhotoAlternate,
   MdFavorite,
@@ -46,214 +46,125 @@ import axios from "axios";
 import { formatDistanceToNow, format } from "date-fns";
 
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  useMapEvents,
-  useMap,
-} from "react-leaflet";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
 
-// Fix Leaflet default icon issue
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
-  iconUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
-  shadowUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-});
 
-// Map Updater Component - Handles programmatic map moves
-const MapUpdater = ({ center }) => {
-  const map = useMap();
-  useEffect(() => {
-    if (center) {
-      map.flyTo(center, 13, {
-        animate: true,
-        duration: 1.5,
-      });
+const LocationSelector = ({ location, setLocation, setShowLocationSelector }) => {
+  const [loading, setLoading] = useState(false);
+  const [customInput, setCustomInput] = useState("");
+
+  const handleUseMyLocation = () => {
+    setLoading(true);
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser");
+      setLoading(false);
+      return;
     }
-  }, [center, map]);
-  return null;
-};
 
-// Auto Locator Component - Finds user location on mount
-const AutoLocator = ({ setLocation, setMapCenter }) => {
-  const map = useMap();
-  useEffect(() => {
-    map.locate().on("locationfound", function (e) {
-      setMapCenter([e.latlng.lat, e.latlng.lng]);
-      map.flyTo(e.latlng, map.getZoom());
-      fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${e.latlng.lat}&lon=${e.latlng.lng}`,
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          const address =
-            data.address.city || data.address.town || "My Location";
-          setLocation(`${address}, ${data.address.country}`);
-        });
-    });
-  }, [map]);
-  return null;
-};
-
-const LocationPicker = ({ setLocation }) => {
-  const [position, setPosition] = useState(null);
-  const map = useMapEvents({
-    click: async (e) => {
-      const { lat, lng } = e.latlng;
-      setPosition(e.latlng);
-      try {
-        const response = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
-        );
-        const data = await response.json();
-        const address =
-          data.address.city ||
-          data.address.town ||
-          data.address.village ||
-          data.address.county ||
-          "Unknown Location";
-        setLocation(`${address}, ${data.address.country || ""}`);
-      } catch (error) {
-        console.error("Error fetching location:", error);
-        setLocation(`${lat.toFixed(4)}, ${lng.toFixed(4)}`);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const { latitude, longitude } = position.coords;
+          const res = await axios.get(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+          );
+          if (res.data) {
+            const address =
+              res.data.address.city ||
+              res.data.address.town ||
+              res.data.address.village ||
+              res.data.address.county ||
+              "Unknown Location";
+            const country = res.data.address.country || "";
+            setLocation(`${address}, ${country}`);
+          }
+        } catch (error) {
+          console.error("Error fetching location", error);
+          alert("Failed to fetch location");
+        } finally {
+          setLoading(false);
+        }
+      },
+      (error) => {
+        console.error("Geolocation error", error);
+        alert("Unable to retrieve your location");
+        setLoading(false);
       }
-    },
-  });
+    );
+  };
 
-  return position === null ? null : (
-    <Marker position={position}>
-      <Popup>Selected Location</Popup>
-    </Marker>
-  );
-};
-
-const PostMapPicker = ({ setLocation }) => {
-  const [mapCenter, setMapCenter] = useState(null);
-  const [mapSearchQuery, setMapSearchQuery] = useState("");
-  const [mapLoading, setMapLoading] = useState(false);
+  const handleCustomLocationSubmit = async () => {
+    if (!customInput.trim()) return;
+    setLoading(true);
+    try {
+      const res = await axios.get(`https://nominatim.openstreetmap.org/search`, {
+        params: { q: customInput, format: "json", limit: 1 }
+      });
+      if (res.data && res.data.length > 0) {
+        const place = res.data[0];
+        // extracting a nice name is tricky, display_name is long.
+        // Let's try to parse display_name or just refrain from being too specific
+        // Display name usually: "City, County, State, Country"
+        const parts = place.display_name.split(", ");
+        const shortName = parts.length > 1 ? `${parts[0]}, ${parts[parts.length - 1]}` : parts[0];
+        setLocation(shortName);
+      } else {
+        alert("Location not found, please check spelling.");
+      }
+    } catch (err) {
+      console.error("Search failed", err);
+      alert("Failed to validate location");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="relative h-full w-full">
-      {/* Search Bar Overlay */}
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1001] w-full max-w-sm px-4">
-        <div className="flex gap-2">
-          <div className="relative flex-1">
-            <input
-              type="text"
-              value={mapSearchQuery}
-              onChange={(e) => setMapSearchQuery(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  if (!mapSearchQuery.trim()) return;
-                  setMapLoading(true);
-
-                  // Check if input is coordinates
-                  const coordRegex = /^(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)$/;
-                  const match = mapSearchQuery.match(coordRegex);
-
-                  if (match) {
-                    const lat = parseFloat(match[1]);
-                    const lon = parseFloat(match[3]);
-                    setMapCenter([lat, lon]);
-                    setMapLoading(false);
-                  } else {
-                    // Search by name
-                    axios
-                      .get(`https://nominatim.openstreetmap.org/search`, {
-                        params: { q: mapSearchQuery, format: "json", limit: 1 },
-                      })
-                      .then((response) => {
-                        if (response.data && response.data.length > 0) {
-                          const { lat, lon } = response.data[0];
-                          setMapCenter([parseFloat(lat), parseFloat(lon)]);
-                        } else {
-                          alert("Location not found");
-                        }
-                      })
-                      .catch((err) => {
-                        console.error("Search failed", err);
-                      })
-                      .finally(() => setMapLoading(false));
-                  }
-                }
-              }}
-              placeholder="Search city or coordinates..."
-              className="w-full bg-[#0a0e17]/90 backdrop-blur-md border border-white/20 text-white rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:border-[#00ff88] transition-colors shadow-lg placeholder:text-slate-500 text-sm"
-            />
-            <Search
-              size={16}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-            />
-          </div>
-        </div>
+    <div className="bg-black/40 backdrop-blur-md p-4 rounded-xl border border-white/10 mb-4 transition-all">
+      <div className="flex justify-between items-center mb-3">
+        <h3 className="text-sm font-bold text-white flex items-center gap-2">
+          <MapPin size={14} className="text-[#00d9ff]" />
+          Add Location
+        </h3>
+        <button onClick={() => setShowLocationSelector(false)} className="text-slate-500 hover:text-white"><X size={16} /></button>
       </div>
 
-      {/* Map Loading State */}
-      {mapLoading && (
-        <div className="absolute inset-0 z-[1000] bg-[#0a0e17]/80 backdrop-blur-sm flex items-center justify-center">
-          <div className="flex flex-col items-center gap-3 text-[#00ff88]">
-            <Loader2 className="animate-spin h-8 w-8" />
-            <span className="text-sm font-mono tracking-wider">
-              LOCATING...
-            </span>
-          </div>
-        </div>
-      )}
-
-      <MapContainer
-        center={mapCenter || [51.505, -0.09]}
-        zoom={13}
-        style={{ height: "100%", width: "100%" }}
-        zoomControl={false}
-      >
-        <AutoLocator setLocation={setLocation} setMapCenter={setMapCenter} />
-        <MapUpdater center={mapCenter} />
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <LocationPicker setLocation={setLocation} />
-        <div
-          style={{
-            position: "absolute",
-            top: 10,
-            right: 10,
-            zIndex: 1000,
-          }}
+      <div className="flex flex-col gap-3">
+        {/* Option 1: Current Location */}
+        <button
+          onClick={handleUseMyLocation}
+          className="flex items-center justify-center gap-2 w-full py-2 bg-[#00d9ff]/10 hover:bg-[#00d9ff]/20 text-[#00d9ff] rounded-lg border border-[#00d9ff]/30 transition-colors text-xs font-bold uppercase tracking-wider"
         >
+          {loading ? <Loader2 className="animate-spin" size={14} /> : <MapPin size={14} />}
+          Use My Current Location
+        </button>
+
+        <div className="text-center text-[10px] text-slate-500 font-mono uppercase">--- OR ---</div>
+
+        {/* Option 2: Custom Input */}
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={customInput}
+            onChange={(e) => setCustomInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleCustomLocationSubmit()}
+            placeholder="Enter city manually..."
+            className="flex-1 bg-[#151a25] border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:border-[#00d9ff] outline-none"
+          />
           <button
-            onClick={(e) => {
-              e.stopPropagation();
-              navigator.geolocation.getCurrentPosition((pos) => {
-                const { latitude, longitude } = pos.coords;
-                setMapCenter([latitude, longitude]);
-                fetch(
-                  `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`,
-                )
-                  .then((res) => res.json())
-                  .then((data) => {
-                    const address =
-                      data.address.city || data.address.town || "My Location";
-                    setLocation(`${address}, ${data.address.country}`);
-                  });
-              });
-            }}
-            className="bg-white/90 text-black px-3 py-1 rounded text-xs font-bold shadow-md hover:bg-white"
+            onClick={handleCustomLocationSubmit}
+            className="bg-white/10 hover:bg-white/20 text-white px-3 rounded-lg flex items-center justify-center"
           >
-            Find Me
+            {loading ? <Loader2 className="animate-spin" size={16} /> : <Search size={16} />}
           </button>
         </div>
-      </MapContainer>
+
+        {location && (
+          <div className="text-xs text-[#00d9ff] mt-1 flex items-center gap-1">
+            Selected: <span className="font-bold underline">{location}</span>
+            <button onClick={() => setLocation("")} className="ml-2 text-red-400 hover:text-red-300"><X size={12} /></button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
@@ -438,18 +349,17 @@ const CommunityPage = () => {
   const ActionButton = ({ icon, active, onClick }) => (
     <button
       onClick={onClick}
-      className={`p-2 rounded-full transition-all ${
-        active
-          ? "bg-[#00d9ff]/20 text-[#00d9ff]"
-          : "text-slate-400 hover:bg-white/10 hover:text-white"
-      }`}
+      className={`p-2 rounded-full transition-all ${active
+        ? "bg-[#00d9ff]/20 text-[#00d9ff]"
+        : "text-slate-400 hover:bg-white/10 hover:text-white"
+        }`}
     >
       {icon}
     </button>
   );
 
   return (
-    <div className="flex h-screen bg-[#050714] text-slate-300 font-sans overflow-hidden">
+    <div className="flex h-screen bg-transparent text-slate-300 font-sans overflow-hidden">
       <Sidebar activeTab="Community" />
 
       <div className="flex-1 flex flex-col min-w-0 relative">
@@ -542,12 +452,11 @@ const CommunityPage = () => {
                 }}
                 onClick={() => !isCreating && setIsCreating(true)}
                 className={`
-          bg-[#0f1322] border border-white/10 shadow-2xl overflow-hidden relative
-          ${
-            isCreating
-              ? "w-full max-w-2xl rounded-[24px] cursor-default"
-              : "w-full max-w-xl rounded-full hover:bg-white/5 cursor-pointer"
-          }
+          bg-black/30 backdrop-blur-md border border-white/10 shadow-2xl overflow-hidden relative
+          ${isCreating
+                    ? "w-full max-w-2xl rounded-[24px] cursor-default"
+                    : "w-full max-w-xl rounded-full hover:bg-white/5 cursor-pointer"
+                  }
         `}
               >
                 <AnimatePresence mode="wait">
@@ -646,16 +555,16 @@ const CommunityPage = () => {
                         )}
                       </AnimatePresence>
 
-                      {/* Map Picker */}
+                      {/* Location Selector */}
                       <AnimatePresence>
                         {showMap && (
                           <motion.div
                             initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 400 }}
+                            animate={{ opacity: 1, height: 'auto' }}
                             exit={{ opacity: 0, height: 0 }}
-                            className="relative mb-4 rounded-xl overflow-hidden border border-white/10"
+                            className="relative mb-4 overflow-hidden"
                           >
-                            <PostMapPicker setLocation={setLocation} />
+                            <LocationSelector location={location} setLocation={setLocation} setShowLocationSelector={setShowMap} />
                           </motion.div>
                         )}
                       </AnimatePresence>
@@ -684,11 +593,10 @@ const CommunityPage = () => {
                           disabled={(!file && !caption) || uploading}
                           className={`
                     px-8 py-2.5 rounded-full text-sm font-black transition-all
-                    ${
-                      (!file && !caption) || uploading
-                        ? "bg-slate-800 text-slate-500 cursor-not-allowed"
-                        : "bg-[#00d9ff] text-black hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(0,217,255,0.4)]"
-                    }
+                    ${(!file && !caption) || uploading
+                              ? "bg-slate-800 text-slate-500 cursor-not-allowed"
+                              : "bg-[#00d9ff] text-black hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(0,217,255,0.4)]"
+                            }
                   `}
                         >
                           {uploading ? "TRANSMITTING..." : "POST"}
@@ -730,7 +638,7 @@ const CommunityPage = () => {
                     <div
                       key={post._id}
                       onClick={() => setSelectedPost(post)}
-                      className="group relative bg-[#0f1322] rounded-2xl overflow-hidden border border-white/5 aspect-square cursor-pointer hover:border-[#00d9ff]/30 transition-all duration-300 hover:shadow-2xl hover:shadow-[#00d9ff]/10"
+                      className="group relative bg-transparent rounded-2xl overflow-hidden border border-white/5 aspect-square cursor-pointer hover:border-[#00d9ff]/30 transition-all duration-300 hover:shadow-2xl hover:shadow-[#00d9ff]/10"
                     >
                       <img
                         src={post.imageUrl}

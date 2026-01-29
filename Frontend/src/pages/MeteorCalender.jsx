@@ -19,7 +19,7 @@ import { WiStars, WiMeteor } from 'react-icons/wi';
 import { MapContainer, TileLayer, Marker, Popup, useMap, Circle } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import FeatureInfoModal from "../Components/FeatureInfoModal";
+import FeatureInfoModal from "../components/FeatureInfoModal";
 import meteorImage from "../assets/images/app_meteorcalendarimage.png";
 
 // Fix Leaflet Default Icon
@@ -162,7 +162,7 @@ const MeteorCalendar = () => {
                         </button>
                         <button
                             onClick={() => setShowInfoModal(true)}
-                            className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white hover:border-white/20 transition-all flex items-center gap-2"
+                            className="px-6 py-3 bg-[#00ff88]/20 hover:bg-[#00ff88]/40 border-2 border-[#00ff88] rounded-full text-white text-xs font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 shadow-[0_0_20px_rgba(0,255,136,0.4)] hover:shadow-[0_0_40px_rgba(0,255,136,0.6)] animate-pulse"
                         >
                             <MdInfoOutline className="text-lg" />
                             Learn More

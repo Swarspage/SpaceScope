@@ -44,13 +44,14 @@ router.post('/', upload.single('image'), async (req, res) => {
     try {
         const { user, caption, location } = req.body;
 
-        if (!req.file) {
-            return res.status(400).json({ error: 'Image is required' });
-        }
+        // Uses uploaded file OR a default space placeholder if text-only
+        const imageUrl = req.file
+            ? req.file.path
+            : 'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=800&q=80';
 
         const newPost = new Post({
             user: user || 'Anonymous',
-            imageUrl: req.file.path, // Cloudinary URL
+            imageUrl: imageUrl,
             caption: caption || '',
             location: location || ''
         });

@@ -27,7 +27,7 @@ import {
 } from 'react-icons/md';
 import { FaUserAstronaut } from 'react-icons/fa';
 import Sidebar from '../components/Sidebar';
-import { useAuth } from '../../Context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import QuizActiveView from './QuizActiveView';
 
 // --- IMPORTANT: DATA IMPORT ---

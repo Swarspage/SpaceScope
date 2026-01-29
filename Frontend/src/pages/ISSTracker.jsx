@@ -146,7 +146,7 @@ export default function ISSTracker() {
 
                     <button
                         onClick={() => setShowInfoModal(true)}
-                        className="ml-6 px-4 py-2 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 hover:border-[#00d9ff]/30 text-slate-300 hover:text-[#00d9ff] transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
+                        className="ml-6 px-6 py-3 bg-[#00ff88]/20 hover:bg-[#00ff88]/40 border-2 border-[#00ff88] rounded-full text-white text-xs font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 shadow-[0_0_20px_rgba(0,255,136,0.4)] hover:shadow-[0_0_40px_rgba(0,255,136,0.6)] animate-pulse"
                     >
                         <MdInfoOutline className="text-lg" />
                         Learn More
