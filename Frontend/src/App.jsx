@@ -1,16 +1,17 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider, useAuth } from "../Context/AuthContext";
-import Dashboard from "./pages/Dashboard";
-import LoginPage from "./pages/LoginPage";
-import ProfilePage from "./pages/ProfilePage";
-import AuroraPage from "./pages/AuroraPage";
-import ISSTracker from "./pages/ISSTracker";
-import MissionTimelines from "./pages/MissionTimelines";
-import MeteorCalendar from "./pages/MeteorCalender";
-import LearningPage from "./pages/LearningPage";
-import HomePage from "./pages/HomePage";
-import Applications from "./pages/Applications";
-import CommunityPage from "./pages/CommunityPage"; // Add this
+import { AuthProvider, useAuth } from "../context/AuthContext";
+import Dashboard from "./Pages/Dashboard";
+import LoginPage from "./Pages/LoginPage";
+import ProfilePage from "./Pages/ProfilePage";
+import AuroraPage from "./Pages/AuroraPage";
+import ISSTracker from "./Pages/ISSTracker";
+import MissionTimelines from "./Pages/MissionTimelines";
+import MeteorCalendar from "./Pages/MeteorCalender";
+import LearningPage from "./Pages/LearningPage";
+import HomePage from "./Pages/HomePage";
+import Applications from "./Pages/ApplicationsPage";
+import CommunityPage from "./Pages/CommunityPage"; // Add this
+import Particles from "./components/Particles";
 
 // Protected Route Component - must be used inside AuthProvider
 const ProtectedRoute = ({ children }) => {
@@ -124,7 +125,7 @@ const AppRoutes = () => {
 };
 
 
-import Particles from "./components/Particles";
+
 
 function App() {
   return (

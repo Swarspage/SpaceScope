@@ -4,8 +4,12 @@ import Globe from "react-globe.gl";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
-import { MdChevronLeft, MdSatelliteAlt, MdPublic, MdWifi } from "react-icons/md";
+import { MdChevronLeft, MdSatelliteAlt, MdPublic, MdWifi, MdInfoOutline, MdAnalytics, MdViewInAr, MdMap } from "react-icons/md";
 import { WiStars } from "react-icons/wi";
+import FeatureInfoModal from "../components/FeatureInfoModal";
+
+import ISSPassPredictor from "../components/ISSPassPredictor";
+import issImage from "../assets/images/app_isstrackerimage.png";
 
 /* ---------- Theme tokens (Singularity) ---------- */
 const THEME = {
@@ -51,6 +55,7 @@ export default function ISSTracker() {
     const navigate = useNavigate();
     const [iss, setIss] = useState(null);
     const [pollMs, setPollMs] = useState(5000);
+    const [showInfoModal, setShowInfoModal] = useState(false);
 
     const globeRef = useRef(null);
     const mapRef = useRef(null);
@@ -120,7 +125,7 @@ export default function ISSTracker() {
             <div className="fixed bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-purple-500/5 rounded-full blur-[100px] pointer-events-none z-0" />
 
             {/* Header */}
-            <header className="h-20 flex items-center justify-between px-8 border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 z-50">
+            <header className="h-[10vh] flex items-center justify-between px-8 border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 p-5 z-[2000]">
                 <div className="flex items-center gap-4">
                     <button
                         onClick={() => navigate('/dashboard')}
@@ -137,6 +142,15 @@ export default function ISSTracker() {
                             Orbital Telemetry // Live Feed
                         </p>
                     </div>
+
+
+                    <button
+                        onClick={() => setShowInfoModal(true)}
+                        className="ml-6 px-4 py-2 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 hover:border-[#00d9ff]/30 text-slate-300 hover:text-[#00d9ff] transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
+                    >
+                        <MdInfoOutline className="text-lg" />
+                        Learn More
+                    </button>
                 </div>
 
                 <div className="flex items-center gap-3 bg-black/40 border border-white/10 rounded-lg p-1.5">
@@ -154,13 +168,13 @@ export default function ISSTracker() {
                         </button>
                     ))}
                 </div>
-            </header>
+            </header >
 
             {/* Main Content: Split View */}
-            <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 relative z-10">
+            <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 relative z-10 gap-6 p-6 overflow-hidden">
 
                 {/* Left: Globe (3D) */}
-                <div className="relative border-r border-white/5 bg-black/40" ref={globeContainerRef}>
+                <div className="relative border border-white/5 bg-black/40 rounded-3xl overflow-hidden shadow-2xl" ref={globeContainerRef}>
                     <Globe
                         ref={globeRef}
                         width={globeContainerRef.current?.clientWidth}
@@ -189,7 +203,7 @@ export default function ISSTracker() {
                 </div>
 
                 {/* Right: Map (2D) */}
-                <div className="relative bg-[#0a0e17]">
+                <div className="relative bg-[#0a0e17] rounded-3xl overflow-hidden border border-white/5 shadow-2xl">
                     <MapContainer
                         center={iss ? [iss.lat, iss.lng] : [0, 0]}
                         zoom={3}
@@ -221,7 +235,7 @@ export default function ISSTracker() {
                     </div>
 
                     {/* Floating HUD Telemetry (Bottom Overlay) */}
-                    <div className="absolute bottom-12 left-6 right-6 p-6 bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-between z-[1000] shadow-2xl">
+                    <div className="absolute bottom-24 left-6 right-6 p-6 bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-between z-[1000] shadow-2xl">
                         <div className="flex items-center gap-8">
                             <div>
                                 <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">Coordinates</div>
@@ -245,8 +259,43 @@ export default function ISSTracker() {
                             <div className="font-mono text-sm text-white">{iss ? formatTimestamp(iss.timestamp) : "Connecting..."}</div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
+
+                    {/* Pass Predictor Overlay (Top Left of MAP view) */}
+                    <div className="absolute top-6 left-6 z-[1000] w-80">
+                        <ISSPassPredictor />
+                    </div>
+                </div >
+            </div >
+
+            <FeatureInfoModal
+                isOpen={showInfoModal}
+                onClose={() => setShowInfoModal(false)}
+                title="International Space Station (ISS)"
+                imageSrc={issImage}
+                features={[
+                    {
+                        title: "What is the ISS?",
+                        desc: "The International Space Station is the largest human-made object in space, orbiting Earth at 17,500 mph. It serves as a microgravity laboratory for research in astrobiology, astronomy, and physics.",
+                        icon: <MdSatelliteAlt className="text-lg" />
+                    },
+                    {
+                        title: "How do we Track it?",
+                        desc: "We use real-time telemetry data relayed via TDRS satellites to ground stations. This allows us to calculate its exact position, speed, and upcoming orbital passes with high precision.",
+                        icon: <MdWifi className="text-lg" />
+                    },
+                    {
+                        title: "What does the Globe Show?",
+                        desc: "The interactive 3D globe visualizes the station's current location relative to Earth's surface. The 'wavy' path represents its orbit projected onto a rotating planet.",
+                        icon: <MdPublic className="text-lg" />
+                    },
+                    {
+                        title: "How to use this Tracker?",
+                        desc: "Monitor the 'Live Telemetry' for connection status. Use the 'Ground Track' map to see where the ISS will fly over next.",
+                        icon: <MdMap className="text-lg" />
+                    }
+                ]}
+                readMoreLink="https://www.nasa.gov/international-space-station/"
+            />
+        </div >
     );
 }
