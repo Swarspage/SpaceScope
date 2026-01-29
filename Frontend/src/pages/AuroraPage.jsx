@@ -20,7 +20,7 @@ import {
 } from "react-icons/fi";
 import { MdChevronLeft, MdInfoOutline } from "react-icons/md";
 import { getAuroraData } from "../services/api";
-import FeatureInfoModal from "../Components/FeatureInfoModal";
+import FeatureInfoModal from "../components/FeatureInfoModal";
 import auroraImage from "../assets/images/app_auroraimage.png";
 
 const intensityToColor = (v) => {
@@ -127,7 +127,7 @@ const AuroraPage = () => {
         <div className="flex flex-col h-screen bg-[#050714] text-slate-300 font-sans overflow-hidden relative">
 
             {/* Header */}
-            <header className="h-20 flex items-center justify-between px-8 border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 z-50">
+            <header className="h-[10vh] flex items-center justify-between px-8 border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 focus:z-[2000] z-[2000] p-5">
                 <div className="flex items-center gap-4">
                     <button
                         onClick={() => navigate('/dashboard')}
@@ -177,104 +177,106 @@ const AuroraPage = () => {
             </header >
 
             {/* Main Content (Fullscreen Map) */}
-            < div className="flex-1 relative bg-[#0a0e17]" >
-                <MapContainer
-                    center={[60, 0]}
-                    zoom={2}
-                    minZoom={2}
-                    className="w-full h-full bg-transparent"
-                    zoomControl={false}
-                    whenCreated={setMapInstance}
-                >
-                    <TileLayer
-                        attribution='&copy; OpenStreetMap'
-                        url={showCityLights
-                            ? "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}.png"
-                            : "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-                        }
-                    />
-                    {showAurora && coords.map((p, idx) => {
-                        if (p.intensity <= 0) return null;
-                        return (
-                            <CircleMarker
-                                key={`${p.lat}-${p.lon}-${idx}`}
-                                center={[p.lat, p.lon]}
-                                radius={intensityToRadius(p.intensity)}
-                                pathOptions={{
-                                    color: intensityToColor(p.intensity),
-                                    fillColor: intensityToColor(p.intensity),
-                                    fillOpacity: 0.6,
-                                    weight: 0,
-                                    className: "animate-pulse"
-                                }}
-                            >
-                                <Tooltip direction="top">
-                                    <div className="text-xs font-mono">
-                                        Intensity: {p.intensity.toFixed(1)}
-                                    </div>
-                                </Tooltip>
-                            </CircleMarker>
-                        );
-                    })}
-                </MapContainer>
-
-                {/* Map Controls (Top Right) */}
-                <div className="absolute top-6 right-6 z-[1000] flex flex-col gap-2">
-                    <button onClick={() => mapInstance?.zoomIn()} className="w-10 h-10 bg-black/60 backdrop-blur border border-white/10 rounded-lg flex items-center justify-center hover:bg-white/10 text-white"><FiPlus /></button>
-                    <button onClick={() => mapInstance?.zoomOut()} className="w-10 h-10 bg-black/60 backdrop-blur border border-white/10 rounded-lg flex items-center justify-center hover:bg-white/10 text-white"><FiMinus /></button>
-                    <div className="h-2"></div>
-                    <button onClick={() => setShowCityLights(!showCityLights)} className={`w-10 h-10 backdrop-blur border rounded-lg flex items-center justify-center transition-all ${showCityLights ? 'bg-[#00d9ff]/20 border-[#00d9ff] text-[#00d9ff]' : 'bg-black/60 border-white/10 text-slate-400'}`}><FiLayers /></button>
-                </div>
-
-                {/* KPI Alert (Top Left Overlay) */}
-                {
-                    kp >= 5 && (
-                        <div className="absolute top-6 left-6 z-[1000] bg-red-500/10 border border-red-500/50 backdrop-blur-md px-4 py-3 rounded-xl flex items-center gap-3 animate-pulse">
-                            <FiAlertTriangle className="text-red-500 text-xl" />
-                            <div>
-                                <div className="text-red-400 font-bold uppercase text-xs tracking-wider">Geomagnetic Storm</div>
-                                <div className="text-white text-xs">Kp Index {kp} - High Visibility</div>
-                            </div>
-                        </div>
-                    )
-                }
-
-                {/* Stats HUD (Bottom Overlay) */}
-                <div className="absolute bottom-6 left-6 right-6 z-[1000] flex flex-wrap gap-4 items-end pointer-events-none">
-                    <div className="pointer-events-auto flex gap-4">
-                        <StatCardOverlay
-                            label="Planetary K-Index"
-                            value={kp}
-                            subtext={kp < 4 ? "Low Activity" : "Storm Watch"}
-                            icon={FiActivity}
-                            alertLevel={kp >= 5 ? "high" : "normal"}
+            <div className="flex-1 relative bg-[#050714] p-6 overflow-hidden">
+                <div className="relative w-full h-full rounded-3xl overflow-hidden border border-white/5 shadow-2xl bg-[#0a0e17]">
+                    <MapContainer
+                        center={[60, 0]}
+                        zoom={2}
+                        minZoom={2}
+                        className="w-full h-full bg-transparent"
+                        zoomControl={false}
+                        whenCreated={setMapInstance}
+                    >
+                        <TileLayer
+                            attribution='&copy; OpenStreetMap'
+                            url={showCityLights
+                                ? "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}.png"
+                                : "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                            }
                         />
-                        <StatCardOverlay
-                            label="Max Intensity"
-                            value={`${maxIntensity.toFixed(1)} GW`}
-                            subtext="Hemispheric Power"
-                            icon={FiMap}
-                        />
-                        <StatCardOverlay
-                            label="Forecast Time"
-                            value={forecastTime ? new Date(forecastTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "--:--"}
-                            subtext="Updated just now"
-                            icon={FiClock}
-                        />
+                        {showAurora && coords.map((p, idx) => {
+                            if (p.intensity <= 0) return null;
+                            return (
+                                <CircleMarker
+                                    key={`${p.lat}-${p.lon}-${idx}`}
+                                    center={[p.lat, p.lon]}
+                                    radius={intensityToRadius(p.intensity)}
+                                    pathOptions={{
+                                        color: intensityToColor(p.intensity),
+                                        fillColor: intensityToColor(p.intensity),
+                                        fillOpacity: 0.6,
+                                        weight: 0,
+                                        className: "animate-pulse"
+                                    }}
+                                >
+                                    <Tooltip direction="top">
+                                        <div className="text-xs font-mono">
+                                            Intensity: {p.intensity.toFixed(1)}
+                                        </div>
+                                    </Tooltip>
+                                </CircleMarker>
+                            );
+                        })}
+                    </MapContainer>
+
+                    {/* Map Controls (Top Right) */}
+                    <div className="absolute top-6 right-6 z-[1000] flex flex-col gap-2">
+                        <button onClick={() => mapInstance?.zoomIn()} className="w-10 h-10 bg-black/60 backdrop-blur border border-white/10 rounded-lg flex items-center justify-center hover:bg-white/10 text-white"><FiPlus /></button>
+                        <button onClick={() => mapInstance?.zoomOut()} className="w-10 h-10 bg-black/60 backdrop-blur border border-white/10 rounded-lg flex items-center justify-center hover:bg-white/10 text-white"><FiMinus /></button>
+                        <div className="h-2"></div>
+                        <button onClick={() => setShowCityLights(!showCityLights)} className={`w-10 h-10 backdrop-blur border rounded-lg flex items-center justify-center transition-all ${showCityLights ? 'bg-[#00d9ff]/20 border-[#00d9ff] text-[#00d9ff]' : 'bg-black/60 border-white/10 text-slate-400'}`}><FiLayers /></button>
                     </div>
-                </div>
 
-                {/* Loading Overlay */}
-                {
-                    loading && (
-                        <div className="absolute inset-0 z-[1001] bg-[#050714]/80 backdrop-blur-sm flex items-center justify-center">
-                            <div className="flex flex-col items-center gap-4">
-                                <div className="w-12 h-12 border-2 border-[#00d9ff] border-t-transparent rounded-full animate-spin"></div>
-                                <span className="text-[#00d9ff] font-mono text-xs tracking-widest animate-pulse">ESTABLISHING UPLINK...</span>
+                    {/* KPI Alert (Top Left Overlay) */}
+                    {
+                        kp >= 5 && (
+                            <div className="absolute top-6 left-6 z-[1000] bg-red-500/10 border border-red-500/50 backdrop-blur-md px-4 py-3 rounded-xl flex items-center gap-3 animate-pulse">
+                                <FiAlertTriangle className="text-red-500 text-xl" />
+                                <div>
+                                    <div className="text-red-400 font-bold uppercase text-xs tracking-wider">Geomagnetic Storm</div>
+                                    <div className="text-white text-xs">Kp Index {kp} - High Visibility</div>
+                                </div>
                             </div>
+                        )
+                    }
+
+                    {/* Stats HUD (Bottom Overlay) */}
+                    <div className="absolute bottom-6 left-6 right-6 z-[1000] flex flex-wrap gap-4 items-end pointer-events-none">
+                        <div className="pointer-events-auto flex gap-4">
+                            <StatCardOverlay
+                                label="Planetary K-Index"
+                                value={kp}
+                                subtext={kp < 4 ? "Low Activity" : "Storm Watch"}
+                                icon={FiActivity}
+                                alertLevel={kp >= 5 ? "high" : "normal"}
+                            />
+                            <StatCardOverlay
+                                label="Max Intensity"
+                                value={`${maxIntensity.toFixed(1)} GW`}
+                                subtext="Hemispheric Power"
+                                icon={FiMap}
+                            />
+                            <StatCardOverlay
+                                label="Forecast Time"
+                                value={forecastTime ? new Date(forecastTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "--:--"}
+                                subtext="Updated just now"
+                                icon={FiClock}
+                            />
                         </div>
-                    )
-                }
+                    </div>
+
+                    {/* Loading Overlay */}
+                    {
+                        loading && (
+                            <div className="absolute inset-0 z-[1001] bg-[#050714]/80 backdrop-blur-sm flex items-center justify-center">
+                                <div className="flex flex-col items-center gap-4">
+                                    <div className="w-12 h-12 border-2 border-[#00d9ff] border-t-transparent rounded-full animate-spin"></div>
+                                    <span className="text-[#00d9ff] font-mono text-xs tracking-widest animate-pulse">ESTABLISHING UPLINK...</span>
+                                </div>
+                            </div>
+                        )
+                    }
+                </div>
             </div >
 
             <FeatureInfoModal

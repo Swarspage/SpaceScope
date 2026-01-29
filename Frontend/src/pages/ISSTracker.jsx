@@ -6,7 +6,9 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import { MdChevronLeft, MdSatelliteAlt, MdPublic, MdWifi, MdInfoOutline, MdAnalytics, MdViewInAr, MdMap } from "react-icons/md";
 import { WiStars } from "react-icons/wi";
-import FeatureInfoModal from "../Components/FeatureInfoModal";
+import FeatureInfoModal from "../components/FeatureInfoModal";
+
+import ISSPassPredictor from "../components/ISSPassPredictor";
 import issImage from "../assets/images/app_isstrackerimage.png";
 
 /* ---------- Theme tokens (Singularity) ---------- */
@@ -123,7 +125,7 @@ export default function ISSTracker() {
             <div className="fixed bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-purple-500/5 rounded-full blur-[100px] pointer-events-none z-0" />
 
             {/* Header */}
-            <header className="h-20 flex items-center justify-between px-8 border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 z-50">
+            <header className="h-[10vh] flex items-center justify-between px-8 border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 p-5 z-[2000]">
                 <div className="flex items-center gap-4">
                     <button
                         onClick={() => navigate('/dashboard')}
@@ -169,10 +171,10 @@ export default function ISSTracker() {
             </header >
 
             {/* Main Content: Split View */}
-            < div className="flex-1 grid grid-cols-1 lg:grid-cols-2 relative z-10" >
+            <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 relative z-10 gap-6 p-6 overflow-hidden">
 
                 {/* Left: Globe (3D) */}
-                < div className="relative border-r border-white/5 bg-black/40" ref={globeContainerRef} >
+                <div className="relative border border-white/5 bg-black/40 rounded-3xl overflow-hidden shadow-2xl" ref={globeContainerRef}>
                     <Globe
                         ref={globeRef}
                         width={globeContainerRef.current?.clientWidth}
@@ -198,10 +200,10 @@ export default function ISSTracker() {
                             ORBITAL VIEW
                         </div>
                     </div>
-                </div >
+                </div>
 
                 {/* Right: Map (2D) */}
-                < div className="relative bg-[#0a0e17]" >
+                <div className="relative bg-[#0a0e17] rounded-3xl overflow-hidden border border-white/5 shadow-2xl">
                     <MapContainer
                         center={iss ? [iss.lat, iss.lng] : [0, 0]}
                         zoom={3}
@@ -233,7 +235,7 @@ export default function ISSTracker() {
                     </div>
 
                     {/* Floating HUD Telemetry (Bottom Overlay) */}
-                    <div className="absolute bottom-12 left-6 right-6 p-6 bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-between z-[1000] shadow-2xl">
+                    <div className="absolute bottom-24 left-6 right-6 p-6 bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-between z-[1000] shadow-2xl">
                         <div className="flex items-center gap-8">
                             <div>
                                 <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">Coordinates</div>
@@ -256,6 +258,11 @@ export default function ISSTracker() {
                             <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">Last Packet</div>
                             <div className="font-mono text-sm text-white">{iss ? formatTimestamp(iss.timestamp) : "Connecting..."}</div>
                         </div>
+                    </div>
+
+                    {/* Pass Predictor Overlay (Top Left of MAP view) */}
+                    <div className="absolute top-6 left-6 z-[1000] w-80">
+                        <ISSPassPredictor />
                     </div>
                 </div >
             </div >
