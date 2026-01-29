@@ -4,8 +4,10 @@ import Globe from "react-globe.gl";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
-import { MdChevronLeft, MdSatelliteAlt, MdPublic, MdWifi } from "react-icons/md";
+import { MdChevronLeft, MdSatelliteAlt, MdPublic, MdWifi, MdInfoOutline, MdAnalytics, MdViewInAr, MdMap } from "react-icons/md";
 import { WiStars } from "react-icons/wi";
+import FeatureInfoModal from "../Components/FeatureInfoModal";
+import issImage from "../assets/images/app_isstrackerimage.png";
 
 /* ---------- Theme tokens (Singularity) ---------- */
 const THEME = {
@@ -51,6 +53,7 @@ export default function ISSTracker() {
     const navigate = useNavigate();
     const [iss, setIss] = useState(null);
     const [pollMs, setPollMs] = useState(5000);
+    const [showInfoModal, setShowInfoModal] = useState(false);
 
     const globeRef = useRef(null);
     const mapRef = useRef(null);
@@ -137,6 +140,15 @@ export default function ISSTracker() {
                             Orbital Telemetry // Live Feed
                         </p>
                     </div>
+
+
+                    <button
+                        onClick={() => setShowInfoModal(true)}
+                        className="ml-6 px-4 py-2 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 hover:border-[#00d9ff]/30 text-slate-300 hover:text-[#00d9ff] transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
+                    >
+                        <MdInfoOutline className="text-lg" />
+                        Learn More
+                    </button>
                 </div>
 
                 <div className="flex items-center gap-3 bg-black/40 border border-white/10 rounded-lg p-1.5">
@@ -154,13 +166,13 @@ export default function ISSTracker() {
                         </button>
                     ))}
                 </div>
-            </header>
+            </header >
 
             {/* Main Content: Split View */}
-            <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 relative z-10">
+            < div className="flex-1 grid grid-cols-1 lg:grid-cols-2 relative z-10" >
 
                 {/* Left: Globe (3D) */}
-                <div className="relative border-r border-white/5 bg-black/40" ref={globeContainerRef}>
+                < div className="relative border-r border-white/5 bg-black/40" ref={globeContainerRef} >
                     <Globe
                         ref={globeRef}
                         width={globeContainerRef.current?.clientWidth}
@@ -186,10 +198,10 @@ export default function ISSTracker() {
                             ORBITAL VIEW
                         </div>
                     </div>
-                </div>
+                </div >
 
                 {/* Right: Map (2D) */}
-                <div className="relative bg-[#0a0e17]">
+                < div className="relative bg-[#0a0e17]" >
                     <MapContainer
                         center={iss ? [iss.lat, iss.lng] : [0, 0]}
                         zoom={3}
@@ -245,8 +257,38 @@ export default function ISSTracker() {
                             <div className="font-mono text-sm text-white">{iss ? formatTimestamp(iss.timestamp) : "Connecting..."}</div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
+                </div >
+            </div >
+
+            <FeatureInfoModal
+                isOpen={showInfoModal}
+                onClose={() => setShowInfoModal(false)}
+                title="International Space Station (ISS)"
+                imageSrc={issImage}
+                features={[
+                    {
+                        title: "What is the ISS?",
+                        desc: "The International Space Station is the largest human-made object in space, orbiting Earth at 17,500 mph. It serves as a microgravity laboratory for research in astrobiology, astronomy, and physics.",
+                        icon: <MdSatelliteAlt className="text-lg" />
+                    },
+                    {
+                        title: "How do we Track it?",
+                        desc: "We use real-time telemetry data relayed via TDRS satellites to ground stations. This allows us to calculate its exact position, speed, and upcoming orbital passes with high precision.",
+                        icon: <MdWifi className="text-lg" />
+                    },
+                    {
+                        title: "What does the Globe Show?",
+                        desc: "The interactive 3D globe visualizes the station's current location relative to Earth's surface. The 'wavy' path represents its orbit projected onto a rotating planet.",
+                        icon: <MdPublic className="text-lg" />
+                    },
+                    {
+                        title: "How to use this Tracker?",
+                        desc: "Monitor the 'Live Telemetry' for connection status. Use the 'Ground Track' map to see where the ISS will fly over next.",
+                        icon: <MdMap className="text-lg" />
+                    }
+                ]}
+                readMoreLink="https://www.nasa.gov/international-space-station/"
+            />
+        </div >
     );
 }

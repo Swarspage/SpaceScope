@@ -15,10 +15,13 @@ import {
     FiMap,
     FiAlertTriangle,
     FiPlus,
-    FiMinus
+    FiMinus,
+    FiGlobe
 } from "react-icons/fi";
-import { MdChevronLeft } from "react-icons/md";
+import { MdChevronLeft, MdInfoOutline } from "react-icons/md";
 import { getAuroraData } from "../services/api";
+import FeatureInfoModal from "../Components/FeatureInfoModal";
+import auroraImage from "../assets/images/app_auroraimage.png";
 
 const intensityToColor = (v) => {
     if (v <= 0) return "transparent";
@@ -59,6 +62,7 @@ const AuroraPage = () => {
     const [obsTime, setObsTime] = useState(null);
     const [forecastTime, setForecastTime] = useState(null);
     const [mapInstance, setMapInstance] = useState(null);
+    const [showInfoModal, setShowInfoModal] = useState(false);
 
     // UI State
     const [showAurora, setShowAurora] = useState(true);
@@ -140,6 +144,15 @@ const AuroraPage = () => {
                             Magnetospheric Particle Map // NOAA Feed
                         </p>
                     </div>
+
+
+                    <button
+                        onClick={() => setShowInfoModal(true)}
+                        className="ml-6 px-4 py-2 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 hover:border-[#00d9ff]/30 text-slate-300 hover:text-[#00d9ff] transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
+                    >
+                        <MdInfoOutline className="text-lg" />
+                        Learn More
+                    </button>
                 </div>
 
                 <div className="flex gap-3">
@@ -161,10 +174,10 @@ const AuroraPage = () => {
                         {cooldown > 0 ? `Wait ${Math.floor(cooldown / 60)}:${(cooldown % 60).toString().padStart(2, '0')}` : "Force Refresh"}
                     </button>
                 </div>
-            </header>
+            </header >
 
             {/* Main Content (Fullscreen Map) */}
-            <div className="flex-1 relative bg-[#0a0e17]">
+            < div className="flex-1 relative bg-[#0a0e17]" >
                 <MapContainer
                     center={[60, 0]}
                     zoom={2}
@@ -214,15 +227,17 @@ const AuroraPage = () => {
                 </div>
 
                 {/* KPI Alert (Top Left Overlay) */}
-                {kp >= 5 && (
-                    <div className="absolute top-6 left-6 z-[1000] bg-red-500/10 border border-red-500/50 backdrop-blur-md px-4 py-3 rounded-xl flex items-center gap-3 animate-pulse">
-                        <FiAlertTriangle className="text-red-500 text-xl" />
-                        <div>
-                            <div className="text-red-400 font-bold uppercase text-xs tracking-wider">Geomagnetic Storm</div>
-                            <div className="text-white text-xs">Kp Index {kp} - High Visibility</div>
+                {
+                    kp >= 5 && (
+                        <div className="absolute top-6 left-6 z-[1000] bg-red-500/10 border border-red-500/50 backdrop-blur-md px-4 py-3 rounded-xl flex items-center gap-3 animate-pulse">
+                            <FiAlertTriangle className="text-red-500 text-xl" />
+                            <div>
+                                <div className="text-red-400 font-bold uppercase text-xs tracking-wider">Geomagnetic Storm</div>
+                                <div className="text-white text-xs">Kp Index {kp} - High Visibility</div>
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )
+                }
 
                 {/* Stats HUD (Bottom Overlay) */}
                 <div className="absolute bottom-6 left-6 right-6 z-[1000] flex flex-wrap gap-4 items-end pointer-events-none">
@@ -250,16 +265,48 @@ const AuroraPage = () => {
                 </div>
 
                 {/* Loading Overlay */}
-                {loading && (
-                    <div className="absolute inset-0 z-[1001] bg-[#050714]/80 backdrop-blur-sm flex items-center justify-center">
-                        <div className="flex flex-col items-center gap-4">
-                            <div className="w-12 h-12 border-2 border-[#00d9ff] border-t-transparent rounded-full animate-spin"></div>
-                            <span className="text-[#00d9ff] font-mono text-xs tracking-widest animate-pulse">ESTABLISHING UPLINK...</span>
+                {
+                    loading && (
+                        <div className="absolute inset-0 z-[1001] bg-[#050714]/80 backdrop-blur-sm flex items-center justify-center">
+                            <div className="flex flex-col items-center gap-4">
+                                <div className="w-12 h-12 border-2 border-[#00d9ff] border-t-transparent rounded-full animate-spin"></div>
+                                <span className="text-[#00d9ff] font-mono text-xs tracking-widest animate-pulse">ESTABLISHING UPLINK...</span>
+                            </div>
                         </div>
-                    </div>
-                )}
-            </div>
-        </div>
+                    )
+                }
+            </div >
+
+            <FeatureInfoModal
+                isOpen={showInfoModal}
+                onClose={() => setShowInfoModal(false)}
+                title="Aurora Forecast System"
+                imageSrc={auroraImage}
+                features={[
+                    {
+                        title: "How do Satellites help?",
+                        desc: "Satellites like NOAA's DSCOVR orbit at the L1 Lagrangian point (1 million miles away) to measure the speed and density of solar wind before it hits Earth, initiating aurora forecasts.",
+                        icon: <FiGlobe className="text-lg" />
+                    },
+                    {
+                        title: " What is the Kp Index?",
+                        desc: "The K-index quantifies disturbances in the Earth's magnetic field. Values above 5 indicate a geomagnetic storm, significantly increasing the chances of seeing auroras at lower latitudes.",
+                        icon: <FiActivity className="text-lg" />
+                    },
+                    {
+                        title: "Why is the Map Red?",
+                        desc: "The 'Intensity Heatmap' uses colors to denote probability. Red areas indicate high auroral energy deposition, meaning a very high likelihood of visibility overhead.",
+                        icon: <FiLayers className="text-lg" />
+                    },
+                    {
+                        title: "When is the Best Time to Watch?",
+                        desc: "Auroras are best seen around midnight in dark, clear skies. Use the 'Forecast Time' on this dashboard to check for real-time spikes in Hemispheric Power.",
+                        icon: <FiClock className="text-lg" />
+                    }
+                ]}
+                readMoreLink="https://www.swpc.noaa.gov/"
+            />
+        </div >
     );
 };
 

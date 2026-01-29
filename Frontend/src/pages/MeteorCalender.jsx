@@ -9,12 +9,18 @@ import {
     MdCalendarMonth,
     MdClose,
     MdLocationOn,
-    MdVisibility
+    MdVisibility,
+    MdEvent,
+    MdInsights,
+    MdNotifications,
+    MdSatelliteAlt
 } from 'react-icons/md';
 import { WiStars, WiMeteor } from 'react-icons/wi';
 import { MapContainer, TileLayer, Marker, Popup, useMap, Circle } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import FeatureInfoModal from "../Components/FeatureInfoModal";
+import meteorImage from "../assets/images/app_meteorcalendarimage.png";
 
 // Fix Leaflet Default Icon
 import iconMarker from 'leaflet/dist/images/marker-icon.png';
@@ -116,6 +122,7 @@ const MeteorCalendar = () => {
     const navigate = useNavigate();
     const [filter, setFilter] = useState('all');
     const [selectedEvent, setSelectedEvent] = useState(null);
+    const [showInfoModal, setShowInfoModal] = useState(false);
 
     return (
         <div className="flex h-screen bg-[#050714] text-slate-300 font-sans overflow-hidden">
@@ -152,6 +159,13 @@ const MeteorCalendar = () => {
                         </button>
                         <button className="px-4 py-2 rounded-lg bg-[#00d9ff]/10 border border-[#00d9ff]/30 text-[#00d9ff] text-xs font-bold uppercase tracking-wider hover:bg-[#00d9ff] hover:text-black transition-all shadow-[0_0_15px_rgba(0,217,255,0.2)]">
                             Sync to Calendar
+                        </button>
+                        <button
+                            onClick={() => setShowInfoModal(true)}
+                            className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white hover:border-white/20 transition-all flex items-center gap-2"
+                        >
+                            <MdInfoOutline className="text-lg" />
+                            Learn More
                         </button>
                     </div>
                 </header>
@@ -368,6 +382,36 @@ const MeteorCalendar = () => {
                     </div>
                 </div>
             )}
+
+            <FeatureInfoModal
+                isOpen={showInfoModal}
+                onClose={() => setShowInfoModal(false)}
+                title="Meteor Shower Surveillance"
+                imageSrc={meteorImage}
+                features={[
+                    {
+                        title: "What are Meteor Showers?",
+                        desc: "Meteor showers occur when Earth passes through debris trails left by comets. As these particles burn up in our atmosphere, they create the spectacular streaks of light we see as 'shooting stars'.",
+                        icon: <WiMeteor className="text-xl" />
+                    },
+                    {
+                        title: "How do Satellites Help?",
+                        desc: "Satellites and high-altitude sensors track atmospheric entry events and monitor orbital debris fields. This data helps predict the exact timing and intensity (ZHR) of showers, allowing for precise global visibility forecasts.",
+                        icon: <MdSatelliteAlt className="text-lg" />
+                    },
+                    {
+                        title: "What is ZHR?",
+                        desc: "Zenith Hourly Rate (ZHR) is the number of meteors a single observer would see in one hour under perfect conditions. This dashboard tracks this key metric to tell you which events are worth staying up for.",
+                        icon: <MdInsights className="text-lg" />
+                    },
+                    {
+                        title: "How to use this Dashboard?",
+                        desc: "Use the 'Upcoming Sequence' to find the next major event. Check the 'Visibility Score' and 'Moon Phase' to determine viewing quality—darker skies mean more visible meteors.",
+                        icon: <MdVisibility className="text-lg" />
+                    }
+                ]}
+                readMoreLink="https://www.imo.net/"
+            />
         </div>
     );
 };

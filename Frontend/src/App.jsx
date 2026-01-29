@@ -9,8 +9,9 @@ import MissionTimelines from "./pages/MissionTimelines";
 import MeteorCalendar from "./pages/MeteorCalender";
 import LearningPage from "./pages/LearningPage";
 import HomePage from "./pages/HomePage";
-import Applications from "./pages/Applications";
+import Applications from "./pages/ApplicationsPage";
 import CommunityPage from "./pages/CommunityPage"; // Add this
+import Particles from "./components/Particles";
 
 // Protected Route Component - must be used inside AuthProvider
 const ProtectedRoute = ({ children }) => {
@@ -124,7 +125,7 @@ const AppRoutes = () => {
 };
 
 
-import Particles from "./components/Particles";
+
 
 function App() {
   return (
