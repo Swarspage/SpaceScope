@@ -29,6 +29,7 @@ import { FaUserAstronaut } from 'react-icons/fa';
 import Sidebar from '../components/Sidebar';
 import { useAuth } from '../../context/AuthContext';
 import QuizActiveView from './QuizActiveView';
+import TargetCursor from '../components/TargetCursor';
 
 // --- IMPORTANT: DATA IMPORT ---
 import quizData from '../data/Quiz.json';
@@ -430,7 +431,7 @@ const LearningPage = () => {
                                             setActiveQuiz({ ...topic, ...data, timeLimit: timerEnabled ? selectedDuration : null });
                                             onClose();
                                         }}
-                                        className={`w-full py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${data.status === 'completed'
+                                        className={`cursor-target w-full py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${data.status === 'completed'
                                             ? 'bg-white/5 text-slate-400 hover:bg-white/10'
                                             : 'bg-[#00d9ff]/10 text-[#00d9ff] hover:bg-[#00d9ff] hover:text-black'
                                             }`}
@@ -446,7 +447,7 @@ const LearningPage = () => {
                     <div className="px-8 pb-8">
                         <div className="bg-[#0f1322] rounded-xl p-5 border border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
                             <div className="flex items-center gap-4">
-                                <div className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-colors ${timerEnabled ? 'bg-[#00d9ff]' : 'bg-slate-700'}`} onClick={() => setTimerEnabled(!timerEnabled)}>
+                                <div className={`cursor-target w-12 h-6 rounded-full p-1 cursor-pointer transition-colors ${timerEnabled ? 'bg-[#00d9ff]' : 'bg-slate-700'}`} onClick={() => setTimerEnabled(!timerEnabled)}>
                                     <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${timerEnabled ? 'translate-x-6' : 'translate-x-0'}`} />
                                 </div>
                                 <div>
@@ -461,7 +462,7 @@ const LearningPage = () => {
                                         <button
                                             key={min}
                                             onClick={() => setSelectedDuration(min)}
-                                            className={`px-4 py-2 rounded-lg text-xs font-bold border transition-all ${selectedDuration === min
+                                            className={`cursor-target px-4 py-2 rounded-lg text-xs font-bold border transition-all ${selectedDuration === min
                                                 ? 'bg-[#00d9ff]/20 border-[#00d9ff] text-[#00d9ff]'
                                                 : 'bg-transparent border-white/10 text-slate-400 hover:text-white'}`}
                                         >
@@ -486,7 +487,7 @@ const LearningPage = () => {
         return (
             <div
                 onClick={() => setSelectedTopic(topic)}
-                className="group relative flex flex-col h-full rounded-2xl overflow-hidden bg-black/30 backdrop-blur-md border border-white/5 hover:border-[#00d9ff]/30 transition-all hover:-translate-y-1 cursor-pointer"
+                className="cursor-target group relative flex flex-col h-full rounded-2xl overflow-hidden bg-black/30 backdrop-blur-md border border-white/5 hover:border-[#00d9ff]/30 transition-all hover:-translate-y-1 cursor-pointer"
             >
                 <div className="relative h-[160px] w-full overflow-hidden">
                     <img src={topic.image} alt={topic.topic} className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 ${isCompleted ? 'grayscale-[50%]' : ''}`} />
@@ -520,7 +521,7 @@ const LearningPage = () => {
                     </p>
 
                     <div className="mt-auto">
-                        <button className={`w-full py-2.5 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 group-hover:gap-3 ${isCompleted ? 'bg-white/5 text-slate-400' : 'bg-[#00d9ff]/10 text-[#00d9ff] border border-[#00d9ff]/20'
+                        <button className={`cursor-target w-full py-2.5 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 group-hover:gap-3 ${isCompleted ? 'bg-white/5 text-slate-400' : 'bg-[#00d9ff]/10 text-[#00d9ff] border border-[#00d9ff]/20'
                             }`}>
                             {isCompleted ? 'Topic Completed' : isInProgress ? 'Continue Topic' : 'Open Topic'} <ArrowRight size={14} />
                         </button>
@@ -568,13 +569,13 @@ const LearningPage = () => {
                                 href={article.url}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="flex-1 bg-[#00d9ff] text-black font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2 hover:bg-[#00c2e6] transition-colors"
+                                className="cursor-target flex-1 bg-[#00d9ff] text-black font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2 hover:bg-[#00c2e6] transition-colors"
                             >
                                 Read Full Article <ExternalLink size={14} />
                             </a>
                             <button
                                 onClick={onClose}
-                                className="px-6 py-3 rounded-xl border border-white/10 text-white font-bold text-sm hover:bg-white/5 transition-colors"
+                                className="cursor-target px-6 py-3 rounded-xl border border-white/10 text-white font-bold text-sm hover:bg-white/5 transition-colors"
                             >
                                 Close
                             </button>
@@ -588,7 +589,7 @@ const LearningPage = () => {
     const ArticleCard = ({ article, onClick }) => (
         <div
             onClick={() => onClick(article)}
-            className="group flex flex-col h-full rounded-2xl overflow-hidden bg-black/30 backdrop-blur-md border border-white/5 hover:border-[#00d9ff]/30 transition-all hover:-translate-y-1 cursor-pointer"
+            className="cursor-target group flex flex-col h-full rounded-2xl overflow-hidden bg-black/30 backdrop-blur-md border border-white/5 hover:border-[#00d9ff]/30 transition-all hover:-translate-y-1 cursor-pointer"
         >
             <div className="p-5 flex flex-col flex-grow">
                 <div className="flex items-center justify-between mb-3">
@@ -628,7 +629,7 @@ const LearningPage = () => {
                     {/* Header */}
                     <div className="p-4 border-b border-white/5 flex items-center justify-between bg-black/40">
                         <h3 className="font-bold text-white line-clamp-1">{video.title}</h3>
-                        <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full text-slate-400 transition-colors">
+                        <button onClick={onClose} className="cursor-target p-2 hover:bg-white/5 rounded-full text-slate-400 transition-colors">
                             <X size={20} />
                         </button>
                     </div>
@@ -670,13 +671,13 @@ const LearningPage = () => {
                                     href={video.url}
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm flex items-center gap-2 transition-colors"
+                                    className="cursor-target px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm flex items-center gap-2 transition-colors"
                                 >
                                     <Play size={14} fill="currentColor" /> Watch on YouTube
                                 </a>
                                 <button
                                     onClick={onClose}
-                                    className="px-6 py-2.5 rounded-xl border border-white/10 text-white font-bold text-sm hover:bg-white/5 transition-colors"
+                                    className="cursor-target px-6 py-2.5 rounded-xl border border-white/10 text-white font-bold text-sm hover:bg-white/5 transition-colors"
                                 >
                                     Close
                                 </button>
@@ -691,7 +692,7 @@ const LearningPage = () => {
     const VideoCard = ({ video, onClick }) => (
         <div
             onClick={() => onClick(video)}
-            className="group min-w-[300px] md:min-w-[360px] rounded-2xl overflow-hidden bg-black/30 backdrop-blur-md border border-white/5 hover:border-[#00d9ff]/30 transition-all hover:-translate-y-1 cursor-pointer flex flex-col snap-start"
+            className="cursor-target group min-w-[300px] md:min-w-[360px] rounded-2xl overflow-hidden bg-black/30 backdrop-blur-md border border-white/5 hover:border-[#00d9ff]/30 transition-all hover:-translate-y-1 cursor-pointer flex flex-col snap-start"
         >
             <div className="relative aspect-video bg-black overflow-hidden">
                 {video.thumbnail ? (
@@ -732,6 +733,12 @@ const LearningPage = () => {
 
     return (
         <div className="flex h-screen bg-transparent text-slate-300 font-sans overflow-hidden">
+            <TargetCursor
+                spinDuration={5}
+                hideDefaultCursor
+                parallaxOn
+                hoverDuration={0.95}
+            />
             <Sidebar activeTab="Learning Zone" />
 
             <div className="flex-1 flex flex-col min-w-0 bg-transparent relative">
@@ -745,16 +752,16 @@ const LearningPage = () => {
                             <input
                                 type="text"
                                 placeholder="Search quizzes, articles, or videos..."
-                                className="w-full bg-[#0f1322] border border-white/10 rounded-lg py-2 pl-10 pr-12 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#00d9ff]/50"
+                                className="cursor-target w-full bg-[#0f1322] border border-white/10 rounded-lg py-2 pl-10 pr-12 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#00d9ff]/50"
                             />
                         </div>
                     </div>
                     <div className="flex items-center gap-4 ml-4">
-                        <button className="relative text-slate-400 hover:text-white">
+                        <button className="cursor-target relative text-slate-400 hover:text-white">
                             <MdNotifications className="text-xl" />
                             <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full" />
                         </button>
-                        <button onClick={() => navigate('/profile')} className="text-slate-400 hover:text-white">
+                        <button onClick={() => navigate('/profile')} className="cursor-target text-slate-400 hover:text-white">
                             <MdSettings className="text-xl" />
                         </button>
                         <div className="h-8 w-px bg-white/10" />
@@ -810,7 +817,7 @@ const LearningPage = () => {
                                     setActiveTab(tab.id);
                                     if (tab.id === 'Leaderboard') setShowLeaderboard(true);
                                 }}
-                                className={`flex items-center gap-2 px-6 py-3 text-sm font-medium border-b-2 transition-all ${activeTab === tab.id
+                                className={`cursor-target flex items-center gap-2 px-6 py-3 text-sm font-medium border-b-2 transition-all ${activeTab === tab.id
                                     ? 'border-[#00d9ff] text-[#00d9ff] bg-[#00d9ff]/5'
                                     : 'border-transparent text-[#94a3b8] hover:text-white'
                                     }`}

@@ -7,6 +7,7 @@ import L from "leaflet";
 import { MdChevronLeft, MdSatelliteAlt, MdPublic, MdWifi, MdInfoOutline, MdAnalytics, MdViewInAr, MdMap } from "react-icons/md";
 import { WiStars } from "react-icons/wi";
 import FeatureInfoModal from "../components/FeatureInfoModal";
+import TargetCursor from "../components/TargetCursor";
 
 import ISSPassPredictor from "../components/ISSPassPredictor";
 import issImage from "../assets/images/app_isstrackerimage.png";
@@ -119,6 +120,12 @@ export default function ISSTracker() {
 
     return (
         <div className="flex flex-col h-screen bg-[#050714] text-slate-300 font-sans overflow-hidden relative">
+            <TargetCursor
+                spinDuration={5}
+                hideDefaultCursor
+                parallaxOn
+                hoverDuration={0.95}
+            />
 
             {/* Background Atmosphere */}
             <div className="fixed top-[-20%] right-[-10%] w-[800px] h-[800px] bg-cyan-500/5 rounded-full blur-[120px] pointer-events-none z-0" />
@@ -129,7 +136,7 @@ export default function ISSTracker() {
                 <div className="flex items-center gap-4">
                     <button
                         onClick={() => navigate('/dashboard')}
-                        className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-[#00d9ff]/30 text-slate-400 hover:text-[#00d9ff] transition-all"
+                        className="cursor-target w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-[#00d9ff]/30 text-slate-400 hover:text-[#00d9ff] transition-all"
                     >
                         <MdChevronLeft className="text-2xl" />
                     </button>
@@ -146,7 +153,7 @@ export default function ISSTracker() {
 
                     <button
                         onClick={() => setShowInfoModal(true)}
-                        className="ml-6 px-6 py-3 bg-[#00ff88]/20 hover:bg-[#00ff88]/40 border-2 border-[#00ff88] rounded-full text-white text-xs font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 shadow-[0_0_20px_rgba(0,255,136,0.4)] hover:shadow-[0_0_40px_rgba(0,255,136,0.6)] animate-pulse"
+                        className="cursor-target ml-6 px-6 py-3 bg-[#00ff88]/20 hover:bg-[#00ff88]/40 border-2 border-[#00ff88] rounded-full text-white text-xs font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 shadow-[0_0_20px_rgba(0,255,136,0.4)] hover:shadow-[0_0_40px_rgba(0,255,136,0.6)] animate-pulse"
                     >
                         <MdInfoOutline className="text-lg" />
                         Learn More
@@ -159,7 +166,7 @@ export default function ISSTracker() {
                         <button
                             key={ms}
                             onClick={() => setPollMs(ms)}
-                            className={`px-3 py-1 rounded text-[10px] font-bold transition-all ${pollMs === ms
+                            className={`cursor-target px-3 py-1 rounded text-[10px] font-bold transition-all ${pollMs === ms
                                 ? 'bg-[#00d9ff]/20 text-[#00d9ff] border border-[#00d9ff]/30 shadow-[0_0_10px_rgba(0,217,255,0.2)]'
                                 : 'text-slate-400 hover:text-white'
                                 }`}
@@ -174,7 +181,7 @@ export default function ISSTracker() {
             <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 relative z-10 gap-6 p-6 overflow-hidden">
 
                 {/* Left: Globe (3D) */}
-                <div className="relative border border-white/5 bg-black/40 rounded-3xl overflow-hidden shadow-2xl" ref={globeContainerRef}>
+                <div className="cursor-target relative border border-white/5 bg-black/40 rounded-3xl overflow-hidden shadow-2xl" ref={globeContainerRef}>
                     <Globe
                         ref={globeRef}
                         width={globeContainerRef.current?.clientWidth}
@@ -203,7 +210,7 @@ export default function ISSTracker() {
                 </div>
 
                 {/* Right: Map (2D) */}
-                <div className="relative bg-[#0a0e17] rounded-3xl overflow-hidden border border-white/5 shadow-2xl">
+                <div className="cursor-target relative bg-[#0a0e17] rounded-3xl overflow-hidden border border-white/5 shadow-2xl">
                     <MapContainer
                         center={iss ? [iss.lat, iss.lng] : [0, 0]}
                         zoom={3}

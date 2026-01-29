@@ -10,6 +10,7 @@ import LightPollutionMap from '../components/LightPollutionMap';
 import CloudCoverMap from '../components/CloudCoverMap';
 import SpaceDebrisGlobe from '../components/SpaceDebrisGlobe';
 import FeatureInfoModal from '../components/FeatureInfoModal';
+import TargetCursor from '../components/TargetCursor';
 
 // Images
 import ndviImage from '../assets/images/app_ndviimage.png';
@@ -458,13 +459,19 @@ const NDVIMap = () => {
 
     return (
         <div className="flex h-screen w-full bg-[#050714] text-white p-4 gap-4 overflow-hidden font-inter">
+            <TargetCursor
+                spinDuration={5}
+                hideDefaultCursor
+                parallaxOn
+                hoverDuration={0.95}
+            />
 
             {/* --- LEFT: CONTROL PANEL --- */}
             <div className="w-64 flex-shrink-0 flex flex-col gap-4">
                 <div className="bg-[#0a0e17] rounded-xl border border-white/10 p-4 flex flex-col h-full shadow-xl">
                     <button
                         onClick={() => navigate(-1)}
-                        className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-4 text-sm font-bold"
+                        className="cursor-target flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-4 text-sm font-bold"
                     >
                         <ChevronLeft size={16} /> Back
                     </button>
@@ -479,7 +486,7 @@ const NDVIMap = () => {
                                 key={channel.id}
                                 onClick={() => !channel.disabled && setActiveChannel(channel.id)}
                                 disabled={channel.disabled}
-                                className={`w-full p-4 rounded-lg border flex items-center gap-3 transition-all duration-300 text-left group relative overflow-hidden
+                                className={`cursor-target w-full p-4 rounded-lg border flex items-center gap-3 transition-all duration-300 text-left group relative overflow-hidden
                                     ${activeChannel === channel.id
                                         ? 'bg-[#00ff88]/10 border-[#00ff88] text-white shadow-[0_0_15px_rgba(0,255,136,0.2)]'
                                         : 'bg-[#151a25] border-white/5 text-slate-400 hover:border-white/20'
@@ -524,7 +531,7 @@ const NDVIMap = () => {
                 </div>
 
                 {/* Map Container Block */}
-                <div className="flex-1 bg-[#0a0e17] rounded-xl border border-white/10 relative overflow-hidden shadow-2xl flex flex-col">
+                <div className="cursor-target flex-1 bg-[#0a0e17] rounded-xl border border-white/10 relative overflow-hidden shadow-2xl flex flex-col">
                     {activeChannel === 'co2' ? (
                         <CO2Chart />
                     ) : activeChannel === 'temp' ? (
@@ -563,7 +570,7 @@ const NDVIMap = () => {
                                         </div>
                                         <button
                                             onClick={handleSearch}
-                                            className="bg-[#00ff88] text-black font-bold px-4 py-2 rounded-lg hover:bg-[#00ff88]/90 transition-colors shadow-lg text-sm whitespace-nowrap"
+                                            className="cursor-target bg-[#00ff88] text-black font-bold px-4 py-2 rounded-lg hover:bg-[#00ff88]/90 transition-colors shadow-lg text-sm whitespace-nowrap"
                                         >
                                             Search
                                         </button>
@@ -663,7 +670,7 @@ const NDVIMap = () => {
                         </div>
                         <button
                             onClick={() => setShowInfoModal(true)}
-                            className="relative mt-4 w-full py-3 bg-[#00ff88]/20 hover:bg-[#00ff88]/40 border-2 border-[#00ff88] rounded-full text-white text-sm font-black uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2 group shadow-[0_0_20px_rgba(0,255,136,0.4)] hover:shadow-[0_0_40px_rgba(0,255,136,0.6)] animate-pulse"
+                            className="cursor-target relative mt-4 w-full py-3 bg-[#00ff88]/20 hover:bg-[#00ff88]/40 border-2 border-[#00ff88] rounded-full text-white text-sm font-black uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2 group shadow-[0_0_20px_rgba(0,255,136,0.4)] hover:shadow-[0_0_40px_rgba(0,255,136,0.6)] animate-pulse"
                         >
                             <Info size={18} className="group-hover:scale-110 transition-transform relative z-10" />
                             <span className="relative z-10">Learn More</span>

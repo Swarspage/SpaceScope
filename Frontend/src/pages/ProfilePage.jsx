@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useAuth } from '../../Context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import { MdPerson, MdEmail, MdLocationOn, MdCalendarToday, MdEdit, MdLogout, MdSave, MdCancel, MdCameraAlt, MdFavorite } from 'react-icons/md';
 import { FaUserAstronaut } from 'react-icons/fa';
+import TargetCursor from '../components/TargetCursor';
 
 const ProfilePage = () => {
     const { user, logout, updateUser } = useAuth();
@@ -63,6 +64,12 @@ const ProfilePage = () => {
 
     return (
         <div className="flex h-screen bg-[#050714] text-slate-300 font-sans overflow-hidden selection:bg-[#00d9ff]/30">
+            <TargetCursor
+                spinDuration={5}
+                hideDefaultCursor
+                parallaxOn
+                hoverDuration={0.95}
+            />
             <Sidebar activeTab="Community" /> {/* Highlighting Community as Profile is usually near user actions */}
 
             <main className="flex-1 overflow-auto relative">
@@ -80,7 +87,7 @@ const ProfilePage = () => {
                         </div>
                         <button
                             onClick={handleLogout}
-                            className="flex items-center gap-2 px-5 py-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 rounded-xl transition-all hover:scale-105 font-bold text-sm"
+                            className="cursor-target flex items-center gap-2 px-5 py-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 rounded-xl transition-all hover:scale-105 font-bold text-sm"
                         >
                             <MdLogout className="text-lg" /> Sign Out
                         </button>
@@ -92,8 +99,7 @@ const ProfilePage = () => {
                         <div className="lg:col-span-1">
                             <div className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-3xl p-6 flex flex-col items-center text-center shadow-xl relative overflow-hidden group">
                                 <div className="absolute inset-0 bg-gradient-to-b from-[#00d9ff]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-
-                                <div className="relative mb-6 group/avatar cursor-pointer">
+                                <div className="cursor-target relative mb-6 group/avatar cursor-pointer">
                                     <div className="w-32 h-32 rounded-full p-1 bg-gradient-to-tr from-[#00d9ff] to-purple-500 relative z-10">
                                         <div className="w-full h-full rounded-full bg-[#0a0e17] flex items-center justify-center overflow-hidden relative">
                                             {user?.username ? (
@@ -151,7 +157,7 @@ const ProfilePage = () => {
                                             <h3 className="text-xl font-bold text-white">Personal Information</h3>
                                             <button
                                                 onClick={() => setIsEditing(true)}
-                                                className="flex items-center gap-2 text-[#00d9ff] hover:text-white transition-colors text-sm font-bold"
+                                                className="cursor-target flex items-center gap-2 text-[#00d9ff] hover:text-white transition-colors text-sm font-bold"
                                             >
                                                 <MdEdit /> Edit Details
                                             </button>
@@ -250,13 +256,13 @@ const ProfilePage = () => {
                                             <button
                                                 type="button"
                                                 onClick={() => setIsEditing(false)}
-                                                className="px-6 py-3 rounded-xl border border-white/10 text-white font-bold hover:bg-white/5 transition-colors flex items-center gap-2"
+                                                className="cursor-target px-6 py-3 rounded-xl border border-white/10 text-white font-bold hover:bg-white/5 transition-colors flex items-center gap-2"
                                             >
                                                 <MdCancel /> Cancel
                                             </button>
                                             <button
                                                 type="submit"
-                                                className="px-8 py-3 rounded-xl bg-gradient-to-r from-[#00d9ff] to-blue-600 text-white font-bold shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 hover:scale-[1.02] transition-all flex items-center gap-2"
+                                                className="cursor-target px-8 py-3 rounded-xl bg-gradient-to-r from-[#00d9ff] to-blue-600 text-white font-bold shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 hover:scale-[1.02] transition-all flex items-center gap-2"
                                             >
                                                 <MdSave /> Save Changes
                                             </button>
@@ -285,7 +291,7 @@ const ProfilePage = () => {
                                 {userPosts.map(post => (
                                     <div
                                         key={post._id}
-                                        className="bg-black/40 backdrop-blur-md border border-white/5 rounded-2xl overflow-hidden group hover:border-[#00d9ff]/30 hover:shadow-[0_0_20px_rgba(0,217,255,0.15)] transition-all duration-300"
+                                        className="cursor-target bg-black/40 backdrop-blur-md border border-white/5 rounded-2xl overflow-hidden group hover:border-[#00d9ff]/30 hover:shadow-[0_0_20px_rgba(0,217,255,0.15)] transition-all duration-300"
                                     >
                                         <div className="h-48 overflow-hidden relative">
                                             <img
@@ -326,7 +332,7 @@ const ProfilePage = () => {
                                 </p>
                                 <button
                                     onClick={() => navigate('/community')}
-                                    className="px-6 py-2 bg-[#00d9ff]/10 hover:bg-[#00d9ff]/20 text-[#00d9ff] border border-[#00d9ff]/30 rounded-lg font-bold text-sm transition-colors"
+                                    className="cursor-target px-6 py-2 bg-[#00d9ff]/10 hover:bg-[#00d9ff]/20 text-[#00d9ff] border border-[#00d9ff]/30 rounded-lg font-bold text-sm transition-colors"
                                 >
                                     Share a Post
                                 </button>

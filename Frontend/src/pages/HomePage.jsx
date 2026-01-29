@@ -36,6 +36,7 @@ import Logo from "../assets/Logo.png";
 import dashboardPreview from "../assets/dashboard-preview.png";
 import ambienceAudio from "../assets/ambience.mp3";
 import Particles from "../components/Particles";
+import TargetCursor from "../components/TargetCursor";
 
 /* FONTS INJECTION
   (Include this in your index.css or within a <style> tag in the root)
@@ -217,6 +218,12 @@ const HomePage = () => {
 
   return (
     <div className="bg-transparent min-h-screen text-[#94a3b8] font-sans overflow-x-hidden selection:bg-[#00d9ff] selection:text-black">
+      <TargetCursor
+        spinDuration={5}
+        hideDefaultCursor
+        parallaxOn
+        hoverDuration={0.95}
+      />
       {/* Hidden Audio Element */}
       <audio
         ref={audioRef}
@@ -234,7 +241,7 @@ const HomePage = () => {
             <img
               src={Logo}
               alt="Singularity"
-              className="h-10 w-auto object-contain"
+              className="cursor-target h-10 w-auto object-contain"
             />
           </div>
 
@@ -245,7 +252,7 @@ const HomePage = () => {
                 <a
                   key={item}
                   href={`#${item.toLowerCase().replace(/\s/g, "-")}`}
-                  className="text-sm font-medium text-[#94a3b8] hover:text-[#00d9ff] transition-colors relative group"
+                  className="cursor-target text-sm font-medium text-[#94a3b8] hover:text-[#00d9ff] transition-colors relative group"
                 >
                   {item}
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#00d9ff] transition-all group-hover:w-full"></span>
@@ -259,7 +266,7 @@ const HomePage = () => {
             {/* Audio Toggle - Visible on all devices */}
             <button
               onClick={toggleAudio}
-              className="p-2 text-white hover:text-[#00d9ff] transition-colors hover:bg-white/5 rounded-lg"
+              className="cursor-target p-2 text-white hover:text-[#00d9ff] transition-colors hover:bg-white/5 rounded-lg"
               title={isAudioPlaying ? "Mute" : "Play Audio"}
             >
               {isAudioPlaying ? (
@@ -272,13 +279,13 @@ const HomePage = () => {
             {/* Desktop Only Actions */}
             <button
               onClick={() => navigate("/login")}
-              className="hidden lg:block text-xs md:text-sm font-bold text-white hover:text-[#00d9ff] transition-colors px-3 md:px-4 py-2 border border-white/20 rounded-lg hover:bg-white/5 hover:border-[#00d9ff]/50"
+              className="cursor-target hidden lg:block text-xs md:text-sm font-bold text-white hover:text-[#00d9ff] transition-colors px-3 md:px-4 py-2 border border-white/20 rounded-lg hover:bg-white/5 hover:border-[#00d9ff]/50"
             >
               Login
             </button>
             <button
               onClick={() => navigate("/login")}
-              className="hidden lg:block text-xs md:text-sm font-bold text-white bg-gradient-to-r from-blue-600 to-violet-600 px-4 md:px-6 py-2 md:py-2.5 rounded-lg shadow-[0_0_20px_rgba(0,217,255,0.4)] hover:shadow-[0_0_30px_rgba(0,217,255,0.6)] hover:-translate-y-0.5 transition-all"
+              className="cursor-target hidden lg:block text-xs md:text-sm font-bold text-white bg-gradient-to-r from-blue-600 to-violet-600 px-4 md:px-6 py-2 md:py-2.5 rounded-lg shadow-[0_0_20px_rgba(0,217,255,0.4)] hover:shadow-[0_0_30px_rgba(0,217,255,0.6)] hover:-translate-y-0.5 transition-all"
             >
               Get Started
             </button>
@@ -286,7 +293,7 @@ const HomePage = () => {
 
           {/* Mobile Toggle */}
           <button
-            className="lg:hidden text-white ml-2 sm:ml-3"
+            className="cursor-target lg:hidden text-white ml-2 sm:ml-3"
             onClick={() => setMobileMenuOpen(true)}
           >
             <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -304,7 +311,7 @@ const HomePage = () => {
           >
             <div className="flex justify-end mb-12">
               <button onClick={() => setMobileMenuOpen(false)}>
-                <X className="w-8 h-8 text-white" />
+                <X className="cursor-target w-8 h-8 text-white" />
               </button>
             </div>
             <div className="flex flex-col gap-8 text-center">
@@ -312,7 +319,7 @@ const HomePage = () => {
                 <a
                   key={item}
                   href="#"
-                  className="font-display font-bold text-2xl text-white"
+                  className="cursor-target font-display font-bold text-2xl text-white"
                 >
                   {item}
                 </a>
@@ -323,7 +330,7 @@ const HomePage = () => {
                   setMobileMenuOpen(false);
                   navigate("/login");
                 }}
-                className="w-full py-4 border border-white/20 rounded-xl text-white font-bold"
+                className="cursor-target w-full py-4 border border-white/20 rounded-xl text-white font-bold"
               >
                 Login
               </button>
@@ -332,7 +339,7 @@ const HomePage = () => {
                   setMobileMenuOpen(false);
                   navigate("/login");
                 }}
-                className="w-full py-4 bg-gradient-to-r from-blue-600 to-violet-600 rounded-xl text-black font-bold"
+                className="cursor-target w-full py-4 bg-gradient-to-r from-blue-600 to-violet-600 rounded-xl text-black font-bold"
               >
                 Get Started
               </button>
@@ -441,14 +448,14 @@ const HomePage = () => {
               {/* Primary CTA */}
               <button
                 onClick={() => navigate("/login")}
-                className="px-6 py-3 sm:px-8 sm:py-4 md:px-10 md:py-5 bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-700 hover:to-violet-700 rounded-lg sm:rounded-xl text-white font-bold text-sm sm:text-base md:text-lg shadow-xl shadow-blue-600/25 hover:shadow-2xl hover:shadow-blue-600/40 hover:-translate-y-1 transition-all duration-300 font-display tracking-wide group whitespace-nowrap"
+                className="cursor-target px-6 py-3 sm:px-8 sm:py-4 md:px-10 md:py-5 bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-700 hover:to-violet-700 rounded-lg sm:rounded-xl text-white font-bold text-sm sm:text-base md:text-lg shadow-xl shadow-blue-600/25 hover:shadow-2xl hover:shadow-blue-600/40 hover:-translate-y-1 transition-all duration-300 font-display tracking-wide group whitespace-nowrap"
               >
                 Start Exploring for Free
                 <ArrowRight className="w-5 h-5 ml-2 inline group-hover:translate-x-1 transition-transform" />
               </button>
 
               {/* Secondary CTA */}
-              <button className="px-6 py-3 sm:px-8 sm:py-4 md:px-10 md:py-5 bg-white/5 border border-white/20 rounded-lg sm:rounded-xl text-white font-bold text-sm sm:text-base md:text-lg flex items-center justify-center gap-2 hover:bg-white/10 hover:border-indigo-400 hover:text-indigo-400 transition-all backdrop-blur-xl hover:shadow-lg shadow-md shadow-white/10 group">
+              <button className="cursor-target px-6 py-3 sm:px-8 sm:py-4 md:px-10 md:py-5 bg-white/5 border border-white/20 rounded-lg sm:rounded-xl text-white font-bold text-sm sm:text-base md:text-lg flex items-center justify-center gap-2 hover:bg-white/10 hover:border-indigo-400 hover:text-indigo-400 transition-all backdrop-blur-xl hover:shadow-lg shadow-md shadow-white/10 group">
                 Watch Demo
                 <Play className="w-4 h-4 fill-current ml-1 group-hover:ml-2 transition-all" />
               </button>
@@ -511,7 +518,7 @@ const HomePage = () => {
 
           {/* SCROLLING CONTAINER */}
           <div
-            className="flex whitespace-nowrap animate-scroll pause-on-hover cursor-pointer"
+            className="cursor-target flex whitespace-nowrap animate-scroll pause-on-hover cursor-pointer"
             onClick={() => navigate("/login")}
           >
             {/* MAP DATA TWICE FOR SEAMLESS LOOP */}
@@ -708,7 +715,7 @@ const HomePage = () => {
                       </li>
                     ))}
                   </ul>
-                  <button className="text-[#00d9ff] font-bold text-sm sm:text-base flex items-center gap-2 hover:gap-4 transition-all">
+                  <button className="cursor-target text-[#00d9ff] font-bold text-sm sm:text-base flex items-center gap-2 hover:gap-4 transition-all">
                     Try Live Demo <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>

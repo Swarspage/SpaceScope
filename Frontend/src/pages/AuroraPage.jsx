@@ -21,6 +21,7 @@ import {
 import { MdChevronLeft, MdInfoOutline } from "react-icons/md";
 import { getAuroraData } from "../services/api";
 import FeatureInfoModal from "../components/FeatureInfoModal";
+import TargetCursor from "../components/TargetCursor";
 import auroraImage from "../assets/images/app_auroraimage.png";
 
 const intensityToColor = (v) => {
@@ -125,13 +126,19 @@ const AuroraPage = () => {
 
     return (
         <div className="flex flex-col h-screen bg-[#050714] text-slate-300 font-sans overflow-hidden relative">
+            <TargetCursor
+                spinDuration={5}
+                hideDefaultCursor
+                parallaxOn
+                hoverDuration={0.95}
+            />
 
             {/* Header */}
             <header className="h-[10vh] flex items-center justify-between px-8 border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 focus:z-[2000] z-[2000] p-5">
                 <div className="flex items-center gap-4">
                     <button
                         onClick={() => navigate('/dashboard')}
-                        className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-[#00d9ff]/30 text-slate-400 hover:text-[#00d9ff] transition-all"
+                        className="cursor-target w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-[#00d9ff]/30 text-slate-400 hover:text-[#00d9ff] transition-all"
                     >
                         <MdChevronLeft className="text-2xl" />
                     </button>
@@ -148,7 +155,7 @@ const AuroraPage = () => {
 
                     <button
                         onClick={() => setShowInfoModal(true)}
-                        className="ml-6 px-6 py-3 bg-[#00ff88]/20 hover:bg-[#00ff88]/40 border-2 border-[#00ff88] rounded-full text-white text-xs font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 shadow-[0_0_20px_rgba(0,255,136,0.4)] hover:shadow-[0_0_40px_rgba(0,255,136,0.6)] animate-pulse"
+                        className="cursor-target ml-6 px-6 py-3 bg-[#00ff88]/20 hover:bg-[#00ff88]/40 border-2 border-[#00ff88] rounded-full text-white text-xs font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 shadow-[0_0_20px_rgba(0,255,136,0.4)] hover:shadow-[0_0_40px_rgba(0,255,136,0.6)] animate-pulse"
                     >
                         <MdInfoOutline className="text-lg" />
                         Learn More
@@ -158,7 +165,7 @@ const AuroraPage = () => {
                 <div className="flex gap-3">
                     <button
                         onClick={() => setAutoRefresh(!autoRefresh)}
-                        className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider border transition-all flex items-center gap-2 ${autoRefresh ? 'bg-[#00d9ff]/10 border-[#00d9ff]/30 text-[#00d9ff]' : 'bg-black/40 border-white/10 text-slate-400'
+                        className={`cursor-target px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider border transition-all flex items-center gap-2 ${autoRefresh ? 'bg-[#00d9ff]/10 border-[#00d9ff]/30 text-[#00d9ff]' : 'bg-black/40 border-white/10 text-slate-400'
                             }`}
                     >
                         <FiRefreshCw className={dataFetching ? "animate-spin" : ""} />
@@ -168,7 +175,7 @@ const AuroraPage = () => {
                     <button
                         onClick={handleForceRefresh}
                         disabled={cooldown > 0}
-                        className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider border transition-all flex items-center gap-2 ${cooldown > 0 ? 'opacity-50 cursor-not-allowed border-white/5' : 'bg-white/5 border-white/20 hover:bg-white/10'
+                        className={`cursor-target px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider border transition-all flex items-center gap-2 ${cooldown > 0 ? 'opacity-50 cursor-not-allowed border-white/5' : 'bg-white/5 border-white/20 hover:bg-white/10'
                             }`}
                     >
                         {cooldown > 0 ? `Wait ${Math.floor(cooldown / 60)}:${(cooldown % 60).toString().padStart(2, '0')}` : "Force Refresh"}
@@ -178,7 +185,7 @@ const AuroraPage = () => {
 
             {/* Main Content (Fullscreen Map) */}
             <div className="flex-1 relative bg-[#050714] p-6 overflow-hidden">
-                <div className="relative w-full h-full rounded-3xl overflow-hidden border border-white/5 shadow-2xl bg-[#0a0e17]">
+                <div className="cursor-target relative w-full h-full rounded-3xl overflow-hidden border border-white/5 shadow-2xl bg-[#0a0e17]">
                     <MapContainer
                         center={[60, 0]}
                         zoom={2}
@@ -221,10 +228,10 @@ const AuroraPage = () => {
 
                     {/* Map Controls (Top Right) */}
                     <div className="absolute top-6 right-6 z-[1000] flex flex-col gap-2">
-                        <button onClick={() => mapInstance?.zoomIn()} className="w-10 h-10 bg-black/60 backdrop-blur border border-white/10 rounded-lg flex items-center justify-center hover:bg-white/10 text-white"><FiPlus /></button>
-                        <button onClick={() => mapInstance?.zoomOut()} className="w-10 h-10 bg-black/60 backdrop-blur border border-white/10 rounded-lg flex items-center justify-center hover:bg-white/10 text-white"><FiMinus /></button>
+                        <button onClick={() => mapInstance?.zoomIn()} className="cursor-target w-10 h-10 bg-black/60 backdrop-blur border border-white/10 rounded-lg flex items-center justify-center hover:bg-white/10 text-white"><FiPlus /></button>
+                        <button onClick={() => mapInstance?.zoomOut()} className="cursor-target w-10 h-10 bg-black/60 backdrop-blur border border-white/10 rounded-lg flex items-center justify-center hover:bg-white/10 text-white"><FiMinus /></button>
                         <div className="h-2"></div>
-                        <button onClick={() => setShowCityLights(!showCityLights)} className={`w-10 h-10 backdrop-blur border rounded-lg flex items-center justify-center transition-all ${showCityLights ? 'bg-[#00d9ff]/20 border-[#00d9ff] text-[#00d9ff]' : 'bg-black/60 border-white/10 text-slate-400'}`}><FiLayers /></button>
+                        <button onClick={() => setShowCityLights(!showCityLights)} className={`cursor-target w-10 h-10 backdrop-blur border rounded-lg flex items-center justify-center transition-all ${showCityLights ? 'bg-[#00d9ff]/20 border-[#00d9ff] text-[#00d9ff]' : 'bg-black/60 border-white/10 text-slate-400'}`}><FiLayers /></button>
                     </div>
 
                     {/* KPI Alert (Top Left Overlay) */}

@@ -318,7 +318,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../Context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import {
   MdRocketLaunch,
   MdEmail,
@@ -334,6 +334,7 @@ import {
 } from 'react-icons/md';
 import { FaGoogle, FaGithub } from 'react-icons/fa';
 import Logo from '../assets/Logo.png';
+import TargetCursor from '../components/TargetCursor';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -465,6 +466,12 @@ const LoginPage = () => {
   return (
     <div className="bg-transparent min-h-screen text-slate-300 font-display overflow-hidden flex selection:bg-primary selection:text-black">
       <style>{customStyles}</style>
+      <TargetCursor
+        spinDuration={5}
+        hideDefaultCursor
+        parallaxOn
+        hoverDuration={0.95}
+      />
 
       {/* === LEFT PANEL: AUTH SIDEBAR === */}
       <div className="w-full lg:w-[480px] bg-panel-dark/90 border-r border-white/5 flex flex-col relative z-20 shadow-2xl h-screen flex-shrink-0">
@@ -480,14 +487,14 @@ const LoginPage = () => {
         <div className="px-8 flex border-b border-white/5 relative">
           <button
             onClick={() => { setActiveTab('login'); setError(''); }}
-            className={`flex-1 pb-4 text-sm font-medium transition-all relative ${activeTab === 'login' ? 'text-primary' : 'text-secondary hover:text-white'}`}
+            className={`cursor-target flex-1 pb-4 text-sm font-medium transition-all relative ${activeTab === 'login' ? 'text-primary' : 'text-secondary hover:text-white'}`}
           >
             Login
             {activeTab === 'login' && <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary shadow-[0_0_10px_#00d9ff]"></div>}
           </button>
           <button
             onClick={() => { setActiveTab('register'); setError(''); }}
-            className={`flex-1 pb-4 text-sm font-medium transition-all relative ${activeTab === 'register' ? 'text-primary' : 'text-secondary hover:text-white'}`}
+            className={`cursor-target flex-1 pb-4 text-sm font-medium transition-all relative ${activeTab === 'register' ? 'text-primary' : 'text-secondary hover:text-white'}`}
           >
             Register
             {activeTab === 'register' && <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary shadow-[0_0_10px_#00d9ff]"></div>}
@@ -526,7 +533,7 @@ const LoginPage = () => {
                   type="text"
                   value={loginData.emailOrUsername}
                   onChange={(e) => setLoginData({ ...loginData, emailOrUsername: e.target.value })}
-                  className="w-full bg-input-bg border border-input-border rounded-lg h-12 pl-11 pr-4 text-white text-sm focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-all placeholder:text-slate-600"
+                  className="cursor-target w-full bg-input-bg border border-input-border rounded-lg h-12 pl-11 pr-4 text-white text-sm focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-all placeholder:text-slate-600"
                   placeholder="Email or Username"
                   required
                 />
@@ -539,14 +546,14 @@ const LoginPage = () => {
                   type={showPassword ? "text" : "password"}
                   value={loginData.password}
                   onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
-                  className="w-full bg-input-bg border border-input-border rounded-lg h-12 pl-11 pr-12 text-white text-sm focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-all placeholder:text-slate-600"
+                  className="cursor-target w-full bg-input-bg border border-input-border rounded-lg h-12 pl-11 pr-12 text-white text-sm focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-all placeholder:text-slate-600"
                   placeholder="Password"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors"
+                  className="cursor-target absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors"
                 >
                   {showPassword ? <MdVisibilityOff /> : <MdVisibility />}
                 </button>
@@ -558,7 +565,7 @@ const LoginPage = () => {
                   <input type="checkbox" className="w-3.5 h-3.5 rounded border-slate-600 bg-transparent text-primary focus:ring-offset-0 focus:ring-0" />
                   <span className="text-secondary group-hover:text-white transition-colors">Remember me</span>
                 </label>
-                <button type="button" onClick={() => setShowResetModal(true)} className="text-primary hover:text-white transition-colors">
+                <button type="button" onClick={() => setShowResetModal(true)} className="cursor-target text-primary hover:text-white transition-colors">
                   Forgot password?
                 </button>
               </div>
@@ -567,7 +574,7 @@ const LoginPage = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full h-12 rounded-lg bg-btn-gradient text-white font-bold text-sm tracking-wide shadow-[0_4px_20px_rgba(0,217,255,0.3)] hover:shadow-[0_4px_25px_rgba(0,217,255,0.5)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 group mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="cursor-target w-full h-12 rounded-lg bg-btn-gradient text-white font-bold text-sm tracking-wide shadow-[0_4px_20px_rgba(0,217,255,0.3)] hover:shadow-[0_4px_25px_rgba(0,217,255,0.5)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 group mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span>{loading ? 'LAUNCHING...' : 'LAUNCH CONSOLE'}</span>
                 {!loading && <MdRocketLaunch className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />}
@@ -661,11 +668,11 @@ const LoginPage = () => {
               <div className="h-px bg-white/5 flex-1"></div>
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <button className="h-10 rounded-lg bg-[#1a1f2e] border border-white/5 hover:border-white/20 hover:bg-white/5 transition-all flex items-center justify-center gap-2 text-sm text-white">
+              <button className="cursor-target h-10 rounded-lg bg-[#1a1f2e] border border-white/5 hover:border-white/20 hover:bg-white/5 transition-all flex items-center justify-center gap-2 text-sm text-white">
                 <FaGoogle className="text-white" />
                 <span>Google</span>
               </button>
-              <button className="h-10 rounded-lg bg-[#1a1f2e] border border-white/5 hover:border-white/20 hover:bg-white/5 transition-all flex items-center justify-center gap-2 text-sm text-white">
+              <button className="cursor-target h-10 rounded-lg bg-[#1a1f2e] border border-white/5 hover:border-white/20 hover:bg-white/5 transition-all flex items-center justify-center gap-2 text-sm text-white">
                 <FaGithub className="text-white" />
                 <span>GitHub</span>
               </button>

@@ -65,7 +65,7 @@ const QuizActiveView = ({
     };
 
     const getOptionStyle = (option) => {
-        const baseStyle = "w-full p-4 rounded-xl border text-left transition-all duration-200 flex items-center justify-between group relative overflow-hidden";
+        const baseStyle = "cursor-target w-full p-4 rounded-xl border text-left transition-all duration-200 flex items-center justify-between group relative overflow-hidden";
 
         // State: Question Answered
         if (isAnswered) {
@@ -127,7 +127,7 @@ const QuizActiveView = ({
 
                     <button
                         onClick={onClose}
-                        className="w-full py-4 rounded-xl bg-gradient-to-r from-[#00d9ff] to-[#b900ff] text-black font-bold text-lg shadow-[0_0_20px_rgba(0,217,255,0.4)] hover:scale-[1.02] transition-transform"
+                        className="cursor-target w-full py-4 rounded-xl bg-gradient-to-r from-[#00d9ff] to-[#b900ff] text-black font-bold text-lg shadow-[0_0_20px_rgba(0,217,255,0.4)] hover:scale-[1.02] transition-transform"
                     >
                         Return to Base
                     </button>
@@ -143,7 +143,7 @@ const QuizActiveView = ({
             {/* HEADER */}
             <div className="h-20 shrink-0 px-6 md:px-12 flex items-center justify-between border-b border-white/5 bg-[#0a0e17]/80 backdrop-blur-xl">
                 <div className="flex items-center gap-4">
-                    <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full text-[#94a3b8] transition-colors">
+                    <button onClick={onClose} className="cursor-target p-2 hover:bg-white/5 rounded-full text-[#94a3b8] transition-colors">
                         <X size={24} />
                     </button>
                     <div>
@@ -235,9 +235,8 @@ const QuizActiveView = ({
                                         {currentQuestion.source_url && (
                                             <a
                                                 href={currentQuestion.source_url}
-                                                target="_blank"
                                                 rel="noreferrer"
-                                                className="inline-flex items-center gap-1 text-xs text-[#00d9ff] hover:text-[#b900ff] transition-colors"
+                                                className="cursor-target inline-flex items-center gap-1 text-xs text-[#00d9ff] hover:text-[#b900ff] transition-colors"
                                             >
                                                 <ExternalLink size={12} />
                                                 Source Reference
@@ -258,7 +257,7 @@ const QuizActiveView = ({
                         <button
                             onClick={handleSubmit}
                             disabled={!selectedOption}
-                            className={`px-8 py-3.5 rounded-xl font-bold text-sm transition-all duration-200 ${selectedOption
+                            className={`cursor-target px-8 py-3.5 rounded-xl font-bold text-sm transition-all duration-200 ${selectedOption
                                 ? 'bg-gradient-to-r from-[#00d9ff] to-[#b900ff] text-black shadow-[0_0_15px_rgba(0,217,255,0.3)] hover:scale-105 transform cursor-pointer'
                                 : 'bg-[#0f1322] text-[#64748b] border border-white/5 cursor-not-allowed'
                                 }`}
@@ -268,7 +267,7 @@ const QuizActiveView = ({
                     ) : (
                         <button
                             onClick={handleNext}
-                            className="px-8 py-3.5 rounded-xl bg-white text-black font-bold text-sm shadow-[0_0_15px_rgba(255,255,255,0.2)] hover:bg-[#e2e8f0] hover:scale-105 transition-all duration-200 flex items-center gap-2"
+                            className="cursor-target px-8 py-3.5 rounded-xl bg-white text-black font-bold text-sm shadow-[0_0_15px_rgba(255,255,255,0.2)] hover:bg-[#e2e8f0] hover:scale-105 transition-all duration-200 flex items-center gap-2"
                         >
                             {currentIndex === questions.length - 1 ? 'Finish Quiz' : 'Next Question'}
                             <ArrowRight size={18} />

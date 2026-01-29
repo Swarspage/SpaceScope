@@ -8,7 +8,7 @@ import { MapContainer, TileLayer, CircleMarker } from "react-leaflet";
 import Sidebar from '../components/Sidebar';
 import Tutorial from '../components/Tutorial';
 import meteorEvents from '../data/meteorData.json';
-import { useAuth } from '../../Context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import {
     MdRocketLaunch,
     MdNotifications,
@@ -42,6 +42,7 @@ import {
 import SpaceDebrisGlobe from '../components/SpaceDebrisGlobe';
 import TempAnomalyChart from '../components/TempAnomalyChart';
 import DashboardHeader from '../components/DashboardHeader';
+import TargetCursor from '../components/TargetCursor';
 
 // --- Helpers copied from AuroraPage.jsx for the Map ---
 const intensityToColor = (v) => {
@@ -386,6 +387,12 @@ const Dashboard = () => {
 
     return (
         <div className="flex h-screen bg-transparent text-slate-300 font-sans overflow-hidden">
+            <TargetCursor
+                spinDuration={5}
+                hideDefaultCursor
+                parallaxOn
+                hoverDuration={0.95}
+            />
 
             {/* === LEFT SIDEBAR === */}
             <Sidebar activeTab="Dashboard" />
@@ -493,7 +500,7 @@ const Dashboard = () => {
                         {/* Top Grid: Aurora & ISS */}
                         <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
                             {/* ... Aurora Card ... */}
-                            <div className="xl:col-span-7 h-[400px] bg-black/30 backdrop-blur-xl border border-white/5 rounded-2xl relative overflow-hidden group flex flex-col hover:border-[#00d9ff]/30 transition-all duration-300">
+                            <div className="cursor-target xl:col-span-7 h-[400px] bg-black/30 backdrop-blur-xl border border-white/5 rounded-2xl relative overflow-hidden group flex flex-col hover:border-[#00d9ff]/30 transition-all duration-300">
                                 <div className="absolute inset-0 z-0">
                                     <MapContainer
                                         center={[60, 0]}
@@ -529,7 +536,7 @@ const Dashboard = () => {
                                         </div>
                                     </div>
                                     <div className="flex justify-end pointer-events-auto">
-                                        <button onClick={() => navigate('/aurora')} className="px-4 py-2 bg-[#00d9ff] hover:bg-cyan-400 text-black font-bold text-sm rounded-lg transition-all shadow-[0_0_15px_rgba(0,225,255,0.3)] hover:shadow-[0_0_25px_rgba(0,225,255,0.5)]">
+                                        <button onClick={() => navigate('/aurora')} className="cursor-target px-4 py-2 bg-[#00d9ff] hover:bg-cyan-400 text-black font-bold text-sm rounded-lg transition-all shadow-[0_0_15px_rgba(0,225,255,0.3)] hover:shadow-[0_0_25px_rgba(0,225,255,0.5)]">
                                             View Details →
                                         </button>
                                     </div>
@@ -537,7 +544,7 @@ const Dashboard = () => {
                             </div>
 
                             {/* ... ISS Card ... */}
-                            <div className="xl:col-span-5 h-[400px] bg-black/30 backdrop-blur-xl border border-white/5 rounded-2xl p-6 flex flex-col hover:border-[#00d9ff]/30 transition-all duration-300">
+                            <div className="cursor-target xl:col-span-5 h-[400px] bg-black/30 backdrop-blur-xl border border-white/5 rounded-2xl p-6 flex flex-col hover:border-[#00d9ff]/30 transition-all duration-300">
                                 <div className="flex justify-between items-center mb-4">
                                     <h3 className="text-lg font-bold text-white flex items-center gap-2">
                                         <MdSatelliteAlt className="text-[#00d9ff]" /> ISS Tracker
@@ -584,7 +591,7 @@ const Dashboard = () => {
                             {/* Moon Phases Widget (Replaces Solar Activity) */}
                             <div
                                 onClick={() => setShowMoonModal(true)}
-                                className="lg:col-span-5 bg-black/30 backdrop-blur-xl border border-white/5 rounded-2xl p-0 relative overflow-hidden group hover:border-[#00d9ff]/30 transition-all cursor-pointer h-[300px]"
+                                className="cursor-target lg:col-span-5 bg-black/30 backdrop-blur-xl border border-white/5 rounded-2xl p-0 relative overflow-hidden group hover:border-[#00d9ff]/30 transition-all cursor-pointer h-[300px]"
                             >
                                 {/* Background Image */}
                                 {moonImage ? (
@@ -629,7 +636,7 @@ const Dashboard = () => {
                             </div>
 
                             {/* Meteor Calendar */}
-                            <div className="lg:col-span-7 bg-black/30 backdrop-blur-xl border border-white/5 rounded-2xl p-6">
+                            <div className="cursor-target lg:col-span-7 bg-black/30 backdrop-blur-xl border border-white/5 rounded-2xl p-6">
                                 <div className="flex justify-between items-center mb-4">
                                     <h3 className="text-lg font-bold text-white flex items-center gap-2">
                                         <WiStars className="text-purple-400 text-2xl" /> Meteor Calendar
@@ -698,7 +705,7 @@ const Dashboard = () => {
                         {/* New Section: Debris & Temperature */}
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             {/* Orbital Debris Globe */}
-                            <div className="h-[500px] bg-black/30 backdrop-blur-xl border border-white/5 rounded-2xl p-6 flex flex-col">
+                            <div className="cursor-target h-[500px] bg-black/30 backdrop-blur-xl border border-white/5 rounded-2xl p-6 flex flex-col">
                                 <div className="flex justify-between items-center mb-4">
                                     <h3 className="text-lg font-bold text-white flex items-center gap-2">
                                         <MdSatelliteAlt className="text-red-500" />
@@ -714,7 +721,7 @@ const Dashboard = () => {
                             </div>
 
                             {/* Global Temperature Chart */}
-                            <div className="h-[500px] bg-black/30 backdrop-blur-xl border border-white/5 rounded-2xl p-6 flex flex-col">
+                            <div className="cursor-target h-[500px] bg-black/30 backdrop-blur-xl border border-white/5 rounded-2xl p-6 flex flex-col">
                                 <div className="flex justify-between items-center mb-4">
                                     <h3 className="text-lg font-bold text-white flex items-center gap-2">
                                         <WiDaySunny className="text-orange-500 text-2xl" />
@@ -749,7 +756,7 @@ const Dashboard = () => {
                                     spacexData.map((launch, idx) => (
                                         <div
                                             key={launch.id || idx}
-                                            className="bg-black/30 backdrop-blur-md border border-white/5 rounded-xl p-4 hover:border-blue-500/30 transition-all duration-300 group"
+                                            className="cursor-target bg-black/30 backdrop-blur-md border border-white/5 rounded-xl p-4 hover:border-blue-500/30 transition-all duration-300 group"
                                         >
                                             <div className="flex items-center gap-3 mb-3">
                                                 {/* Patch Image or Fallback Icon */}

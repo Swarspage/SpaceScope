@@ -42,6 +42,7 @@ import {
   Search,
   Loader2,
 } from "lucide-react";
+import TargetCursor from "../components/TargetCursor";
 import axios from "axios";
 import { formatDistanceToNow, format } from "date-fns";
 
@@ -132,7 +133,7 @@ const LocationSelector = ({ location, setLocation, setShowLocationSelector }) =>
         {/* Option 1: Current Location */}
         <button
           onClick={handleUseMyLocation}
-          className="flex items-center justify-center gap-2 w-full py-2 bg-[#00d9ff]/10 hover:bg-[#00d9ff]/20 text-[#00d9ff] rounded-lg border border-[#00d9ff]/30 transition-colors text-xs font-bold uppercase tracking-wider"
+          className="cursor-target flex items-center justify-center gap-2 w-full py-2 bg-[#00d9ff]/10 hover:bg-[#00d9ff]/20 text-[#00d9ff] rounded-lg border border-[#00d9ff]/30 transition-colors text-xs font-bold uppercase tracking-wider"
         >
           {loading ? <Loader2 className="animate-spin" size={14} /> : <MapPin size={14} />}
           Use My Current Location
@@ -148,7 +149,7 @@ const LocationSelector = ({ location, setLocation, setShowLocationSelector }) =>
             onChange={(e) => setCustomInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleCustomLocationSubmit()}
             placeholder="Enter city manually..."
-            className="flex-1 bg-[#151a25] border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:border-[#00d9ff] outline-none"
+            className="cursor-target flex-1 bg-[#151a25] border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:border-[#00d9ff] outline-none"
           />
           <button
             onClick={handleCustomLocationSubmit}
@@ -360,6 +361,12 @@ const CommunityPage = () => {
 
   return (
     <div className="flex h-screen bg-transparent text-slate-300 font-sans overflow-hidden">
+      <TargetCursor
+        spinDuration={5}
+        hideDefaultCursor
+        parallaxOn
+        hoverDuration={0.95}
+      />
       <Sidebar activeTab="Community" />
 
       <div className="flex-1 flex flex-col min-w-0 relative">
@@ -385,7 +392,7 @@ const CommunityPage = () => {
                 placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-[#0f1322] border border-white/10 rounded-lg py-2 pl-10 pr-10 md:pr-4 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#00d9ff]/50 focus:ring-1 focus:ring-[#00d9ff]/50 transition-all"
+                className="cursor-target w-full bg-[#0f1322] border border-white/10 rounded-lg py-2 pl-10 pr-10 md:pr-4 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#00d9ff]/50 focus:ring-1 focus:ring-[#00d9ff]/50 transition-all"
                 autoFocus={isSearchOpen}
               />
               {isSearchOpen && (
@@ -404,7 +411,7 @@ const CommunityPage = () => {
             {/* Mobile Search Toggle */}
             <button
               onClick={() => setIsSearchOpen(true)}
-              className="md:hidden text-slate-400 hover:text-white p-2"
+              className="cursor-target md:hidden text-slate-400 hover:text-white p-2"
             >
               <MdSearch size={24} />
             </button>
@@ -417,7 +424,7 @@ const CommunityPage = () => {
             <div className="h-6 w-px bg-white/10 mx-1 hidden md:block"></div>
 
             <div
-              className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
+              className="cursor-target flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
               onClick={() => navigate("/profile")}
             >
               <div className="text-right hidden lg:block">
@@ -455,7 +462,7 @@ const CommunityPage = () => {
           bg-black/30 backdrop-blur-md border border-white/10 shadow-2xl overflow-hidden relative
           ${isCreating
                     ? "w-full max-w-2xl rounded-[24px] cursor-default"
-                    : "w-full max-w-xl rounded-full hover:bg-white/5 cursor-pointer"
+                    : "cursor-target w-full max-w-xl rounded-full hover:bg-white/5 cursor-pointer"
                   }
         `}
               >
@@ -524,7 +531,7 @@ const CommunityPage = () => {
                         value={caption}
                         onChange={(e) => setCaption(e.target.value)}
                         placeholder="What's happening in the cosmos?"
-                        className="w-full bg-transparent text-white text-lg placeholder-slate-600 outline-none resize-none min-h-[120px] mb-4"
+                        className="cursor-target w-full bg-transparent text-white text-lg placeholder-slate-600 outline-none resize-none min-h-[120px] mb-4"
                         autoFocus
                       />
 
@@ -591,7 +598,7 @@ const CommunityPage = () => {
                           layoutId="action-button"
                           onClick={handleCreatePost}
                           disabled={(!file && !caption) || uploading}
-                          className={`
+                          className={`cursor-target
                     px-8 py-2.5 rounded-full text-sm font-black transition-all
                     ${(!file && !caption) || uploading
                               ? "bg-slate-800 text-slate-500 cursor-not-allowed"
@@ -638,7 +645,7 @@ const CommunityPage = () => {
                     <div
                       key={post._id}
                       onClick={() => setSelectedPost(post)}
-                      className="group relative bg-transparent rounded-2xl overflow-hidden border border-white/5 aspect-square cursor-pointer hover:border-[#00d9ff]/30 transition-all duration-300 hover:shadow-2xl hover:shadow-[#00d9ff]/10"
+                      className="cursor-target group relative bg-transparent rounded-2xl overflow-hidden border border-white/5 aspect-square cursor-pointer hover:border-[#00d9ff]/30 transition-all duration-300 hover:shadow-2xl hover:shadow-[#00d9ff]/10"
                     >
                       <img
                         src={post.imageUrl}
@@ -715,7 +722,7 @@ const CommunityPage = () => {
                 e.stopPropagation();
                 handleNavigatePost("prev");
               }}
-              className="absolute left-4 p-3 rounded-full bg-white/5 text-white hover:bg-white/20 transition-colors hidden md:block z-50"
+              className="cursor-target absolute left-4 p-3 rounded-full bg-white/5 text-white hover:bg-white/20 transition-colors hidden md:block z-50"
             >
               <MdChevronLeft size={32} />
             </button>
@@ -724,7 +731,7 @@ const CommunityPage = () => {
                 e.stopPropagation();
                 handleNavigatePost("next");
               }}
-              className="absolute right-4 p-3 rounded-full bg-white/5 text-white hover:bg-white/20 transition-colors hidden md:block z-50"
+              className="cursor-target absolute right-4 p-3 rounded-full bg-white/5 text-white hover:bg-white/20 transition-colors hidden md:block z-50"
             >
               <MdChevronRight size={32} />
             </button>
@@ -746,7 +753,7 @@ const CommunityPage = () => {
 
                 <button
                   onClick={() => setSelectedPost(null)}
-                  className="absolute top-4 left-4 p-2 bg-black/50 rounded-full text-white hover:bg-white/20 md:hidden z-50"
+                  className="cursor-target absolute top-4 left-4 p-2 bg-black/50 rounded-full text-white hover:bg-white/20 md:hidden z-50"
                 >
                   <MdClose size={24} />
                 </button>
@@ -776,7 +783,7 @@ const CommunityPage = () => {
                         e.stopPropagation();
                         setShowPostMenu(!showPostMenu);
                       }}
-                      className="text-slate-400 hover:text-white p-2 rounded-full hover:bg-white/5"
+                      className="cursor-target text-slate-400 hover:text-white p-2 rounded-full hover:bg-white/5"
                     >
                       <MdMoreVert size={24} />
                     </button>
@@ -794,7 +801,7 @@ const CommunityPage = () => {
                                   e,
                                 )
                               }
-                              className="w-full text-left px-4 py-3 text-red-500 text-sm hover:bg-white/5 flex items-center gap-2"
+                              className="cursor-target w-full text-left px-4 py-3 text-red-500 text-sm hover:bg-white/5 flex items-center gap-2"
                             >
                               <MdDelete size={16} /> Delete Post
                             </button>

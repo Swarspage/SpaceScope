@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../Context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import {
   MdRocketLaunch,
   MdDashboard,
@@ -29,7 +29,7 @@ const Sidebar = ({ activeTab = "Dashboard" }) => {
       <button
         id={id}
         onClick={onClick}
-        className={`w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium transition-all duration-300 rounded-xl border ${active
+        className={`cursor-target w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium transition-all duration-300 rounded-xl border ${active
           ? "bg-[#00d9ff]/10 border-[#00d9ff]/50 text-[#00d9ff] shadow-[0_0_15px_rgba(0,217,255,0.15)]"
           : customClasses || "border-transparent text-slate-400 hover:text-white hover:bg-white/5 hover:translate-x-1"
           }`}
@@ -90,7 +90,7 @@ const Sidebar = ({ activeTab = "Dashboard" }) => {
           <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
           <div
-            className="relative group cursor-pointer transition-transform duration-500 hover:scale-105"
+            className="cursor-target relative group cursor-pointer transition-transform duration-500 hover:scale-105"
             onClick={() => navigate("/")}
           >
             <div className="absolute -inset-8 bg-[#00d9ff]/20 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />

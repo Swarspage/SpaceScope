@@ -12,6 +12,7 @@ import {
 } from 'react-icons/md';
 import { SiSpacex, SiNasa } from 'react-icons/si';
 import { GiIndiaGate } from 'react-icons/gi';
+import TargetCursor from '../components/TargetCursor';
 import NASABackupData from '../data/NASA.json';
 
 const MissionTimelines = () => {
@@ -219,6 +220,12 @@ const MissionTimelines = () => {
     // --- Main JSX ---
     return (
         <div className="flex h-screen bg-transparent text-slate-300 font-sans overflow-hidden">
+            <TargetCursor
+                spinDuration={5}
+                hideDefaultCursor
+                parallaxOn
+                hoverDuration={0.95}
+            />
 
             {/* === SIDEBAR === */}
             <Sidebar activeTab="Missions" />
@@ -248,7 +255,7 @@ const MissionTimelines = () => {
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Search mission name..."
-                                className="bg-[#0f1322] border border-white/10 rounded-lg py-2 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-[#00d9ff]/50 transition-all w-64"
+                                className="cursor-target bg-[#0f1322] border border-white/10 rounded-lg py-2 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-[#00d9ff]/50 transition-all w-64"
                             />
                         </div>
 
@@ -258,7 +265,7 @@ const MissionTimelines = () => {
                                 <button
                                     key={provider}
                                     onClick={() => setSelectedProvider(provider)}
-                                    className={`px-4 py-1.5 text-xs font-bold rounded-md transition-all duration-300 ${selectedProvider === provider
+                                    className={`cursor-target px-4 py-1.5 text-xs font-bold rounded-md transition-all duration-300 ${selectedProvider === provider
                                         ? 'bg-[#00d9ff] text-black shadow-[0_0_10px_rgba(0,217,255,0.4)]'
                                         : 'text-slate-400 hover:text-white hover:bg-white/5'
                                         }`}
@@ -295,7 +302,7 @@ const MissionTimelines = () => {
                                             key={mission.id}
                                             onClick={() => setSelectedMission(mission)}
                                             className={`
-                                                group relative flex items-center bg-black/30 backdrop-blur-md border rounded-xl p-4 cursor-pointer transition-all duration-200
+                                                cursor-target group relative flex items-center bg-black/30 backdrop-blur-md border rounded-xl p-4 cursor-pointer transition-all duration-200
                                                 hover:bg-[#151a2d] hover:border-white/20 hover:translate-x-1
                                                 ${isSelected ? `border-[#00d9ff] shadow-[0_0_20px_rgba(0,217,255,0.1)]` : 'border-white/5'}
                                             `}
@@ -356,7 +363,7 @@ const MissionTimelines = () => {
                                 {/* Close Button */}
                                 <button
                                     onClick={() => setSelectedMission(null)}
-                                    className="absolute top-4 right-4 z-50 w-10 h-10 rounded-full bg-black/50 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-all hover:rotate-90"
+                                    className="cursor-target absolute top-4 right-4 z-50 w-10 h-10 rounded-full bg-black/50 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-all hover:rotate-90"
                                 >
                                     <MdClose className="text-xl" />
                                 </button>
@@ -424,7 +431,7 @@ const MissionTimelines = () => {
 
                                     {/* Footer Action */}
                                     <div className="mt-6 pt-4 border-t border-white/5 flex justify-end">
-                                        <button className="px-6 py-2 bg-[#00d9ff]/10 hover:bg-[#00d9ff]/20 text-[#00d9ff] text-xs font-bold rounded-lg border border-[#00d9ff]/30 uppercase tracking-widest transition-all">
+                                        <button className="cursor-target px-6 py-2 bg-[#00d9ff]/10 hover:bg-[#00d9ff]/20 text-[#00d9ff] text-xs font-bold rounded-lg border border-[#00d9ff]/30 uppercase tracking-widest transition-all">
                                             Download Telemetry
                                         </button>
                                     </div>

@@ -20,6 +20,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap, Circle } from "react-le
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import FeatureInfoModal from "../components/FeatureInfoModal";
+import TargetCursor from "../components/TargetCursor";
 import meteorImage from "../assets/images/app_meteorcalendarimage.png";
 
 // Fix Leaflet Default Icon
@@ -126,6 +127,12 @@ const MeteorCalendar = () => {
 
     return (
         <div className="flex h-screen bg-[#050714] text-slate-300 font-sans overflow-hidden">
+            <TargetCursor
+                spinDuration={5}
+                hideDefaultCursor
+                parallaxOn
+                hoverDuration={0.95}
+            />
             {/* === MAIN CONTENT (Full Width) === */}
             <div className="flex-1 flex flex-col w-full bg-[#050714] relative overflow-y-auto scrollbar-thin scrollbar-thumb-slate-800">
 
@@ -138,7 +145,7 @@ const MeteorCalendar = () => {
                     <div className="flex items-center gap-4">
                         <button
                             onClick={() => navigate('/dashboard')}
-                            className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-[#00d9ff]/30 text-slate-400 hover:text-[#00d9ff] transition-all"
+                            className="cursor-target w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-[#00d9ff]/30 text-slate-400 hover:text-[#00d9ff] transition-all"
                         >
                             <MdChevronLeft className="text-2xl" />
                         </button>
@@ -154,15 +161,15 @@ const MeteorCalendar = () => {
                     </div>
 
                     <div className="flex gap-3">
-                        <button className="px-4 py-2 rounded-lg bg-black/40 border border-white/10 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white hover:border-white/20 transition-all flex items-center gap-2">
+                        <button className="cursor-target px-4 py-2 rounded-lg bg-black/40 border border-white/10 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white hover:border-white/20 transition-all flex items-center gap-2">
                             <MdFilterList /> Filter by Visibility
                         </button>
-                        <button className="px-4 py-2 rounded-lg bg-[#00d9ff]/10 border border-[#00d9ff]/30 text-[#00d9ff] text-xs font-bold uppercase tracking-wider hover:bg-[#00d9ff] hover:text-black transition-all shadow-[0_0_15px_rgba(0,217,255,0.2)]">
+                        <button className="cursor-target px-4 py-2 rounded-lg bg-[#00d9ff]/10 border border-[#00d9ff]/30 text-[#00d9ff] text-xs font-bold uppercase tracking-wider hover:bg-[#00d9ff] hover:text-black transition-all shadow-[0_0_15px_rgba(0,217,255,0.2)]">
                             Sync to Calendar
                         </button>
                         <button
                             onClick={() => setShowInfoModal(true)}
-                            className="px-6 py-3 bg-[#00ff88]/20 hover:bg-[#00ff88]/40 border-2 border-[#00ff88] rounded-full text-white text-xs font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 shadow-[0_0_20px_rgba(0,255,136,0.4)] hover:shadow-[0_0_40px_rgba(0,255,136,0.6)] animate-pulse"
+                            className="cursor-target px-6 py-3 bg-[#00ff88]/20 hover:bg-[#00ff88]/40 border-2 border-[#00ff88] rounded-full text-white text-xs font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 shadow-[0_0_20px_rgba(0,255,136,0.4)] hover:shadow-[0_0_40px_rgba(0,255,136,0.6)] animate-pulse"
                         >
                             <MdInfoOutline className="text-lg" />
                             Learn More
@@ -176,7 +183,7 @@ const MeteorCalendar = () => {
                     {/* Featured / Next Event */}
                     <div className="mb-10 relative group">
                         <div className="absolute inset-0 bg-gradient-to-r from-[#00d9ff]/20 to-purple-600/20 rounded-3xl blur opacity-20 group-hover:opacity-30 transition-opacity duration-500"></div>
-                        <div className="relative h-[350px] rounded-3xl overflow-hidden border border-white/10 group-hover:border-[#00d9ff]/30 transition-all duration-500">
+                        <div className="cursor-target relative h-[350px] rounded-3xl overflow-hidden border border-white/10 group-hover:border-[#00d9ff]/30 transition-all duration-500">
                             {/* Background Image */}
                             <img
                                 src={meteorEvents[0].image_url}
@@ -230,7 +237,7 @@ const MeteorCalendar = () => {
                         {meteorEvents.slice(1).map((event) => (
                             <div
                                 key={event.id}
-                                className="bg-black/30 backdrop-blur-md border border-white/5 rounded-2xl overflow-hidden hover:border-[#00d9ff]/30 hover:bg-black/50 transition-all duration-300 group flex flex-col h-full"
+                                className="cursor-target bg-black/30 backdrop-blur-md border border-white/5 rounded-2xl overflow-hidden hover:border-[#00d9ff]/30 hover:bg-black/50 transition-all duration-300 group flex flex-col h-full"
                             >
                                 {/* Card Image Header */}
                                 <div className="h-40 relative overflow-hidden">
@@ -285,7 +292,7 @@ const MeteorCalendar = () => {
                                         </div>
                                         <button
                                             onClick={() => setSelectedEvent(event)}
-                                            className="text-[10px] font-bold text-[#00d9ff] hover:text-white transition-colors uppercase tracking-wider flex items-center gap-1 group-hover:translate-x-1 transition-transform"
+                                            className="cursor-target text-[10px] font-bold text-[#00d9ff] hover:text-white transition-colors uppercase tracking-wider flex items-center gap-1 group-hover:translate-x-1 transition-transform"
                                         >
                                             Details <MdChevronLeft className="rotate-180" />
                                         </button>
@@ -306,7 +313,7 @@ const MeteorCalendar = () => {
                         {/* Close Button */}
                         <button
                             onClick={() => setSelectedEvent(null)}
-                            className="absolute top-6 right-6 z-[2001] w-10 h-10 bg-black/50 backdrop-blur rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-all"
+                            className="cursor-target absolute top-6 right-6 z-[2001] w-10 h-10 bg-black/50 backdrop-blur rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-all"
                         >
                             <MdClose className="text-xl" />
                         </button>
