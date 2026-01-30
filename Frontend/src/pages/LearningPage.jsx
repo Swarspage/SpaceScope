@@ -717,52 +717,7 @@ const LearningPage = () => {
             <div className="flex-1 flex flex-col min-w-0 bg-transparent relative">
                 <div className="absolute top-[-20%] left-[20%] w-[500px] h-[500px] bg-[#00d9ff]/5 rounded-full blur-[100px] pointer-events-none" />
 
-                {/* Header */}
-                <header className="h-16 flex items-center justify-between px-6 border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 z-10">
-                    <div className="flex-1 max-w-xl">
-                        <div className="relative group">
-                            <MdSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-[#00d9ff] text-lg" />
-                            <input
-                                type="text"
-                                placeholder="Search quizzes, articles, or videos..."
-                                className="cursor-target w-full bg-[#0f1322] border border-white/10 rounded-lg py-2 pl-10 pr-12 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#00d9ff]/50"
-                            />
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-4 ml-4">
-                        <button className="cursor-target relative text-slate-400 hover:text-white">
-                            <MdNotifications className="text-xl" />
-                            <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full" />
-                        </button>
-                        <button onClick={() => navigate('/profile')} className="cursor-target text-slate-400 hover:text-white">
-                            <MdSettings className="text-xl" />
-                        </button>
-                        <div className="h-8 w-px bg-white/10" />
-                        <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/profile')}>
-                            <div className="text-right hidden md:block">
-                                {authLoading ? (
-                                    <div className="h-4 w-24 bg-slate-700 rounded animate-pulse" />
-                                ) : user ? (
-                                    <>
-                                        <div className="text-sm font-bold text-white">{user.fullName || user.username}</div>
-                                        <div className="text-[10px] text-[#00d9ff]">@{user.username}</div>
-                                    </>
-                                ) : (
-                                    <div className="text-sm font-bold text-white">Guest</div>
-                                )}
-                            </div>
-                            <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#00d9ff] to-blue-600 p-0.5">
-                                <div className="w-full h-full rounded-full bg-[#080b14] flex items-center justify-center">
-                                    {user ? (
-                                        <span className="text-white text-sm font-bold">{(user.fullName || user.username)?.charAt(0).toUpperCase()}</span>
-                                    ) : (
-                                        <FaUserAstronaut className="text-white text-sm" />
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </header>
+
 
                 {/* Main Content */}
                 <main className="flex-1 overflow-y-auto">

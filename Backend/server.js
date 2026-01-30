@@ -4,6 +4,7 @@ import axios from "axios";
 import dotenv from "dotenv";
 import mongoose from "mongoose"; // ADD THIS
 import authRoutes from "./Routes/authRoutes.js"; // ADD THIS
+import notificationRoutes from "./Routes/notificationRoutes.js"; // ADD THIS
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
@@ -35,6 +36,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/spacescop
 
 // Auth Routes - ADD THIS
 app.use('/api/auth', authRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 import postRoutes from "./Routes/postRoutes.js";
 app.use('/api/posts', postRoutes);
@@ -137,14 +139,18 @@ app.get("/api/iss-pass", async (req, res) => {
   try {
     const { lat, lon } = req.query;
     if (!lat || !lon) return res.status(400).json({ error: "lat and lon required" });
-    const data = await safeGet(
-      `http://api.open-notify.org/iss-pass.json?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(
-        lon
-      )}`
-    );
-    res.json(data);
+
+    // OpenNotify requires 'lat' and 'lon', order doesn't explicitly matter but let's be safe.
+    // It returns JSON.
+    const response = await axios.get(`http://api.open-notify.org/iss-pass.json`, {
+      params: { lat, lon }
+    });
+
+    res.json(response.data);
   } catch (e) {
-    res.status(500).json({ error: "Failed to get ISS pass data" });
+    console.error("ISS Pass Error:", e.message);
+    // Return empty data structure to prevent frontend crash if API fails
+    res.status(200).json({ response: [] });
   }
 });
 
@@ -525,6 +531,93 @@ app.use((err, req, res, next) => {
    Start server
    ------------------------- */
 const PORT = process.env.PORT || 5000;
+/* -------------------------
+   Notification Scheduler
+   ------------------------- */
+import { broadcastNotification } from "./Controllers/notificationController.js";
+
+const METEOR_SHOWERS = [
+  { name: "Quadrantids", month: 0, day: 3 },
+  { name: "Lyrids", month: 3, day: 22 },
+  { name: "Eta Aquariids", month: 4, day: 6 },
+  { name: "Perseids", month: 7, day: 12 },
+  { name: "Orionids", month: 9, day: 21 },
+  { name: "Leonids", month: 10, day: 17 },
+  { name: "Geminids", month: 11, day: 14 },
+];
+
+async function checkAstronomyEvents() {
+  console.log(`[${new Date().toISOString()}] Checking astronomy events...`);
+
+  // 1. Check Aurora (Kp Index)
+  try {
+    const cacheKey = "noaa:planetary-k-index";
+    let kpData = getCache(cacheKey);
+
+    if (!kpData) {
+      // Fetch Kp index (using a known NOAA endpoint or simulation if elusive)
+      // For simplicity/reliability in this demo, we'll check the 6-hour x-ray we alrady have or specialized endpoint
+      // Real endpoint: https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json
+      const kIndexUrl = "https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json";
+      try {
+        const response = await axios.get(kIndexUrl);
+        kpData = response.data;
+        setCache(cacheKey, kpData, 300);
+      } catch (err) {
+        console.warn("Failed to fetch Kp index for notifications");
+      }
+    }
+
+    if (kpData && Array.isArray(kpData)) {
+      // Data format: [time, kp, a_running, station_count]
+      // We look at the last entry
+      const latest = kpData[kpData.length - 1];
+      // latest[1] is Kp index as string or number
+      const kp = Number(latest[1]);
+
+      if (kp >= 6) { // Geomagnetic Storm Level G2+
+        await broadcastNotification(
+          "Aurora Alert!",
+          `High geomagnetic activity detected (Kp ${kp}). Auroras may be visible at lower latitudes!`,
+          "alert",
+          "/applications" // Redirect to map
+        );
+      }
+    }
+  } catch (error) {
+    console.error("Aurora check error:", error.message);
+  }
+
+  // 2. Check Meteor Showers
+  const now = new Date();
+  const todayMonth = now.getMonth();
+  const todayDate = now.getDate();
+
+  const shower = METEOR_SHOWERS.find(s => s.month === todayMonth && s.day === todayDate);
+  if (shower) {
+    // Check if we haven't already sent a notification for this today (naive check: just send it, frontend handles dedupe display or user ignores)
+    // In a real app we'd check a "sentNotifications" log. 
+    // For this loop which runs every 1.5 hours, we might send it multiple times on the peak day.
+    // Fix: Only send if hour is between 18:00 and 20:00 (evening)
+    const hour = now.getHours();
+    if (hour >= 18 && hour < 20) {
+      await broadcastNotification(
+        "Meteor Shower Peak Tonight!",
+        `The ${shower.name} meteor shower peaks tonight. Look up for a spectacular show!`,
+        "event",
+        "/learning"
+      );
+    }
+  }
+}
+
+// Run scheduler every 1.5 hours (90 minutes)
+const INTERVAL_MS = 90 * 60 * 1000;
+setInterval(checkAstronomyEvents, INTERVAL_MS);
+
+// Run once on startup after a delay to test
+setTimeout(checkAstronomyEvents, 10000);
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`SpaceX base: ${SPACEX_BASE}`);

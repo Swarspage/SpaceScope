@@ -88,10 +88,11 @@ const SpaceDebrisGlobe = ({ realLimit = 2000, syntheticLimit = 400 }) => {
         const fetchTLEs = async () => {
             try {
                 const PROXY_URL = 'https://corsproxy.io/?';
-                const activeUrl = 'https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=tle';
+                // Switch to 'visual' (brightest ~100) to avoid 413 Payload Too Large errors on proxy
+                const activeUrl = 'https://celestrak.org/NORAD/elements/gp.php?GROUP=visual&FORMAT=tle';
                 const debrisUrl = 'https://celestrak.org/NORAD/elements/gp.php?GROUP=iridium-33-debris&FORMAT=tle';
 
-                const fetchWithTimeout = (url, ms = 5000) => {
+                const fetchWithTimeout = (url, ms = 8000) => {
                     return Promise.race([
                         fetch(url),
                         new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), ms))
@@ -102,19 +103,37 @@ const SpaceDebrisGlobe = ({ realLimit = 2000, syntheticLimit = 400 }) => {
                 const cachedActive = sessionStorage.getItem('cached_tle_active');
                 const cachedDebris = sessionStorage.getItem('cached_tle_debris');
 
-                let activeRes, debrisRes;
+                let activeRes = null, debrisRes = null;
 
                 if (cachedActive && cachedDebris) {
                     activeRes = { status: 'fulfilled', value: { ok: true, text: () => Promise.resolve(cachedActive) } };
                     debrisRes = { status: 'fulfilled', value: { ok: true, text: () => Promise.resolve(cachedDebris) } };
                 } else {
-                    [activeRes, debrisRes] = await Promise.allSettled([
-                        fetchWithTimeout(PROXY_URL + encodeURIComponent(activeUrl)),
-                        fetchWithTimeout(PROXY_URL + encodeURIComponent(debrisUrl))
-                    ]);
+                    // 1. Try DIRECT fetch first (Celestrak supports CORS)
+                    try {
+                        [activeRes, debrisRes] = await Promise.allSettled([
+                            fetchWithTimeout(activeUrl),
+                            fetchWithTimeout(debrisUrl)
+                        ]);
+                    } catch (e) {
+                        // ignore
+                    }
+
+                    // 2. Fallback to Proxy if Direct failed or returned non-ok
+                    if (!activeRes || activeRes.status === 'rejected' || !activeRes.value.ok) {
+                        try {
+                            const [pActive, pDebris] = await Promise.allSettled([
+                                fetchWithTimeout(PROXY_URL + encodeURIComponent(activeUrl)),
+                                fetchWithTimeout(PROXY_URL + encodeURIComponent(debrisUrl))
+                            ]);
+                            if (pActive.status === 'fulfilled' && pActive.value.ok) activeRes = pActive;
+                            if (pDebris.status === 'fulfilled' && pDebris.value.ok) debrisRes = pDebris;
+                        } catch (e2) { }
+                    }
                 }
 
                 const parseTLE = (text, type, limit = 1000) => {
+                    if (!text) return [];
                     const lines = text.split('\n');
                     const result = [];
                     for (let i = 0; i < lines.length - 2 && result.length < limit; i += 3) {
@@ -134,51 +153,51 @@ const SpaceDebrisGlobe = ({ realLimit = 2000, syntheticLimit = 400 }) => {
                 let activeData = [];
                 let debrisData = [];
 
-                if (activeRes.status === 'fulfilled' && activeRes.value.ok) {
-                    const text = await activeRes.value.text();
-                    activeData = parseTLE(text, 'active', 800);
-                    if (!cachedActive) sessionStorage.setItem('cached_tle_active', text);
+                // Always include Real Fallbacks (ISS, Hubble) at the start
+                const fallbackDetails = REAL_FALLBACKS.map(d => ({
+                    satrec: satellite.twoline2satrec(d.line1, d.line2),
+                    name: d.name,
+                    type: 'active',
+                    isFamous: true
+                }));
+                activeData = [...fallbackDetails];
+
+                if (activeRes && activeRes.status === 'fulfilled' && activeRes.value && activeRes.value.ok) {
+                    try {
+                        const text = await activeRes.value.text();
+                        const fetched = parseTLE(text, 'active', 200);
+                        // Mark all visual/brightest as labels potential
+                        fetched.forEach(s => s.isFamous = true);
+
+                        // Merge avoiding duplicates (by name)
+                        fetched.forEach(f => {
+                            if (!activeData.some(a => a.name === f.name)) {
+                                activeData.push(f);
+                            }
+                        });
+
+                        if (!cachedActive) sessionStorage.setItem('cached_tle_active', text);
+                    } catch (e) { }
                 }
 
-                if (debrisRes.status === 'fulfilled' && debrisRes.value.ok) {
-                    const text = await debrisRes.value.text();
-                    debrisData = parseTLE(text, 'debris', realLimit);
-                    if (!cachedDebris) sessionStorage.setItem('cached_tle_debris', text);
+                if (debrisRes && debrisRes.status === 'fulfilled' && debrisRes.value && debrisRes.value.ok) {
+                    try {
+                        const text = await debrisRes.value.text();
+                        debrisData = parseTLE(text, 'debris', realLimit);
+                        if (!cachedDebris) sessionStorage.setItem('cached_tle_debris', text);
+                    } catch (e) { }
                 }
 
-                // --- LABELING LOGIC ---
-                let featuredCount = 0;
-                activeData = activeData.map(sat => {
-                    const isFamous = FAMOUS_SATELLITES.some(f => sat.name.includes(f));
-                    if (isFamous) featuredCount++;
-                    return { ...sat, isFamous };
-                });
-
-                // Targets ~50 labels
-                const TARGET_LABELS = 50;
-                if (featuredCount < TARGET_LABELS && activeData.length > 0) {
-                    const indices = Array.from({ length: activeData.length }, (_, i) => i);
-                    const needed = TARGET_LABELS - featuredCount;
-
-                    for (let i = 0; i < needed; i++) {
-                        const randIndex = indices[Math.floor(Math.random() * indices.length)];
-                        if (activeData[randIndex] && !activeData[randIndex].isFamous) {
-                            activeData[randIndex].isFamous = true;
-                        }
-                    }
+                // FORCE LIMIT TO 10 (User Request)
+                if (activeData.length > 10) {
+                    activeData = activeData.slice(0, 10);
                 }
 
                 if (activeData.length < 10) {
-                    console.warn("API failed, using synthetic ACTIVE data");
-                    const real = REAL_FALLBACKS.map(d => ({
-                        satrec: satellite.twoline2satrec(d.line1, d.line2),
-                        name: d.name,
-                        type: 'active',
-                        isFamous: true
-                    }));
+                    // Add synthetic active if we still have very few
                     activeData = [
-                        ...real,
-                        ...generateSyntheticTLEs(100, 'active')
+                        ...activeData,
+                        ...generateSyntheticTLEs(10 - activeData.length, 'active')
                     ];
                 }
 
@@ -191,13 +210,14 @@ const SpaceDebrisGlobe = ({ realLimit = 2000, syntheticLimit = 400 }) => {
                 setLoading(false);
 
             } catch (err) {
+                // Total failsafe
                 const real = REAL_FALLBACKS.map(d => ({
                     satrec: satellite.twoline2satrec(d.line1, d.line2),
                     name: d.name,
                     type: 'active',
                     isFamous: true
                 }));
-                setSatellites([...real, ...generateSyntheticTLEs(100, 'active')]);
+                setSatellites([...real, ...generateSyntheticTLEs(5, 'active')]);
                 setDebris(generateSyntheticTLEs(syntheticLimit, 'debris'));
                 setLoading(false);
             }

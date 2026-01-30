@@ -81,6 +81,11 @@ const Dashboard = () => {
     const [moonImage, setMoonImage] = useState(null);
     const [showMoonModal, setShowMoonModal] = useState(false);
 
+    // Notification State
+    const [notifications, setNotifications] = useState([]);
+    const [unreadCount, setUnreadCount] = useState(0);
+    const [showNotifications, setShowNotifications] = useState(false);
+
     const [activeTab, setActiveTab] = useState('Dashboard');
     const [quote, setQuote] = useState({ text: "The universe is under no obligation to make sense to you.", author: "Neil deGrasse Tyson" });
 
@@ -217,6 +222,67 @@ const Dashboard = () => {
         };
         fetchSpaceXData();
     }, []);
+    // 6. Generate Notifications Client-Side (No API)
+    useEffect(() => {
+        const generateNotifications = () => {
+            const newNotifs = [];
+            const addNotif = (id, type, title, message, link = '') => {
+                newNotifs.push({ _id: id, type, title, message, link, createdAt: new Date().toISOString(), isRead: false });
+            };
+
+            // Aurora Alert
+            const kp = parseFloat(getCurrentKp());
+            if (kp >= 4) addNotif('aurora-alert-high', 'alert', 'Aurora Activity High', `Kp Index is ${kp}. Auroras may be visible!`, '/aurora');
+
+            // Meteor Showers
+            const today = new Date();
+            const activeShower = meteorEvents.find(e => {
+                const d = new Date(e.peak_date_utc);
+                return d.getMonth() === today.getMonth() && Math.abs(d.getDate() - today.getDate()) <= 1;
+            });
+            if (activeShower) addNotif(`meteor-${activeShower.id}`, 'event', `${activeShower.name} Peak`, `The ${activeShower.name} shower peaks tonight!`, '/meteors');
+
+            // SpaceX Launches
+            if (spacexData && spacexData.length > 0) {
+                const nextLaunch = spacexData[0];
+                const diffHours = (new Date(nextLaunch.date_utc) - today) / (1000 * 60 * 60);
+                if (diffHours > 0 && diffHours < 24) addNotif(`spacex-${nextLaunch.id}`, 'system', 'Launch Imminent', `${nextLaunch.name} launches in ${Math.round(diffHours)} hours.`, '/missions');
+            }
+
+            // Filter read
+            const readIds = JSON.parse(localStorage.getItem('spacescope_read_notifications') || '[]');
+            const finalNotifs = newNotifs.map(n => ({ ...n, isRead: readIds.includes(n._id) })).sort((a, b) => (a.isRead === b.isRead ? 0 : a.isRead ? 1 : -1));
+
+            setNotifications(finalNotifs);
+            setUnreadCount(finalNotifs.filter(n => !n.isRead).length);
+        };
+        generateNotifications();
+    }, [auroraData, spacexData, moonData]);
+
+    const handleNotificationClick = (notif) => {
+        if (!notif.isRead) {
+            const readIds = JSON.parse(localStorage.getItem('spacescope_read_notifications') || '[]');
+            if (!readIds.includes(notif._id)) {
+                const updatedIds = [...readIds, notif._id];
+                localStorage.setItem('spacescope_read_notifications', JSON.stringify(updatedIds));
+                setNotifications(prev => prev.map(n => n._id === notif._id ? { ...n, isRead: true } : n));
+                setUnreadCount(prev => Math.max(0, prev - 1));
+            }
+        }
+        if (notif.link) {
+            navigate(notif.link);
+            setShowNotifications(false);
+        }
+    };
+
+    const handleMarkAllRead = () => {
+        const readIds = JSON.parse(localStorage.getItem('spacescope_read_notifications') || '[]');
+        const newIds = notifications.map(n => n._id);
+        const uniqueIds = [...new Set([...readIds, ...newIds])];
+        localStorage.setItem('spacescope_read_notifications', JSON.stringify(uniqueIds));
+        setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+        setUnreadCount(0);
+    };
 
     // --- Moon Phase Logic ---
 
@@ -417,10 +483,74 @@ const Dashboard = () => {
                     </div>
 
                     <div className="flex items-center gap-4 ml-4">
-                        <button className="relative text-slate-400 hover:text-white transition-colors">
-                            <MdNotifications className="text-xl" />
-                            <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full border border-[#080b14]"></span>
-                        </button>
+                        <div className="relative">
+                            <button
+                                onClick={() => setShowNotifications(!showNotifications)}
+                                className="relative text-slate-400 hover:text-white transition-colors p-1"
+                            >
+                                <MdNotifications className="text-xl" />
+                                {unreadCount > 0 && (
+                                    <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-[#080b14] flex items-center justify-center"></span>
+                                )}
+                            </button>
+
+                            {/* Notification Panel (YouTube Style) */}
+                            {showNotifications && (
+                                <div className="absolute top-full right-0 mt-3 w-80 sm:w-96 bg-[#0f1322] border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50 animate-fade-in-up">
+                                    <div className="p-3 border-b border-white/5 flex justify-between items-center bg-[#0a0e17]">
+                                        <h3 className="text-sm font-bold text-white">Notifications</h3>
+                                        <button
+                                            onClick={handleMarkAllRead}
+                                            className="text-[10px] text-[#00d9ff] hover:text-white transition-colors font-medium"
+                                        >
+                                            Mark all as read
+                                        </button>
+                                    </div>
+                                    <div className="max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-700">
+                                        {notifications.length > 0 ? (
+                                            notifications.map((notif) => (
+                                                <div
+                                                    key={notif._id}
+                                                    onClick={() => handleNotificationClick(notif)}
+                                                    className={`p-4 border-b border-white/5 cursor-pointer transition-colors relative group
+                                                        ${notif.isRead ? 'bg-transparent hover:bg-white/5' : 'bg-[#00d9ff]/5 hover:bg-[#00d9ff]/10'}
+                                                    `}
+                                                >
+                                                    {!notif.isRead && (
+                                                        <span className="absolute top-4 right-4 w-2 h-2 rounded-full bg-[#00d9ff]" title="Unread"></span>
+                                                    )}
+                                                    <div className="flex gap-3">
+                                                        <div className={`mt-1 min-w-[32px] h-8 rounded-full flex items-center justify-center
+                                                            ${notif.type === 'alert' ? 'bg-red-500/20 text-red-400' :
+                                                                notif.type === 'event' ? 'bg-purple-500/20 text-purple-400' :
+                                                                    notif.type === 'achievement' ? 'bg-yellow-500/20 text-yellow-400' :
+                                                                        'bg-slate-700/50 text-slate-400'}
+                                                        `}>
+                                                            {notif.type === 'alert' ? <BsFillLightningChargeFill size={14} /> :
+                                                                notif.type === 'event' ? <WiStars size={16} /> :
+                                                                    <MdNotifications size={16} />}
+                                                        </div>
+                                                        <div>
+                                                            <div className="text-xs text-white font-bold leading-tight mb-1 pr-4">{notif.title}</div>
+                                                            <div className="text-[11px] text-slate-400 leading-snug mb-1">{notif.message}</div>
+                                                            <div className="text-[10px] text-slate-600 font-mono">
+                                                                {new Date(notif.createdAt).toLocaleDateString()} • {new Date(notif.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div className="p-8 text-center text-slate-500 text-xs italic">
+                                                No notifications yet.
+                                                <br />
+                                                Time to explore the universe!
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                         <button
                             onClick={() => navigate('/profile')}
                             className="text-slate-400 hover:text-white transition-colors"
