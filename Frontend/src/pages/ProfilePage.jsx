@@ -62,6 +62,32 @@ const ProfilePage = () => {
         }
     };
 
+    // --- Delete Account Logic ---
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    const handleDeleteAccount = async () => {
+        setIsDeleting(true);
+        try {
+            const response = await fetch(`http://localhost:5000/api/auth/profile/${user.id}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                logout();
+                navigate('/login');
+            } else {
+                console.error('Failed to delete account');
+                setIsDeleting(false);
+                setShowDeleteModal(false);
+            }
+        } catch (error) {
+            console.error('Delete error:', error);
+            setIsDeleting(false);
+            setShowDeleteModal(false);
+        }
+    };
+
     return (
         <div className="flex h-screen bg-[#050714] text-slate-300 font-sans overflow-hidden selection:bg-[#00d9ff]/30">
             <TargetCursor
@@ -205,6 +231,23 @@ const ProfilePage = () => {
                                                 {formData.bio}
                                             </p>
                                         </div>
+
+                                        {/* --- DANGER ZONE --- */}
+                                        <div className="mt-12 pt-8 border-t border-red-500/20">
+                                            <h3 className="text-red-500 font-bold uppercase tracking-wider text-sm mb-4">Danger Zone</h3>
+                                            <div className="flex items-center justify-between p-4 bg-red-500/5 border border-red-500/10 rounded-xl">
+                                                <div>
+                                                    <h4 className="text-white font-bold text-sm">Delete Account</h4>
+                                                    <p className="text-slate-400 text-xs mt-1">Permanently remove your account and all data.</p>
+                                                </div>
+                                                <button
+                                                    onClick={() => setShowDeleteModal(true)}
+                                                    className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-xs font-bold rounded-lg transition-colors"
+                                                >
+                                                    Delete Account
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 ) : (
                                     <form onSubmit={handleUpdate} className="space-y-6 animate-fade-in">
@@ -342,6 +385,36 @@ const ProfilePage = () => {
 
                 </div>
             </main>
+
+            {/* --- DELETE CONFIRMATION MODAL --- */}
+            {showDeleteModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+                    <div className="bg-[#1a0f0f] border border-red-500/30 rounded-2xl p-6 max-w-md w-full shadow-[0_0_50px_rgba(239,68,68,0.2)]">
+                        <div className="flex items-center gap-3 text-red-500 mb-4">
+                            <MdCancel className="text-3xl" />
+                            <h3 className="text-xl font-bold">Delete Account?</h3>
+                        </div>
+                        <p className="text-slate-300 mb-6 leading-relaxed">
+                            Are you absolutely sure? This action cannot be undone. All your progress, badges, and community posts will be permanently lost.
+                        </p>
+                        <div className="flex justify-end gap-3">
+                            <button
+                                onClick={() => setShowDeleteModal(false)}
+                                className="px-4 py-2 rounded-lg bg-white/5 text-white hover:bg-white/10 transition-colors font-medium text-sm"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleDeleteAccount}
+                                disabled={isDeleting}
+                                className="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors font-bold text-sm flex items-center gap-2"
+                            >
+                                {isDeleting ? "Deleting..." : "Confirm Delete"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

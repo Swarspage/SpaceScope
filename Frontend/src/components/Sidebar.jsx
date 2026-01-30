@@ -14,7 +14,7 @@ import {
 } from "react-icons/md";
 import Logo from "../assets/Logo.png";
 
-const Sidebar = ({ activeTab = "Dashboard" }) => {
+const Sidebar = ({ activeTab = "Dashboard", forceOpen = false }) => {
   const navigate = useNavigate();
   const { logout } = useAuth();
   const [isOpen, setIsOpen] = React.useState(false);
@@ -45,18 +45,20 @@ const Sidebar = ({ activeTab = "Dashboard" }) => {
   return (
     <>
       {/* Mobile Toggle Button - Visible only on small screens */}
-      <button
-        onClick={() => setIsOpen(true)}
-        className="md:hidden fixed top-4 left-4 z-50 p-2 bg-[#030508]/80 backdrop-blur-md border border-gray-500/30 rounded-lg text-slate-300 shadow-lg hover:text-[#00d9ff] transition-colors"
-      >
-        <MdMenu className="text-2xl" />
-      </button>
+      {!forceOpen && (
+        <button
+          onClick={() => setIsOpen(true)}
+          className="md:hidden fixed top-4 left-4 z-50 p-2 bg-[#030508]/80 backdrop-blur-md border border-gray-500/30 rounded-lg text-slate-300 shadow-lg hover:text-[#00d9ff] transition-colors"
+        >
+          <MdMenu className="text-2xl" />
+        </button>
+      )}
 
       {/* Mobile Overlay Backdrop */}
-      {isOpen && (
+      {(isOpen || forceOpen) && (
         <div
           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
-          onClick={() => setIsOpen(false)}
+          onClick={() => !forceOpen && setIsOpen(false)}
         />
       )}
 
@@ -73,7 +75,7 @@ const Sidebar = ({ activeTab = "Dashboard" }) => {
           shadow-[5px_0_30px_rgba(0,0,0,0.5)] 
           md:my-2 md:ml-2 
           transition-transform duration-300 ease-in-out
-          ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+          ${(isOpen || forceOpen) ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
         `}
       >
 

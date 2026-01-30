@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MdClose, MdChevronRight, MdCheck, MdChevronLeft } from 'react-icons/md';
 
-const Tutorial = ({ user, onComplete, onSkip }) => {
+const Tutorial = ({ user, onComplete, onSkip, onStepChange }) => {
     const [step, setStep] = useState(0);
     const [targetRect, setTargetRect] = useState(null);
     const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight });
@@ -52,7 +52,10 @@ const Tutorial = ({ user, onComplete, onSkip }) => {
                 const element = document.getElementById(steps[step].target);
                 if (element) {
                     const rect = element.getBoundingClientRect();
-                    setTargetRect(rect);
+                    // Determine if element is visible (roughly)
+                    if (rect.width > 0 && rect.height > 0) {
+                        setTargetRect(rect);
+                    }
                 }
             };
 
@@ -67,7 +70,9 @@ const Tutorial = ({ user, onComplete, onSkip }) => {
 
     const handleNext = () => {
         if (step < steps.length - 1) {
-            setStep(step + 1);
+            const nextStep = step + 1;
+            setStep(nextStep);
+            if (onStepChange) onStepChange(nextStep);
         } else {
             onComplete();
         }
@@ -75,7 +80,9 @@ const Tutorial = ({ user, onComplete, onSkip }) => {
 
     const handlePrev = () => {
         if (step > 0) {
-            setStep(step - 1);
+            const prevStep = step - 1;
+            setStep(prevStep);
+            if (onStepChange) onStepChange(prevStep);
         }
     };
 
@@ -87,6 +94,35 @@ const Tutorial = ({ user, onComplete, onSkip }) => {
                 left: '50%',
                 transform: 'translate(-50%, -50%)'
             };
+        }
+
+        // On mobile, if we are targeting sidebar items (which are on the left),
+        // we ideally want the popup to be centered horizontally or at the bottom.
+        const isMobile = windowSize.width < 768;
+
+        if (isMobile) {
+            // Simple mobile logic: position at bottom of screen or center if target is obscured
+            // But if target is sidebar item, it's visible. Center vertically, push right?
+            // Actually, sidebar takes ~80% width usually? No, w-64 is 256px.
+            // Screen width ~375. 375 - 256 = 119px space on right. Too small.
+            // So we must overlay.
+            // Let's position it at the bottom of the screen to minimize obstruction of the specific target item
+            // unless the target item is at the very bottom.
+            if (targetRect.bottom > windowSize.height - 300) {
+                // Target is low, put popup at top
+                return {
+                    top: '10%',
+                    left: '50%',
+                    transform: 'translate(-50%, 0)'
+                };
+            } else {
+                // Target is high/mid, put popup at bottom
+                return {
+                    bottom: '5%',
+                    left: '50%',
+                    transform: 'translate(-50%, 0)'
+                };
+            }
         }
 
         const spaceRight = windowSize.width - targetRect.right;
@@ -117,7 +153,7 @@ const Tutorial = ({ user, onComplete, onSkip }) => {
     };
 
     return (
-        <div className="fixed inset-0 z-50 pointer-events-none">
+        <div className="fixed inset-0 z-[60] pointer-events-none">
             {/* 4-Part Backdrop to create a "hole" */}
             {targetRect ? (
                 <>
@@ -151,7 +187,7 @@ const Tutorial = ({ user, onComplete, onSkip }) => {
 
             {/* Tutorial Card */}
             <div
-                className={`bg-[#0f1322] border border-[#00d9ff]/30 rounded-2xl w-[400px] shadow-2xl absolute overflow-hidden transition-all duration-500 pointer-events-auto`}
+                className={`bg-[#0f1322] border border-[#00d9ff]/30 rounded-2xl w-[90vw] md:w-[400px] shadow-2xl absolute overflow-hidden transition-all duration-500 pointer-events-auto`}
                 style={getPopupStyle()}
             >
                 {/* Header Background */}

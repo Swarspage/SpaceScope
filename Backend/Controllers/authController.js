@@ -227,3 +227,21 @@ export const submitQuizResult = async (req, res) => {
         res.status(500).json({ error: 'Failed to submit quiz result' });
     }
 };
+
+// Delete user profile
+export const deleteProfile = async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        const user = await User.findByIdAndDelete(userId);
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.status(200).json({ message: 'User account deleted successfully' });
+    } catch (error) {
+        console.error('Delete profile error:', error);
+        res.status(500).json({ error: 'Failed to delete account' });
+    }
+};

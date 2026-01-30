@@ -54,6 +54,7 @@ function formatTimestamp(ts) {
 
 export default function ISSTracker() {
     const navigate = useNavigate();
+    const [activeView, setActiveView] = useState('map');
     const [iss, setIss] = useState(null);
     const [pollMs, setPollMs] = useState(5000);
     const [showInfoModal, setShowInfoModal] = useState(false);
@@ -61,6 +62,20 @@ export default function ISSTracker() {
     const globeRef = useRef(null);
     const mapRef = useRef(null);
     const globeContainerRef = useRef(null);
+
+    // Handle initial view and resize
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth >= 1024) {
+                setActiveView('both');
+            }
+        };
+        // Initial check
+        if (window.innerWidth >= 1024) setActiveView('both');
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     // 1. Poll ISS position
     useEffect(() => {
@@ -132,15 +147,15 @@ export default function ISSTracker() {
             <div className="fixed bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-purple-500/5 rounded-full blur-[100px] pointer-events-none z-0" />
 
             {/* Header */}
-            <header className="h-[10vh] flex items-center justify-between px-8 border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 p-5 z-[2000]">
+            <header className="h-[10vh] min-h-[80px] flex items-center justify-between px-4 md:px-8 border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 md:p-5 z-[2000]">
                 <div className="flex items-center gap-4">
                     <button
                         onClick={() => navigate('/dashboard')}
-                        className="cursor-target w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-[#00d9ff]/30 text-slate-400 hover:text-[#00d9ff] transition-all"
+                        className="cursor-target w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-[#00d9ff]/30 text-slate-400 hover:text-[#00d9ff] transition-all flex-shrink-0"
                     >
                         <MdChevronLeft className="text-2xl" />
                     </button>
-                    <div>
+                    <div className="hidden md:block">
                         <h1 className="text-2xl font-bold text-white tracking-wide flex items-center gap-2">
                             <MdSatelliteAlt className="text-[#00d9ff] text-3xl" />
                             ISS <span className="text-slate-500">TRACKER</span>
@@ -150,38 +165,81 @@ export default function ISSTracker() {
                         </p>
                     </div>
 
+                    {/* Mobile Title (Simplified) */}
+                    <div className="md:hidden">
+                        <h1 className="text-lg font-bold text-white tracking-wide flex items-center gap-2">
+                            ISS <span className="text-slate-500">TRACKER</span>
+                        </h1>
+                    </div>
 
                     <button
                         onClick={() => setShowInfoModal(true)}
-                        className="cursor-target ml-6 px-6 py-3 bg-[#00ff88]/20 hover:bg-[#00ff88]/40 border-2 border-[#00ff88] rounded-full text-white text-xs font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 shadow-[0_0_20px_rgba(0,255,136,0.4)] hover:shadow-[0_0_40px_rgba(0,255,136,0.6)] animate-pulse"
+                        className="hidden md:flex cursor-target ml-6 px-6 py-3 bg-[#00ff88]/20 hover:bg-[#00ff88]/40 border-2 border-[#00ff88] rounded-full text-white text-xs font-black uppercase tracking-widest transition-all duration-300 items-center gap-2 shadow-[0_0_20px_rgba(0,255,136,0.4)] hover:shadow-[0_0_40px_rgba(0,255,136,0.6)] animate-pulse"
                     >
                         <MdInfoOutline className="text-lg" />
                         Learn More
                     </button>
                 </div>
 
-                <div className="flex items-center gap-3 bg-black/40 border border-white/10 rounded-lg p-1.5">
-                    <span className="text-[10px] font-bold text-slate-500 px-2 uppercase">Poll Rate</span>
-                    {[2000, 5000, 15000].map((ms) => (
+                {/* Mobile View Switcher */}
+                <div className="lg:hidden flex bg-white/5 rounded-lg p-1 border border-white/10 mx-2">
+                    {[
+                        { id: 'orbit', label: '3D' },
+                        { id: 'map', label: '2D' },
+                        { id: 'both', label: 'Both' }
+                    ].map((view) => (
                         <button
-                            key={ms}
-                            onClick={() => setPollMs(ms)}
-                            className={`cursor-target px-3 py-1 rounded text-[10px] font-bold transition-all ${pollMs === ms
-                                ? 'bg-[#00d9ff]/20 text-[#00d9ff] border border-[#00d9ff]/30 shadow-[0_0_10px_rgba(0,217,255,0.2)]'
+                            key={view.id}
+                            onClick={() => setActiveView(view.id)}
+                            className={`px-3 py-1.5 rounded-md text-[10px] font-bold uppercase transition-all ${activeView === view.id
+                                ? 'bg-[#00d9ff] text-black shadow-[0_0_15px_rgba(0,217,255,0.4)]'
                                 : 'text-slate-400 hover:text-white'
                                 }`}
                         >
-                            {ms / 1000}s
+                            {view.label}
                         </button>
                     ))}
+                </div>
+
+
+                <div className="flex items-center gap-3">
+                    <div className="hidden md:flex items-center gap-3 bg-black/40 border border-white/10 rounded-lg p-1.5">
+                        <span className="text-[10px] font-bold text-slate-500 px-2 uppercase">Poll Rate</span>
+                        {[2000, 5000, 15000].map((ms) => (
+                            <button
+                                key={ms}
+                                onClick={() => setPollMs(ms)}
+                                className={`cursor-target px-3 py-1 rounded text-[10px] font-bold transition-all ${pollMs === ms
+                                    ? 'bg-[#00d9ff]/20 text-[#00d9ff] border border-[#00d9ff]/30 shadow-[0_0_10px_rgba(0,217,255,0.2)]'
+                                    : 'text-slate-400 hover:text-white'
+                                    }`}
+                            >
+                                {ms / 1000}s
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* Mobile Info Button */}
+                    <button
+                        onClick={() => setShowInfoModal(true)}
+                        className="md:hidden w-10 h-10 rounded-lg bg-[#00ff88]/10 border border-[#00ff88]/30 flex items-center justify-center text-[#00ff88]"
+                    >
+                        <MdInfoOutline size={20} />
+                    </button>
                 </div>
             </header >
 
             {/* Main Content: Split View */}
-            <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 relative z-10 gap-6 p-6 overflow-hidden">
+            <div className={`flex-1 relative z-10 p-4 lg:p-6 gap-4 lg:gap-6 ${activeView === 'both' && window.innerWidth < 1024
+                ? 'flex flex-col overflow-y-auto' /* Scrollable vertical stack for mobile "Both" */
+                : 'flex flex-col lg:grid lg:grid-cols-2 overflow-hidden' /* Fixed Layout for others */
+                }`}>
 
                 {/* Left: Globe (3D) */}
-                <div className="cursor-target relative border border-white/5 bg-black/40 rounded-3xl overflow-hidden shadow-2xl" ref={globeContainerRef}>
+                <div className={`cursor-target relative border border-white/5 bg-black/40 rounded-3xl overflow-hidden shadow-2xl transition-all duration-300 ${activeView === 'orbit'
+                    ? 'flex-1 order-1'
+                    : activeView === 'both' ? 'h-[50vh] lg:h-auto lg:flex-1 shrink-0 order-1' : 'hidden'
+                    }`} ref={globeContainerRef}>
                     <Globe
                         ref={globeRef}
                         width={globeContainerRef.current?.clientWidth}
@@ -201,7 +259,7 @@ export default function ISSTracker() {
                         pointLabel={(d) => d.label}
                         animateIn={true}
                     />
-                    <div className="absolute top-6 left-6 pointer-events-none">
+                    <div className="absolute top-4 left-4 md:top-6 md:left-6 pointer-events-none">
                         <div className="bg-black/60 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded text-xs font-mono text-[#00d9ff] flex items-center gap-2">
                             <span className="w-1.5 h-1.5 bg-[#00d9ff] rounded-full animate-pulse"></span>
                             ORBITAL VIEW
@@ -210,7 +268,10 @@ export default function ISSTracker() {
                 </div>
 
                 {/* Right: Map (2D) */}
-                <div className="cursor-target relative bg-[#0a0e17] rounded-3xl overflow-hidden border border-white/5 shadow-2xl">
+                <div className={`cursor-target relative bg-[#0a0e17] rounded-3xl overflow-hidden border border-white/5 shadow-2xl transition-all duration-300 ${activeView === 'map'
+                    ? 'flex-1 order-2'
+                    : activeView === 'both' ? 'h-[60vh] lg:h-auto lg:flex-1 shrink-0 order-2' : 'hidden'
+                    }`}>
                     <MapContainer
                         center={iss ? [iss.lat, iss.lng] : [0, 0]}
                         zoom={3}
@@ -234,7 +295,7 @@ export default function ISSTracker() {
                         )}
                     </MapContainer>
 
-                    <div className="absolute top-6 right-6 pointer-events-none z-[1000]">
+                    <div className="absolute top-4 right-4 md:top-6 md:right-6 pointer-events-none z-[1000]">
                         <div className="bg-black/60 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded text-xs font-mono text-[#00d9ff] flex items-center gap-2">
                             <MdPublic />
                             GROUND TRACK
@@ -242,17 +303,17 @@ export default function ISSTracker() {
                     </div>
 
                     {/* Floating HUD Telemetry (Bottom Overlay) */}
-                    <div className="absolute bottom-24 left-6 right-6 p-6 bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-between z-[1000] shadow-2xl">
-                        <div className="flex items-center gap-8">
+                    <div className="absolute bottom-4 left-4 right-4 md:bottom-6 md:left-6 md:right-6 p-4 md:p-6 bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl flex flex-col md:flex-row items-center justify-between z-[1000] shadow-2xl gap-4 md:gap-0">
+                        <div className="flex w-full md:w-auto justify-between md:justify-start items-center gap-8">
                             <div>
                                 <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">Coordinates</div>
-                                <div className="flex gap-4 font-mono text-xl text-white">
+                                <div className="flex gap-4 font-mono text-lg md:text-xl text-white">
                                     <span>LAT <span className="text-[#00d9ff]">{iss ? iss.lat.toFixed(4) : "---"}</span></span>
                                     <span>LNG <span className="text-[#00d9ff]">{iss ? iss.lng.toFixed(4) : "---"}</span></span>
                                 </div>
                             </div>
-                            <div className="h-8 w-px bg-white/10"></div>
-                            <div>
+                            <div className="hidden md:block h-8 w-px bg-white/10"></div>
+                            <div className="hidden md:block">
                                 <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">Status</div>
                                 <div className="flex items-center gap-2 text-green-400 font-bold text-sm tracking-wide">
                                     <MdWifi className="text-lg animate-pulse" />
@@ -261,14 +322,23 @@ export default function ISSTracker() {
                             </div>
                         </div>
 
-                        <div className="text-right">
-                            <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">Last Packet</div>
-                            <div className="font-mono text-sm text-white">{iss ? formatTimestamp(iss.timestamp) : "Connecting..."}</div>
+                        <div className="w-full md:w-auto flex justify-between md:block md:text-right">
+                            <div className="md:hidden">
+                                <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">Status</div>
+                                <div className="flex items-center gap-2 text-green-400 font-bold text-sm tracking-wide">
+                                    <MdWifi className="text-lg animate-pulse" />
+                                    LOCKED
+                                </div>
+                            </div>
+                            <div>
+                                <div className="text-[10px] text-slate-500 uppercase font-bold mb-1 text-right">Last Packet</div>
+                                <div className="font-mono text-sm text-white">{iss ? formatTimestamp(iss.timestamp) : "Connecting..."}</div>
+                            </div>
                         </div>
                     </div>
 
                     {/* Pass Predictor Overlay (Top Left of MAP view) */}
-                    <div className="absolute top-6 left-6 z-[1000] w-80">
+                    <div className="absolute top-4 left-4 right-4 md:right-auto md:top-6 md:left-6 z-[1000] md:w-80">
                         <ISSPassPredictor />
                     </div>
                 </div >

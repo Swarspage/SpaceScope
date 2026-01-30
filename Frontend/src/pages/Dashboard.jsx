@@ -41,6 +41,7 @@ import {
 } from '../services/api';
 import SpaceDebrisGlobe from '../components/SpaceDebrisGlobe';
 import TempAnomalyChart from '../components/TempAnomalyChart';
+import HeaderGreeting from '../components/HeaderGreeting';
 import DashboardHeader from '../components/DashboardHeader';
 import TargetCursor from '../components/TargetCursor';
 
@@ -67,6 +68,7 @@ const Dashboard = () => {
 
     // Tutorial State
     const [showTutorial, setShowTutorial] = useState(false);
+    const [tutorialStep, setTutorialStep] = useState(0);
 
     // State management
     const [issData, setIssData] = useState(null);
@@ -461,7 +463,7 @@ const Dashboard = () => {
             />
 
             {/* === LEFT SIDEBAR === */}
-            <Sidebar activeTab="Dashboard" />
+            <Sidebar activeTab="Dashboard" forceOpen={showTutorial && tutorialStep > 0} />
 
             {/* === MAIN CONTENT AREA === */}
             <div className="flex-1 flex flex-col min-w-0 bg-transparent relative">
@@ -469,18 +471,8 @@ const Dashboard = () => {
                 <div className="absolute top-[-20%] left-[20%] w-[500px] h-[500px] bg-[#00d9ff]/5 rounded-full blur-[100px] pointer-events-none" />
 
                 {/* Top Header */}
-                <header className="h-16 flex items-center justify-between px-6 border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 z-10">
-                    <div className="flex-1 max-w-xl">
-                        <div className="relative group">
-                            <MdSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-[#00d9ff] transition-colors text-lg" />
-                            <input
-                                type="text"
-                                placeholder="Search mission data, satellites, or celestial events..."
-                                className="w-full bg-[#0f1322] border border-white/10 rounded-lg py-2 pl-10 pr-12 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#00d9ff]/50 focus:ring-1 focus:ring-[#00d9ff]/50 transition-all"
-                            />
-                            <div className="absolute right-3 top-1/2 -translate-y-1/2 border border-slate-700 rounded px-1.5 py-0.5 text-[10px] text-slate-500 font-mono">⌘K</div>
-                        </div>
-                    </div>
+                <header className="h-20 flex items-center justify-between px-6 border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 z-10 transition-all duration-300">
+                    <HeaderGreeting user={user} />
 
                     <div className="flex items-center gap-4 ml-4">
                         <div className="relative">
@@ -606,23 +598,28 @@ const Dashboard = () => {
                     <div className="max-w-[1600px] mx-auto space-y-6">
 
                         {/* Title Section */}
-                        <div className="flex flex-col md:flex-row justify-between items-end gap-6 pb-2 border-b border-white/5 pb-6">
-                            <DashboardHeader user={user} quote={quote} />
+                        {/* Title Section (Quote & Stats) */}
+                        <div className="flex flex-col xl:flex-row justify-between items-end gap-6 border-b border-white/5 pb-6">
+                            <div className="flex-1 w-full xl:w-auto">
+                                <div className="text-slate-400 text-sm italic border-l-2 border-[#00d9ff] pl-4 py-2 bg-white/5 rounded-r-lg border-y border-y-transparent">
+                                    "{quote.text}" <span className="text-[#00d9ff] text-xs not-italic ml-2 opacity-80">— {quote.author}</span>
+                                </div>
+                            </div>
 
-                            <div className="flex gap-4">
-                                <div className="px-6 py-3 rounded-xl border border-white/10 bg-black/30 backdrop-blur-md">
+                            <div className="flex gap-3 sm:gap-4 w-full xl:w-auto overflow-x-auto pb-2 xl:pb-0">
+                                <div className="flex-shrink-0 px-5 py-3 rounded-xl border border-white/10 bg-black/30 backdrop-blur-md">
                                     <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">Active Missions</div>
-                                    <div className="text-2xl font-bold text-white font-mono">{spacexData.length > 0 ? spacexData.length + 5 : '12'}</div>
+                                    <div className="text-xl sm:text-2xl font-bold text-white font-mono">{spacexData.length > 0 ? spacexData.length + 5 : '12'}</div>
                                 </div>
-                                <div className="px-6 py-3 rounded-xl border border-white/10 bg-[#0f1322]">
+                                <div className="flex-shrink-0 px-5 py-3 rounded-xl border border-white/10 bg-[#0f1322]">
                                     <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">Next ISS Pass</div>
-                                    <div className="text-2xl font-bold text-[#00d9ff] font-mono">{getNextPassTime()}</div>
+                                    <div className="text-xl sm:text-2xl font-bold text-[#00d9ff] font-mono">{getNextPassTime()}</div>
                                 </div>
-                                <div className="px-6 py-3 rounded-xl border border-purple-500/30 bg-purple-500/10">
+                                <div className="flex-shrink-0 px-5 py-3 rounded-xl border border-purple-500/30 bg-purple-500/10">
                                     <div className="text-[10px] text-purple-300 uppercase font-bold mb-1 flex items-center gap-1">
                                         <BsFillLightningChargeFill /> Aurora Alert
                                     </div>
-                                    <div className="text-2xl font-bold text-white font-mono">Kp {getCurrentKp()}</div>
+                                    <div className="text-xl sm:text-2xl font-bold text-white font-mono">Kp {getCurrentKp()}</div>
                                 </div>
                             </div>
                         </div>
@@ -944,6 +941,7 @@ const Dashboard = () => {
                     user={user}
                     onComplete={handleTutorialComplete}
                     onSkip={handleTutorialSkip}
+                    onStepChange={setTutorialStep}
                 />
             )}
 

@@ -231,11 +231,11 @@ const HomePage = () => {
         loop
         onEnded={() => audioRef.current?.play()}
       />
-      {/* 1. NAVIGATION HEADER */}
+      {/* 1. DESKTOP NAVIGATION HEADER (Hidden on Mobile) */}
       <nav
-        className={`fixed top-0 w-full z-50 transition-all duration-300 border-b ${isScrolled ? "bg-black/10 backdrop-blur-md border-white/5 py-3" : "bg-transparent border-transparent py-4 md:py-6"}`}
+        className={`hidden lg:flex fixed top-0 w-full z-50 transition-all duration-300 border-b ${isScrolled ? "bg-black/10 backdrop-blur-md border-white/5 py-3" : "bg-transparent border-transparent py-6"}`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 flex justify-between items-center">
+        <div className="max-w-7xl mx-auto px-12 w-full flex justify-between items-center">
           {/* Logo */}
           <div className="flex items-center">
             <img
@@ -246,7 +246,7 @@ const HomePage = () => {
           </div>
 
           {/* Desktop Nav */}
-          <div className="hidden lg:flex items-center gap-6 xl:gap-8">
+          <div className="flex items-center gap-8">
             {["Features", "How It Works", "Community", "Pricing"].map(
               (item) => (
                 <a
@@ -262,8 +262,8 @@ const HomePage = () => {
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
-            {/* Audio Toggle - Visible on all devices */}
+          <div className="flex items-center gap-4">
+            {/* Audio Toggle */}
             <button
               onClick={toggleAudio}
               className="cursor-target p-2 text-white hover:text-[#00d9ff] transition-colors hover:bg-white/5 rounded-lg"
@@ -276,29 +276,74 @@ const HomePage = () => {
               )}
             </button>
 
-            {/* Desktop Only Actions */}
             <button
               onClick={() => navigate("/login")}
-              className="cursor-target hidden lg:block text-xs md:text-sm font-bold text-white hover:text-[#00d9ff] transition-colors px-3 md:px-4 py-2 border border-white/20 rounded-lg hover:bg-white/5 hover:border-[#00d9ff]/50"
+              className="cursor-target text-sm font-bold text-white hover:text-[#00d9ff] transition-colors px-4 py-2 border border-white/20 rounded-lg hover:bg-white/5 hover:border-[#00d9ff]/50"
             >
               Login
             </button>
             <button
               onClick={() => navigate("/login")}
-              className="cursor-target hidden lg:block text-xs md:text-sm font-bold text-white bg-gradient-to-r from-blue-600 to-violet-600 px-4 md:px-6 py-2 md:py-2.5 rounded-lg shadow-[0_0_20px_rgba(0,217,255,0.4)] hover:shadow-[0_0_30px_rgba(0,217,255,0.6)] hover:-translate-y-0.5 transition-all"
+              className="cursor-target text-sm font-bold text-white bg-gradient-to-r from-blue-600 to-violet-600 px-6 py-2.5 rounded-lg shadow-[0_0_20px_rgba(0,217,255,0.4)] hover:shadow-[0_0_30px_rgba(0,217,255,0.6)] hover:-translate-y-0.5 transition-all"
             >
               Get Started
             </button>
           </div>
-
-          {/* Mobile Toggle */}
-          <button
-            className="cursor-target lg:hidden text-white ml-2 sm:ml-3"
-            onClick={() => setMobileMenuOpen(true)}
-          >
-            <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
-          </button>
         </div>
+      </nav>
+
+      {/* 1.5 PREMIUM MOBILE HEADER (Floating Capsule) */}
+      <nav className="lg:hidden fixed top-4 left-4 right-4 z-50">
+        <motion.div
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className={`flex items-center justify-between px-4 py-3 rounded-2xl border transition-all duration-300 ${isScrolled
+              ? "bg-[#0a0a1a]/80 backdrop-blur-xl border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
+              : "bg-black/30 backdrop-blur-md border-white/5"
+            }`}
+        >
+          {/* Logo */}
+          <div className="flex items-center">
+            <img
+              src={Logo}
+              alt="Singularity"
+              className="h-6 w-auto object-contain"
+            />
+          </div>
+
+          {/* Mobile Actions Group */}
+          <div className="flex items-center gap-3">
+            {/* Audio Mini-Pill */}
+            <button
+              onClick={toggleAudio}
+              className={`cursor-target w-8 h-8 flex items-center justify-center rounded-full transition-all ${isAudioPlaying ? "bg-[#00d9ff]/20 text-[#00d9ff]" : "bg-white/5 text-slate-400"}`}
+            >
+              {isAudioPlaying ? (
+                <div className="flex gap-0.5 items-end h-3">
+                  <span className="w-0.5 bg-[#00d9ff] h-2 animate-[bounce_1s_infinite]"></span>
+                  <span className="w-0.5 bg-[#00d9ff] h-3 animate-[bounce_1.2s_infinite]"></span>
+                  <span className="w-0.5 bg-[#00d9ff] h-1.5 animate-[bounce_0.8s_infinite]"></span>
+                </div>
+              ) : (
+                <VolumeX className="w-4 h-4" />
+              )}
+            </button>
+
+            {/* Divider */}
+            <div className="w-px h-5 bg-white/10"></div>
+
+            {/* Menu Button */}
+            <button
+              className="cursor-target p-1 text-white relative group"
+              onClick={() => setMobileMenuOpen(true)}
+            >
+              <div className="flex flex-col gap-1.5 items-end">
+                <span className="w-6 h-0.5 bg-white rounded-full group-hover:w-4 transition-all duration-300"></span>
+                <span className="w-4 h-0.5 bg-[#00d9ff] rounded-full group-hover:w-6 transition-all duration-300"></span>
+              </div>
+            </button>
+          </div>
+        </motion.div>
       </nav>
       {/* Mobile Menu Overlay */}
       <AnimatePresence>
@@ -376,7 +421,7 @@ const HomePage = () => {
         </div>
 
         {/* 3D Earth Globe - BIGGER + BETTER POSITIONED */}
-        <div className="absolute z-0 pointer-events-none right-0 md:right-2 lg:right-4 xl:right-8 2xl:right-16 top-1/2 -translate-y-1/2 opacity-25 md:opacity-80 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] md:w-[500px] md:h-[500px] lg:w-[650px] lg:h-[650px] xl:w-[750px] xl:h-[750px] 2xl:w-[900px] 2xl:h-[900px] drop-shadow-2xl shadow-blue-500/30 max-w-[95vw] max-h-[80vh] flex items-center justify-center">
+        <div className="absolute z-0 pointer-events-none right-0 md:right-2 lg:right-4 xl:right-8 2xl:right-16 top-1/2 -translate-y-1/2 opacity-25 md:opacity-80 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] md:w-[500px] md:h-[500px] lg:w-[650px] lg:h-[650px] xl:w-[750px] xl:h-[750px] 2xl:w-[900px] 2xl:h-[900px] drop-shadow-2xl shadow-blue-500/30 max-w-[95vw] max-h-[80vh] flex items-center justify-center translate-x-1/4 md:translate-x-0">
           <EarthGlobe />
         </div>
 
@@ -553,7 +598,7 @@ const HomePage = () => {
                 ].map((status, index) => (
                   <div
                     key={index}
-                    className="flex items-center px-8 md:px-12 border-r border-white/5"
+                    className="flex items-center px-6 md:px-12 border-r border-white/5"
                   >
                     <span className={`text-lg md:text-xl mr-3 ${status.color}`}>
                       {status.icon}
@@ -585,7 +630,7 @@ const HomePage = () => {
             sub="Or wondered when the ISS passes overhead? The universe is vast, but finding reliable info shouldn't be."
           />
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {[
               {
                 icon: Search,
@@ -693,18 +738,17 @@ const HomePage = () => {
                 viewport={{ margin: "-100px" }}
                 className={`flex flex-col ${i % 2 === 1 ? "md:flex-row-reverse" : "md:flex-row"} items-center gap-8 sm:gap-10 md:gap-12 lg:gap-24`}
               >
-                {/* Content - UNCHANGED */}
                 <div className="flex-1 relative">
-                  <span className="absolute -top-10 -left-6 text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-br from-blue-600 to-violet-600 opacity-10 select-none">
+                  <span className="absolute -top-6 -left-4 sm:-top-10 sm:-left-6 text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-br from-blue-600 to-violet-600 opacity-10 select-none">
                     0{i + 1}
                   </span>
-                  <h3 className="font-display font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white mb-3 sm:mb-4 relative z-10">
+                  <h3 className="font-display font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white mb-3 sm:mb-4 relative z-10 pl-2">
                     {feature.title}
                   </h3>
-                  <p className="text-[#b8c5d6] text-sm sm:text-base md:text-lg leading-relaxed mb-4 sm:mb-6">
+                  <p className="text-[#b8c5d6] text-sm sm:text-base md:text-lg leading-relaxed mb-4 sm:mb-6 pl-2">
                     {feature.desc}
                   </p>
-                  <ul className="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
+                  <ul className="space-y-2 sm:space-y-3 mb-6 sm:mb-8 pl-2">
                     {feature.bullets.map((b, idx) => (
                       <li
                         key={idx}
@@ -715,7 +759,7 @@ const HomePage = () => {
                       </li>
                     ))}
                   </ul>
-                  <button className="cursor-target text-[#00d9ff] font-bold text-sm sm:text-base flex items-center gap-2 hover:gap-4 transition-all">
+                  <button className="cursor-target text-[#00d9ff] font-bold text-sm sm:text-base flex items-center gap-2 hover:gap-4 transition-all pl-2">
                     Try Live Demo <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>

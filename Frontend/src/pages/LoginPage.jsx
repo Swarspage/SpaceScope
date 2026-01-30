@@ -474,17 +474,17 @@ const LoginPage = () => {
       />
 
       {/* === LEFT PANEL: AUTH SIDEBAR === */}
-      <div className="w-full lg:w-[480px] bg-panel-dark/90 border-r border-white/5 flex flex-col relative z-20 shadow-2xl h-screen flex-shrink-0">
+      <div className="w-full lg:w-[480px] bg-panel-dark/90 border-r border-white/5 flex flex-col relative z-20 shadow-2xl min-h-screen lg:h-screen flex-shrink-0">
 
         {/* Header / Logo */}
-        <div className="p-8 pb-4 flex items-center justify-between">
+        <div className="p-6 md:p-8 pb-4 flex items-center justify-between">
           <div className="flex items-center">
-            <img src={Logo} alt="Singularity" className="h-10 w-auto object-contain" />
+            <img src={Logo} alt="Singularity" className="h-8 md:h-10 w-auto object-contain" />
           </div>
         </div>
 
         {/* Tab Switcher */}
-        <div className="px-8 flex border-b border-white/5 relative">
+        <div className="px-6 md:px-8 flex border-b border-white/5 relative">
           <button
             onClick={() => { setActiveTab('login'); setError(''); }}
             className={`cursor-target flex-1 pb-4 text-sm font-medium transition-all relative ${activeTab === 'login' ? 'text-primary' : 'text-secondary hover:text-white'}`}
@@ -502,7 +502,7 @@ const LoginPage = () => {
         </div>
 
         {/* Form Content */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar p-8 flex flex-col justify-center">
+        <div className="flex-1 overflow-y-auto custom-scrollbar p-6 md:p-8 flex flex-col justify-center">
 
           {/* Welcome Header */}
           <div className="mb-8 animate-slide-up">
@@ -787,16 +787,39 @@ const LoginPage = () => {
         </div>
       )}
 
-      {/* Verify Email */}
+      {/* Verify Email / Success Overlay */}
       {showVerifyOverlay && (
-        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-space-gradient p-6 text-center animate-slide-up">
-          <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mb-6 relative">
-            <div className="absolute inset-0 rounded-full border border-primary animate-ping opacity-20"></div>
-            <MdCheckCircle className="text-4xl text-primary" />
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#050714]/90 backdrop-blur-xl p-6 text-center animate-fade-in">
+
+          {/* Confetti / Celebration Background Effects */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute top-1/4 left-1/4 w-3 h-3 bg-red-500 rounded-full animate-[bounce_2s_infinite]"></div>
+            <div className="absolute top-1/3 right-1/4 w-2 h-2 bg-blue-500 rounded-full animate-[bounce_2.5s_infinite]"></div>
+            <div className="absolute top-1/2 left-1/3 w-4 h-4 bg-yellow-400 rounded-full animate-[bounce_1.8s_infinite]"></div>
+            <div className="absolute bottom-1/3 right-1/3 w-3 h-3 bg-purple-500 rounded-full animate-[bounce_2.2s_infinite]"></div>
+            <div className="absolute top-10 left-1/2 w-2 h-2 bg-green-500 rounded-full animate-[bounce_3s_infinite]"></div>
           </div>
-          <h2 className="text-3xl font-bold text-white mb-2">Account Created!</h2>
-          <p className="text-secondary text-lg mb-8">Welcome to Singularity. You can now log in with your credentials.</p>
-          <button onClick={() => { setShowVerifyOverlay(false); setActiveTab('login'); }} className="px-8 py-3 rounded-lg bg-primary text-black font-bold hover:bg-white transition-colors">Go to Login</button>
+
+          <div className="relative z-10 bg-[#12162a] border border-white/10 p-8 md:p-12 rounded-3xl shadow-2xl max-w-sm w-full flex flex-col items-center">
+
+            <div className="w-24 h-24 rounded-full bg-emerald-500/20 flex items-center justify-center mb-6 relative">
+              <div className="absolute inset-0 rounded-full border border-emerald-500/50 animate-ping opacity-20"></div>
+              <div className="absolute inset-0 rounded-full border-2 border-emerald-500/50 animate-[spin_10s_linear_infinite] border-t-transparent border-l-transparent"></div>
+              <MdCheckCircle className="text-5xl text-emerald-400 drop-shadow-[0_0_15px_rgba(52,211,153,0.5)]" />
+            </div>
+
+            <h2 className="text-3xl font-black text-white mb-3 tracking-tight">Current Status: <span className="text-emerald-400">READY</span></h2>
+            <p className="text-slate-300 text-base mb-8 leading-relaxed">
+              Your credentials have been verified. Welcome to the mission, explorer!
+            </p>
+
+            <button
+              onClick={() => { setShowVerifyOverlay(false); setActiveTab('login'); }}
+              className="w-full py-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold text-sm tracking-wide shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:-translate-y-1 transition-all"
+            >
+              LAUNCH CONSOLE
+            </button>
+          </div>
         </div>
       )}
     </div>

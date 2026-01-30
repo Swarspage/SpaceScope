@@ -141,49 +141,49 @@ const MeteorCalendar = () => {
                 <div className="fixed bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-[#00d9ff]/5 rounded-full blur-[100px] pointer-events-none" />
 
                 {/* Header */}
-                <header className="h-20 flex items-center justify-between px-8 border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 z-50">
-                    <div className="flex items-center gap-4">
+                <header className="h-auto md:h-20 flex flex-col md:flex-row items-center justify-between px-4 md:px-8 py-4 md:py-0 border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 z-50 gap-4">
+                    <div className="flex items-center gap-4 w-full md:w-auto">
                         <button
                             onClick={() => navigate('/dashboard')}
-                            className="cursor-target w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-[#00d9ff]/30 text-slate-400 hover:text-[#00d9ff] transition-all"
+                            className="cursor-target w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-[#00d9ff]/30 text-slate-400 hover:text-[#00d9ff] transition-all shrink-0"
                         >
                             <MdChevronLeft className="text-2xl" />
                         </button>
                         <div>
-                            <h1 className="text-2xl font-bold text-white tracking-wide flex items-center gap-2">
-                                <WiMeteor className="text-[#00d9ff] text-3xl" />
+                            <h1 className="text-lg md:text-2xl font-bold text-white tracking-wide flex items-center gap-2">
+                                <WiMeteor className="text-[#00d9ff] text-2xl md:text-3xl" />
                                 METEOR <span className="text-slate-500">SURVEILLANCE</span>
                             </h1>
-                            <p className="text-xs text-[#00d9ff] font-mono tracking-widest uppercase">
+                            <p className="text-[10px] md:text-xs text-[#00d9ff] font-mono tracking-widest uppercase">
                                 Celestial Event Log // 2026-2027
                             </p>
                         </div>
                     </div>
 
-                    <div className="flex gap-3">
-                        <button className="cursor-target px-4 py-2 rounded-lg bg-black/40 border border-white/10 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white hover:border-white/20 transition-all flex items-center gap-2">
-                            <MdFilterList /> Filter by Visibility
+                    <div className="flex flex-wrap justify-center md:justify-end gap-2 md:gap-3 w-full md:w-auto">
+                        <button className="cursor-target px-3 md:px-4 py-2 rounded-lg bg-black/40 border border-white/10 text-[10px] md:text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white hover:border-white/20 transition-all flex items-center gap-2 whitespace-nowrap">
+                            <MdFilterList /> Filter
                         </button>
-                        <button className="cursor-target px-4 py-2 rounded-lg bg-[#00d9ff]/10 border border-[#00d9ff]/30 text-[#00d9ff] text-xs font-bold uppercase tracking-wider hover:bg-[#00d9ff] hover:text-black transition-all shadow-[0_0_15px_rgba(0,217,255,0.2)]">
-                            Sync to Calendar
+                        <button className="cursor-target px-3 md:px-4 py-2 rounded-lg bg-[#00d9ff]/10 border border-[#00d9ff]/30 text-[#00d9ff] text-[10px] md:text-xs font-bold uppercase tracking-wider hover:bg-[#00d9ff] hover:text-black transition-all shadow-[0_0_15px_rgba(0,217,255,0.2)] whitespace-nowrap">
+                            Sync Calendar
                         </button>
                         <button
                             onClick={() => setShowInfoModal(true)}
-                            className="cursor-target px-6 py-3 bg-[#00ff88]/20 hover:bg-[#00ff88]/40 border-2 border-[#00ff88] rounded-full text-white text-xs font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 shadow-[0_0_20px_rgba(0,255,136,0.4)] hover:shadow-[0_0_40px_rgba(0,255,136,0.6)] animate-pulse"
+                            className="cursor-target px-4 md:px-6 py-2 md:py-3 bg-[#00ff88]/20 hover:bg-[#00ff88]/40 border-2 border-[#00ff88] rounded-full text-white text-[10px] md:text-xs font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 shadow-[0_0_20px_rgba(0,255,136,0.4)] hover:shadow-[0_0_40px_rgba(0,255,136,0.6)] animate-pulse whitespace-nowrap"
                         >
-                            <MdInfoOutline className="text-lg" />
-                            Learn More
+                            <MdInfoOutline className="text-base md:text-lg" />
+                            Info
                         </button>
                     </div>
                 </header>
 
                 {/* Content Grid */}
-                <div className="p-8 max-w-[1600px] mx-auto w-full">
+                <div className="p-4 md:p-8 max-w-[1600px] mx-auto w-full">
 
                     {/* Featured / Next Event */}
                     <div className="mb-10 relative group">
                         <div className="absolute inset-0 bg-gradient-to-r from-[#00d9ff]/20 to-purple-600/20 rounded-3xl blur opacity-20 group-hover:opacity-30 transition-opacity duration-500"></div>
-                        <div className="cursor-target relative h-[350px] rounded-3xl overflow-hidden border border-white/10 group-hover:border-[#00d9ff]/30 transition-all duration-500">
+                        <div className="cursor-target relative h-auto md:h-[350px] rounded-3xl overflow-hidden border border-white/10 group-hover:border-[#00d9ff]/30 transition-all duration-500">
                             {/* Background Image */}
                             <img
                                 src={meteorEvents[0].image_url}
@@ -193,32 +193,32 @@ const MeteorCalendar = () => {
                             <div className="absolute inset-0 bg-gradient-to-r from-[#050714] via-[#050714]/80 to-transparent"></div>
 
                             {/* Content */}
-                            <div className="relative z-10 p-10 h-full flex flex-col justify-center max-w-2xl">
+                            <div className="relative z-10 p-6 md:p-10 h-full flex flex-col justify-center max-w-2xl">
                                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-[#00d9ff]/10 border border-[#00d9ff]/30 text-[#00d9ff] text-[10px] font-bold uppercase tracking-widest w-fit mb-4">
                                     <span className="w-1.5 h-1.5 rounded-full bg-[#00d9ff] animate-pulse"></span>
                                     Approaching Peak
                                 </div>
-                                <h2 className="text-5xl font-black text-white mb-2 tracking-tight">{meteorEvents[0].name}</h2>
-                                <p className="text-lg text-slate-300 mb-6 font-light border-l-2 border-[#00d9ff] pl-4">
+                                <h2 className="text-3xl md:text-5xl font-black text-white mb-2 tracking-tight">{meteorEvents[0].name}</h2>
+                                <p className="text-sm md:text-lg text-slate-300 mb-6 font-light border-l-2 border-[#00d9ff] pl-4">
                                     {meteorEvents[0].description}
                                 </p>
 
-                                <div className="grid grid-cols-3 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
                                     <div>
                                         <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">Peak Date (UTC)</div>
-                                        <div className="text-xl font-mono text-white">
+                                        <div className="text-lg md:text-xl font-mono text-white">
                                             {new Date(meteorEvents[0].peak_date_utc).toLocaleDateString('en-US', { month: 'short', day: '2-digit' })}
                                         </div>
                                     </div>
                                     <div>
                                         <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">ZHR Intensity</div>
-                                        <div className="text-xl font-mono text-[#00d9ff] flex items-center gap-2">
+                                        <div className="text-lg md:text-xl font-mono text-[#00d9ff] flex items-center gap-2">
                                             {meteorEvents[0].zhr} <span className="text-xs text-slate-500">m/h</span>
                                         </div>
                                     </div>
                                     <div>
                                         <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">Visibility</div>
-                                        <div className="text-xl font-mono text-green-400">
+                                        <div className="text-lg md:text-xl font-mono text-green-400">
                                             {meteorEvents[0].visibility_score}%
                                         </div>
                                     </div>
@@ -307,84 +307,84 @@ const MeteorCalendar = () => {
 
             {/* === DETAIL MODAL === */}
             {selectedEvent && (
-                <div className="fixed inset-0 z-[2000] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 md:p-8 animate-fade-in">
-                    <div className="relative w-full h-[85vh] max-w-6xl bg-[#0a0e17] rounded-3xl border border-white/10 shadow-2xl overflow-hidden flex flex-col">
+                <div className="fixed inset-0 z-[2000] bg-black/90 backdrop-blur-md flex items-center justify-center p-0 md:p-8 animate-fade-in text-left">
+                    <div className="relative w-full h-full md:h-[85vh] max-w-6xl bg-[#0a0e17] md:rounded-3xl border-none md:border border-white/10 shadow-2xl overflow-hidden flex flex-col">
 
                         {/* Close Button */}
                         <button
                             onClick={() => setSelectedEvent(null)}
-                            className="cursor-target absolute top-6 right-6 z-[2001] w-10 h-10 bg-black/50 backdrop-blur rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-all"
+                            className="cursor-target absolute top-4 right-4 md:top-6 md:right-6 z-[2001] w-10 h-10 bg-black/50 backdrop-blur rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-all"
                         >
                             <MdClose className="text-xl" />
                         </button>
 
-                        {/* Top: Map (Flexible Height) */}
-                        <div className="flex-1 min-h-0 relative border-b border-white/10 bg-[#0a0e17]">
+                        {/* Top: Map (Flexible Height on Desktop, Fixed on Mobile) */}
+                        <div className="h-[40vh] md:flex-1 md:min-h-0 relative border-b border-white/10 bg-[#0a0e17] shrink-0">
                             <DetailMap event={selectedEvent} />
                             {/* Map Overlay Title */}
-                            <div className="absolute top-6 left-6 z-[1000] bg-black/60 backdrop-blur-md px-4 py-2 rounded-xl border border-white/10 pointer-events-none">
-                                <h2 className="text-2xl font-bold text-white tracking-widest uppercase">{selectedEvent.name}</h2>
-                                <div className="text-[#00d9ff] text-xs font-mono">GLOBAL VISIBILITY MAP</div>
+                            <div className="absolute top-4 left-4 md:top-6 md:left-6 z-[1000] bg-black/60 backdrop-blur-md px-3 py-1.5 md:px-4 md:py-2 rounded-xl border border-white/10 pointer-events-none">
+                                <h2 className="text-lg md:text-2xl font-bold text-white tracking-widest uppercase">{selectedEvent.name}</h2>
+                                <div className="text-[#00d9ff] text-[10px] md:text-xs font-mono">GLOBAL VISIBILITY MAP</div>
                             </div>
                         </div>
 
-                        {/* Bottom: Details Grid (Fixed Content Height) */}
-                        <div className="shrink-0 h-auto min-h-[300px] bg-black/40 backdrop-blur-xl p-6 md:p-8 grid grid-cols-1 md:grid-cols-3 gap-8 overflow-y-auto">
-
-                            {/* Col 1: Core Info */}
-                            <div className="space-y-6">
-                                <div>
-                                    <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">Peak Date & Time</div>
-                                    <div className="text-2xl text-white font-mono">
-                                        {new Date(selectedEvent.peak_date_utc).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}
-                                    </div>
-                                    <div className="text-[#00d9ff] font-mono text-sm">
-                                        @ {new Date(selectedEvent.peak_date_utc).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} UTC
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
+                        {/* Bottom: Details Grid (Scrollable) */}
+                        <div className="flex-1 md:shrink-0 md:h-auto md:min-h-[300px] bg-black/40 backdrop-blur-xl p-6 md:p-8 overflow-y-auto">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                                {/* Col 1: Core Info */}
+                                <div className="space-y-4 md:space-y-6">
                                     <div>
-                                        <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">ZHR (Rate)</div>
-                                        <div className="text-xl text-white font-bold">{selectedEvent.zhr} <span className="text-sm text-slate-500 font-normal"> meteors/hr</span></div>
+                                        <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">Peak Date & Time</div>
+                                        <div className="text-xl md:text-2xl text-white font-mono">
+                                            {new Date(selectedEvent.peak_date_utc).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}
+                                        </div>
+                                        <div className="text-[#00d9ff] font-mono text-xs md:text-sm">
+                                            @ {new Date(selectedEvent.peak_date_utc).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} UTC
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">ZHR (Rate)</div>
+                                            <div className="text-lg md:text-xl text-white font-bold">{selectedEvent.zhr} <span className="text-sm text-slate-500 font-normal"> meteors/hr</span></div>
+                                        </div>
+                                        <div>
+                                            <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">Moon Phase</div>
+                                            <div className="text-lg md:text-xl text-white font-bold">Waning</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Col 2: Visibility & Description */}
+                                <div className="space-y-4 md:space-y-6 border-l border-white/5 pl-6 md:pl-8">
+                                    <div>
+                                        <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">Visibility Score</div>
+                                        <div className="flex items-center gap-3">
+                                            <div className="text-3xl md:text-4xl font-bold text-[#00ff88]">{selectedEvent.visibility_score}%</div>
+                                            <div className="text-xs text-slate-400 max-w-[150px]">{selectedEvent.geographic_visibility.notes}</div>
+                                        </div>
                                     </div>
                                     <div>
-                                        <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">Moon Phase</div>
-                                        <div className="text-xl text-white font-bold">Waning</div>
+                                        <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">Region</div>
+                                        <div className="flex items-center gap-2 text-white text-sm md:text-base">
+                                            <MdLocationOn className="text-[#00d9ff]" />
+                                            {selectedEvent.geographic_visibility.best_region}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Col 3: Image */}
+                                <div className="relative rounded-2xl overflow-hidden border border-white/10 group h-48 md:h-full md:max-h-[250px] min-h-0 shrink-0">
+                                    <img
+                                        src={selectedEvent.image_url}
+                                        alt={selectedEvent.name}
+                                        className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                                    <div className="absolute bottom-4 left-4 text-xs text-slate-400">
+                                        Image Credit: {selectedEvent.image_credit}
                                     </div>
                                 </div>
                             </div>
-
-                            {/* Col 2: Visibility & Description */}
-                            <div className="space-y-6 border-l border-white/5 pl-8">
-                                <div>
-                                    <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">Visibility Score</div>
-                                    <div className="flex items-center gap-3">
-                                        <div className="text-4xl font-bold text-[#00ff88]">{selectedEvent.visibility_score}%</div>
-                                        <div className="text-xs text-slate-400 max-w-[150px]">{selectedEvent.geographic_visibility.notes}</div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">Region</div>
-                                    <div className="flex items-center gap-2 text-white">
-                                        <MdLocationOn className="text-[#00d9ff]" />
-                                        {selectedEvent.geographic_visibility.best_region}
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Col 3: Image */}
-                            <div className="relative rounded-2xl overflow-hidden border border-white/10 group h-full max-h-[250px] min-h-0">
-                                <img
-                                    src={selectedEvent.image_url}
-                                    alt={selectedEvent.name}
-                                    className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                                <div className="absolute bottom-4 left-4 text-xs text-slate-400">
-                                    Image Credit: {selectedEvent.image_credit}
-                                </div>
-                            </div>
-
                         </div>
                     </div>
                 </div>
