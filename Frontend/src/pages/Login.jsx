@@ -334,7 +334,7 @@ import {
 } from 'react-icons/md';
 import { FaGoogle, FaGithub } from 'react-icons/fa';
 import Logo from '../assets/Logo.png';
-import TargetCursor from '../components/TargetCursor';
+
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -466,12 +466,7 @@ const LoginPage = () => {
   return (
     <div className="bg-transparent min-h-screen text-slate-300 font-display overflow-hidden flex selection:bg-primary selection:text-black">
       <style>{customStyles}</style>
-      <TargetCursor
-        spinDuration={5}
-        hideDefaultCursor
-        parallaxOn
-        hoverDuration={0.95}
-      />
+      {/* TargetCursor removed (global) */}
 
       {/* === LEFT PANEL: AUTH SIDEBAR === */}
       <div className="w-full lg:w-[480px] bg-panel-dark/90 border-r border-white/5 flex flex-col relative z-20 shadow-2xl min-h-screen lg:h-screen flex-shrink-0">

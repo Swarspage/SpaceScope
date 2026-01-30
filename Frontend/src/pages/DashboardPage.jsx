@@ -43,7 +43,7 @@ import SpaceDebrisGlobe from '../components/SpaceDebrisGlobe';
 import TempAnomalyChart from '../components/TempAnomalyChart';
 import HeaderGreeting from '../components/HeaderGreeting';
 import DashboardHeader from '../components/DashboardHeader';
-import TargetCursor from '../components/TargetCursor';
+
 
 // --- Helpers copied from AuroraPage.jsx for the Map ---
 const intensityToColor = (v) => {
@@ -510,12 +510,7 @@ const DashboardPage = () => {
 
     return (
         <div className="flex h-screen bg-transparent text-slate-300 font-sans overflow-hidden">
-            <TargetCursor
-                spinDuration={5}
-                hideDefaultCursor
-                parallaxOn
-                hoverDuration={0.95}
-            />
+            {/* TargetCursor removed (global) */}
 
             {/* === LEFT SIDEBAR === */}
             <Sidebar activeTab="Dashboard" forceOpen={showTutorial && tutorialStep > 0} />

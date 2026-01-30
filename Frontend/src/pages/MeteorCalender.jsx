@@ -20,7 +20,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap, Circle } from "react-le
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import FeatureInfoModal from "../components/FeatureInfoModal";
-import TargetCursor from "../components/TargetCursor";
+
 import meteorImage from "../assets/images/app_meteorcalendarimage.png";
 
 // Fix Leaflet Default Icon
@@ -134,12 +134,7 @@ const MeteorCalendar = () => {
 
     return (
         <div className="flex h-screen bg-[#050714] text-slate-300 font-sans overflow-hidden">
-            <TargetCursor
-                spinDuration={5}
-                hideDefaultCursor
-                parallaxOn
-                hoverDuration={0.95}
-            />
+            {/* TargetCursor removed (global) */}
             {/* === MAIN CONTENT (Full Width) === */}
             <div className="flex-1 flex flex-col w-full bg-[#050714] relative overflow-y-auto scrollbar-thin scrollbar-thumb-slate-800">
 

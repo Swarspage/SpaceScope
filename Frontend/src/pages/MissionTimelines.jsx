@@ -12,7 +12,7 @@ import {
 } from 'react-icons/md';
 import { SiSpacex, SiNasa } from 'react-icons/si';
 import { GiIndiaGate } from 'react-icons/gi';
-import TargetCursor from '../components/TargetCursor';
+
 import NASABackupData from '../data/NASA.json';
 
 const MissionTimelines = () => {
@@ -220,12 +220,7 @@ const MissionTimelines = () => {
     // --- Main JSX ---
     return (
         <div className="flex h-screen bg-transparent text-slate-300 font-sans overflow-hidden">
-            <TargetCursor
-                spinDuration={5}
-                hideDefaultCursor
-                parallaxOn
-                hoverDuration={0.95}
-            />
+            {/* TargetCursor removed (global) */}
 
             {/* === SIDEBAR === */}
             <Sidebar activeTab="Missions" />

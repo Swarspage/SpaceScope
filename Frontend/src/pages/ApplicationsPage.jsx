@@ -10,7 +10,7 @@ import LightPollutionMap from '../components/LightPollutionMap';
 import CloudCoverMap from '../components/CloudCoverMap';
 import SpaceDebrisGlobe from '../components/SpaceDebrisGlobe';
 import FeatureInfoModal from '../components/FeatureInfoModal';
-import TargetCursor from '../components/TargetCursor';
+
 
 // Images
 import ndviImage from '../assets/images/app_ndviimage.png';
@@ -461,12 +461,7 @@ const NDVIMap = () => {
 
     return (
         <div className="flex flex-col md:flex-row h-screen w-full bg-[#050714] text-white p-2 md:p-4 gap-4 overflow-hidden font-inter relative">
-            <TargetCursor
-                spinDuration={5}
-                hideDefaultCursor
-                parallaxOn
-                hoverDuration={0.95}
-            />
+            {/* TargetCursor removed (global) */}
 
             {/* --- MOBILE HEADER & SIDEBAR TOGGLE --- */}
             <div className="md:hidden flex items-center justify-between bg-[#0a0e17] p-4 rounded-xl border border-white/10 shrink-0">

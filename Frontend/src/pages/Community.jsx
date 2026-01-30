@@ -42,7 +42,7 @@ import {
   Search,
   Loader2,
 } from "lucide-react";
-import TargetCursor from "../components/TargetCursor";
+
 import axios from "axios";
 import { formatDistanceToNow, format } from "date-fns";
 
@@ -361,12 +361,7 @@ const CommunityPage = () => {
 
   return (
     <div className="flex h-screen bg-transparent text-slate-300 font-sans overflow-hidden">
-      <TargetCursor
-        spinDuration={5}
-        hideDefaultCursor
-        parallaxOn
-        hoverDuration={0.95}
-      />
+      {/* TargetCursor removed (global) */}
       <Sidebar activeTab="Community" />
 
       <div className="flex-1 flex flex-col min-w-0 relative">

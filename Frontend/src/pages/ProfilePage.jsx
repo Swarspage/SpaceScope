@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import { MdPerson, MdEmail, MdLocationOn, MdCalendarToday, MdEdit, MdLogout, MdSave, MdCancel, MdCameraAlt, MdFavorite } from 'react-icons/md';
 import { FaUserAstronaut } from 'react-icons/fa';
-import TargetCursor from '../components/TargetCursor';
+
 
 const ProfilePage = () => {
     const { user, logout, updateUser } = useAuth();
@@ -90,12 +90,7 @@ const ProfilePage = () => {
 
     return (
         <div className="flex h-screen bg-[#050714] text-slate-300 font-sans overflow-hidden selection:bg-[#00d9ff]/30">
-            <TargetCursor
-                spinDuration={5}
-                hideDefaultCursor
-                parallaxOn
-                hoverDuration={0.95}
-            />
+            {/* TargetCursor removed (global) */}
             <Sidebar activeTab="Community" /> {/* Highlighting Community as Profile is usually near user actions */}
 
             <main className="flex-1 overflow-auto relative">

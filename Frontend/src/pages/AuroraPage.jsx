@@ -27,7 +27,7 @@ import {
 import { MdChevronLeft, MdInfoOutline } from "react-icons/md";
 import { getAuroraData } from "../services/api";
 import FeatureInfoModal from "../components/FeatureInfoModal";
-import TargetCursor from "../components/TargetCursor";
+
 import auroraImage from "../assets/images/app_auroraimage.png";
 
 const intensityToColor = (v) => {
@@ -231,12 +231,7 @@ const AuroraPage = () => {
 
     return (
         <div className="flex flex-col h-screen bg-[#050714] text-slate-300 font-sans overflow-hidden relative">
-            <TargetCursor
-                spinDuration={5}
-                hideDefaultCursor
-                parallaxOn
-                hoverDuration={0.95}
-            />
+            {/* TargetCursor removed (global) */}
 
             {/* Header */}
             {/* Header */}

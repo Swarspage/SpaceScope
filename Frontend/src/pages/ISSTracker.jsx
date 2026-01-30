@@ -7,7 +7,7 @@ import L from "leaflet";
 import { MdChevronLeft, MdSatelliteAlt, MdPublic, MdWifi, MdInfoOutline, MdAnalytics, MdViewInAr, MdMap } from "react-icons/md";
 import { WiStars } from "react-icons/wi";
 import FeatureInfoModal from "../components/FeatureInfoModal";
-import TargetCursor from "../components/TargetCursor";
+
 
 import ISSPassPredictor from "../components/ISSPassPredictor";
 import issImage from "../assets/images/app_isstrackerimage.png";
@@ -135,12 +135,7 @@ export default function ISSTracker() {
 
     return (
         <div className="flex flex-col h-screen bg-[#050714] text-slate-300 font-sans overflow-hidden relative">
-            <TargetCursor
-                spinDuration={5}
-                hideDefaultCursor
-                parallaxOn
-                hoverDuration={0.95}
-            />
+            {/* TargetCursor removed (global) */}
 
             {/* Background Atmosphere */}
             <div className="fixed top-[-20%] right-[-10%] w-[800px] h-[800px] bg-cyan-500/5 rounded-full blur-[120px] pointer-events-none z-0" />

@@ -36,7 +36,7 @@ import Logo from "../assets/Logo.png";
 import dashboardPreview from "../assets/dashboard-preview.png";
 import ambienceAudio from "../assets/ambience.mp3";
 import Particles from "../components/Particles";
-import TargetCursor from "../components/TargetCursor";
+
 
 /* FONTS INJECTION
   (Include this in your index.css or within a <style> tag in the root)
@@ -218,12 +218,7 @@ const HomePage = () => {
 
   return (
     <div className="bg-transparent min-h-screen text-[#94a3b8] font-sans overflow-x-hidden selection:bg-[#00d9ff] selection:text-black">
-      <TargetCursor
-        spinDuration={5}
-        hideDefaultCursor
-        parallaxOn
-        hoverDuration={0.95}
-      />
+      {/* TargetCursor removed (global) */}
       {/* Hidden Audio Element */}
       <audio
         ref={audioRef}
@@ -298,8 +293,8 @@ const HomePage = () => {
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           className={`flex items-center justify-between px-4 py-3 rounded-2xl border transition-all duration-300 ${isScrolled
-              ? "bg-[#0a0a1a]/80 backdrop-blur-xl border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
-              : "bg-black/30 backdrop-blur-md border-white/5"
+            ? "bg-[#0a0a1a]/80 backdrop-blur-xl border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
+            : "bg-black/30 backdrop-blur-md border-white/5"
             }`}
         >
           {/* Logo */}
