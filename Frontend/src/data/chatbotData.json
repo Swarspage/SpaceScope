@@ -1,0 +1,1254 @@
+[
+    {
+        "id": "greeting_hello",
+        "keywords": [
+            "hello",
+            "hi",
+            "hey",
+            "greetings",
+            "what's up"
+        ],
+        "response": "Hey there, space explorer! 👋✨ I'm **Astro**, your cosmic guide through SpaceScope. Ready to discover what's happening on (and above) planet Earth? 🌍🚀",
+        "category": "greeting",
+        "relatedTopics": [
+            "who_are_you",
+            "what_can_you_do"
+        ]
+    },
+    {
+        "id": "greeting_goodbye",
+        "keywords": [
+            "bye",
+            "goodbye",
+            "see you",
+            "later",
+            "exit"
+        ],
+        "response": "Safe travels, astronaut! 🚀 Remember, the universe is always here when you want to explore. Keep looking up! ✨🌌",
+        "category": "greeting",
+        "relatedTopics": [
+            "greeting_hello"
+        ]
+    },
+    {
+        "id": "who_are_you",
+        "keywords": [
+            "who are you",
+            "what are you",
+            "introduce yourself",
+            "your name"
+        ],
+        "response": "I'm **Astro**, your AI companion for all things SpaceScope! 🤖✨ Think of me as Carl Sagan meets your friendly neighborhood tour guide—here to help you understand satellite data, space phenomena, and how to navigate this app like a pro! 🌍🔭",
+        "category": "greeting",
+        "relatedTopics": [
+            "what_can_you_do",
+            "greeting_hello"
+        ]
+    },
+    {
+        "id": "what_can_you_do",
+        "keywords": [
+            "what can you do",
+            "help me",
+            "how can you help",
+            "capabilities"
+        ],
+        "response": "I can explain **satellite data layers** (NDVI, CO2, temperature), share awesome **space facts**, help you **navigate the app**, and answer questions about everything from black holes to space junk! 🌟 Just ask away! 🚀",
+        "category": "greeting",
+        "relatedTopics": [
+            "who_are_you",
+            "app_features"
+        ]
+    },
+    {
+        "id": "explain_ndvi",
+        "keywords": [
+            "ndvi",
+            "vegetation",
+            "plant health",
+            "what is the green map",
+            "crops",
+            "vegetation index"
+        ],
+        "response": "**NDVI** stands for Normalized Difference Vegetation Index. 🌿 It's like a satellite X-ray for plants! Healthy vegetation reflects a lot of near-infrared light, which we can't see but satellites can. The brighter the green on the map, the healthier the plants! 🌾",
+        "category": "science",
+        "relatedTopics": [
+            "ndvi_farming",
+            "ndvi_colors",
+            "satellite_sensors"
+        ]
+    },
+    {
+        "id": "ndvi_farming",
+        "keywords": [
+            "ndvi farming",
+            "agriculture",
+            "crop monitoring",
+            "farmers use ndvi",
+            "precision agriculture"
+        ],
+        "response": "Farmers use NDVI like a health monitor for their fields! 🚜🌾 It helps them spot **stressed crops** before problems are visible to the naked eye, optimize irrigation, and boost yields. It's precision agriculture at its finest! 💚",
+        "category": "science",
+        "relatedTopics": [
+            "explain_ndvi",
+            "ndvi_drought",
+            "ndvi_colors"
+        ]
+    },
+    {
+        "id": "ndvi_colors",
+        "keywords": [
+            "ndvi colors",
+            "what do the colors mean",
+            "green red brown",
+            "ndvi scale",
+            "color interpretation"
+        ],
+        "response": "On NDVI maps: **Dark green** = thriving vegetation 🌳, **light green/yellow** = moderate vegetation 🌾, **brown/red** = sparse or stressed plants 🍂, **blue/black** = water or barren land 💧. It's a traffic light for plant health! 🚦",
+        "category": "science",
+        "relatedTopics": [
+            "explain_ndvi",
+            "ndvi_farming"
+        ]
+    },
+    {
+        "id": "ndvi_infrared",
+        "keywords": [
+            "near infrared",
+            "infrared light",
+            "how does ndvi work",
+            "invisible light",
+            "nir"
+        ],
+        "response": "Plants are **infrared superstars**! ✨ Chlorophyll absorbs red light for photosynthesis but reflects near-infrared light like crazy. Satellites detect this invisible glow—the stronger the reflection, the healthier the plant! 🌿🔬",
+        "category": "science",
+        "relatedTopics": [
+            "explain_ndvi",
+            "satellite_sensors",
+            "photosynthesis"
+        ]
+    },
+    {
+        "id": "ndvi_drought",
+        "keywords": [
+            "drought detection",
+            "dry plants",
+            "water stress",
+            "ndvi drought",
+            "irrigation"
+        ],
+        "response": "NDVI is a **drought detective**! 🕵️‍♂️💧 When plants lack water, their cells struggle and reflect less infrared light. This shows up as declining NDVI values—giving farmers early warning to irrigate before crops die! 🌾⚠️",
+        "category": "science",
+        "relatedTopics": [
+            "ndvi_farming",
+            "ndvi_colors",
+            "climate_drought"
+        ]
+    },
+    {
+        "id": "ndvi_seasons",
+        "keywords": [
+            "seasonal changes",
+            "ndvi winter summer",
+            "growing season",
+            "leaf color"
+        ],
+        "response": "NDVI captures the planet's **seasonal breathing**! 🍂🌸 In spring/summer, Northern Hemisphere forests light up bright green. In fall/winter, they fade to brown as leaves drop. It's Earth's annual light show from space! 🌍✨",
+        "category": "science",
+        "relatedTopics": [
+            "explain_ndvi",
+            "deforestation",
+            "climate_patterns"
+        ]
+    },
+    {
+        "id": "ndvi_deforestation",
+        "keywords": [
+            "deforestation",
+            "forest loss",
+            "amazon",
+            "cutting trees",
+            "ndvi forests"
+        ],
+        "response": "Satellite NDVI reveals the **tragic story of deforestation** 🌳➡️🪓. When forests are cleared, vibrant green zones turn brown almost overnight. Scientists use this to track illegal logging and habitat loss in real-time! 🌍💔",
+        "category": "science",
+        "relatedTopics": [
+            "explain_ndvi",
+            "climate_change",
+            "carbon_cycle"
+        ]
+    },
+    {
+        "id": "ndvi_deserts",
+        "keywords": [
+            "desert vegetation",
+            "sparse plants",
+            "arid regions",
+            "low ndvi"
+        ],
+        "response": "Even deserts have stories to tell! 🏜️ While they show low NDVI values, seasonal rains can trigger **spectacular blooms**—turning brown landscapes temporarily green. Satellites catch these fleeting oases! 🌸✨",
+        "category": "science",
+        "relatedTopics": [
+            "ndvi_colors",
+            "ndvi_seasons",
+            "climate_patterns"
+        ]
+    },
+    {
+        "id": "ndvi_urban",
+        "keywords": [
+            "cities",
+            "urban vegetation",
+            "parks",
+            "green spaces",
+            "city planning"
+        ],
+        "response": "NDVI maps make **urban green spaces pop**! 🏙️🌳 City planners use them to track parks, identify heat islands (low vegetation = hotter temps), and ensure neighborhoods have enough nature for healthier living! 💚",
+        "category": "science",
+        "relatedTopics": [
+            "explain_ndvi",
+            "heat_islands",
+            "temperature_anomaly"
+        ]
+    },
+    {
+        "id": "ndvi_resolution",
+        "keywords": [
+            "ndvi resolution",
+            "detail level",
+            "pixel size",
+            "satellite quality"
+        ],
+        "response": "SpaceScope's NDVI comes from satellites like **Landsat** and **Sentinel-2**, with resolutions down to 10-30 meters! 📡 That's detailed enough to see individual farm fields and large parks! 🌾🔍",
+        "category": "science",
+        "relatedTopics": [
+            "explain_ndvi",
+            "satellite_types",
+            "app_resolution"
+        ]
+    },
+    {
+        "id": "ndvi_photosynthesis",
+        "keywords": [
+            "photosynthesis",
+            "chlorophyll",
+            "plant energy",
+            "how plants eat"
+        ],
+        "response": "**Photosynthesis** is why NDVI works! 🌿☀️ Chlorophyll absorbs red and blue light to make food, but reflects green (why leaves look green) and near-infrared light. More photosynthesis = more infrared reflection = higher NDVI! 🔬✨",
+        "category": "science",
+        "relatedTopics": [
+            "explain_ndvi",
+            "ndvi_infrared"
+        ]
+    },
+    {
+        "id": "co2_explained",
+        "keywords": [
+            "co2",
+            "carbon dioxide",
+            "greenhouse gas",
+            "carbon emissions"
+        ],
+        "response": "**CO2 (carbon dioxide)** is a greenhouse gas that traps heat in Earth's atmosphere. 🌡️ While it occurs naturally, human activities (burning fossil fuels, deforestation) have increased levels by 50% since 1750! 🏭🚗",
+        "category": "science",
+        "relatedTopics": [
+            "greenhouse_effect",
+            "climate_change",
+            "oco2_satellite"
+        ]
+    },
+    {
+        "id": "greenhouse_effect",
+        "keywords": [
+            "greenhouse effect",
+            "how co2 warms",
+            "trapped heat",
+            "atmosphere"
+        ],
+        "response": "The **greenhouse effect** is like wrapping Earth in a blanket! ☀️🛏️ CO2 and other gases let sunlight in but trap heat trying to escape back to space. More CO2 = thicker blanket = warmer planet! 🌍🔥",
+        "category": "science",
+        "relatedTopics": [
+            "co2_explained",
+            "global_warming",
+            "climate_change"
+        ]
+    },
+    {
+        "id": "oco2_satellite",
+        "keywords": [
+            "oco-2",
+            "nasa oco2",
+            "carbon satellite",
+            "co2 monitoring satellite"
+        ],
+        "response": "NASA's **OCO-2 satellite** (Orbiting Carbon Observatory) is our CO2 spy in the sky! 🛰️🔍 Launched in 2014, it measures atmospheric carbon with incredible precision, helping scientists track emissions and natural carbon sinks! 🌍📊",
+        "category": "science",
+        "relatedTopics": [
+            "co2_explained",
+            "satellite_types",
+            "carbon_cycle"
+        ]
+    },
+    {
+        "id": "carbon_cycle",
+        "keywords": [
+            "carbon cycle",
+            "carbon sinks",
+            "oceans absorb co2",
+            "forest carbon"
+        ],
+        "response": "The **carbon cycle** is Earth's recycling system! 🔄🌍 Plants absorb CO2, animals/humans release it, oceans soak it up, and volcanoes belch it out. We've disrupted this balance by adding extra CO2 faster than nature can absorb it! ⚖️💨",
+        "category": "science",
+        "relatedTopics": [
+            "co2_explained",
+            "deforestation",
+            "ocean_acidification"
+        ]
+    },
+    {
+        "id": "co2_sources",
+        "keywords": [
+            "co2 sources",
+            "what creates co2",
+            "emissions",
+            "fossil fuels"
+        ],
+        "response": "Main **CO2 sources**: burning fossil fuels ⛽, deforestation 🌳🪓, cement production 🏗️, and agriculture 🚜. Natural sources include volcanoes 🌋 and animal respiration, but human activities now dwarf these! 🏭",
+        "category": "science",
+        "relatedTopics": [
+            "co2_explained",
+            "carbon_cycle",
+            "climate_change"
+        ]
+    },
+    {
+        "id": "co2_levels",
+        "keywords": [
+            "co2 levels",
+            "ppm",
+            "parts per million",
+            "how much co2",
+            "current levels"
+        ],
+        "response": "Atmospheric CO2 is now over **420 parts per million (ppm)**—the highest in 3+ million years! 📈😰 Pre-industrial levels were around 280 ppm. We're in uncharted territory! 🌍⚠️",
+        "category": "science",
+        "relatedTopics": [
+            "co2_explained",
+            "climate_change",
+            "ice_cores"
+        ]
+    },
+    {
+        "id": "co2_hotspots",
+        "keywords": [
+            "co2 hotspots",
+            "emission sources",
+            "pollution maps",
+            "high co2 areas"
+        ],
+        "response": "Satellite CO2 maps reveal **emission hotspots** over major cities, industrial zones, and wildfires! 🏭🔥 You can actually see plumes of carbon spreading from power plants and traffic corridors. It's pollution made visible! 🌍📍",
+        "category": "science",
+        "relatedTopics": [
+            "co2_explained",
+            "oco2_satellite",
+            "air_quality"
+        ]
+    },
+    {
+        "id": "co2_oceans",
+        "keywords": [
+            "ocean acidification",
+            "oceans absorb co2",
+            "coral bleaching",
+            "marine life"
+        ],
+        "response": "Oceans absorb about **25% of our CO2 emissions**, but there's a cost: **ocean acidification**! 🌊😰 This makes water more acidic, harming coral reefs, shellfish, and entire marine ecosystems. The sea is paying for our pollution! 🐠💔",
+        "category": "science",
+        "relatedTopics": [
+            "carbon_cycle",
+            "co2_explained",
+            "climate_impacts"
+        ]
+    },
+    {
+        "id": "co2_plants",
+        "keywords": [
+            "plants absorb co2",
+            "trees carbon",
+            "photosynthesis carbon",
+            "carbon sequestration"
+        ],
+        "response": "Plants are **natural CO2 vacuum cleaners**! 🌳💚 Through photosynthesis, they pull carbon from the air and store it in wood, leaves, and soil. That's why protecting forests is crucial for climate stability! 🌍✨",
+        "category": "science",
+        "relatedTopics": [
+            "carbon_cycle",
+            "deforestation",
+            "ndvi_deforestation"
+        ]
+    },
+    {
+        "id": "co2_reduction",
+        "keywords": [
+            "reduce co2",
+            "lower emissions",
+            "climate solutions",
+            "carbon capture"
+        ],
+        "response": "**Reducing CO2**: Switch to renewable energy ☀️💨, improve energy efficiency 💡, protect forests 🌳, eat less meat 🥗, and support carbon capture technology! Every action counts in the climate fight! 🌍💪",
+        "category": "science",
+        "relatedTopics": [
+            "co2_explained",
+            "climate_change",
+            "renewable_energy"
+        ]
+    },
+    {
+        "id": "temperature_anomaly",
+        "keywords": [
+            "temperature anomaly",
+            "temperature map",
+            "warming patterns",
+            "heat map"
+        ],
+        "response": "**Temperature anomalies** show how much warmer or cooler a region is compared to its historical average (usually 1951-1980). 🌡️ Red = hotter than normal 🔥, blue = cooler 🧊. The map is getting redder every year! 😰",
+        "category": "science",
+        "relatedTopics": [
+            "global_warming",
+            "baseline_temperature",
+            "climate_change"
+        ]
+    },
+    {
+        "id": "baseline_temperature",
+        "keywords": [
+            "baseline",
+            "reference period",
+            "normal temperature",
+            "1951-1980"
+        ],
+        "response": "The **baseline** (often 1951-1980) is like a climate yardstick! 📏 It's the average temperature we compare current temps against. Deviations from this baseline reveal long-term warming trends! 📈🌍",
+        "category": "science",
+        "relatedTopics": [
+            "temperature_anomaly",
+            "climate_change",
+            "global_warming"
+        ]
+    },
+    {
+        "id": "global_warming",
+        "keywords": [
+            "global warming",
+            "earth warming",
+            "rising temperature",
+            "climate crisis"
+        ],
+        "response": "**Global warming** = Earth's average temperature rising due to human greenhouse gas emissions. 🌍🔥 We've warmed ~1.2°C since pre-industrial times, causing melting ice, rising seas, and extreme weather! ⚠️🌊",
+        "category": "science",
+        "relatedTopics": [
+            "co2_explained",
+            "temperature_anomaly",
+            "climate_impacts"
+        ]
+    },
+    {
+        "id": "heatwaves",
+        "keywords": [
+            "heatwaves",
+            "extreme heat",
+            "hot weather",
+            "temperature records"
+        ],
+        "response": "**Heatwaves** are becoming more frequent and intense! 🔥☀️ Satellite data shows urban areas (heat islands) suffer most. Record-breaking temps that once occurred every 50 years now happen every 5-10 years! 😰🌡️",
+        "category": "science",
+        "relatedTopics": [
+            "temperature_anomaly",
+            "heat_islands",
+            "climate_change"
+        ]
+    },
+    {
+        "id": "heat_islands",
+        "keywords": [
+            "urban heat island",
+            "city heat",
+            "concrete heat",
+            "why cities hotter"
+        ],
+        "response": "Cities create **heat islands**! 🏙️🔥 Concrete and asphalt absorb heat, while lack of trees means less cooling. Cities can be 2-5°C hotter than surrounding areas—visible as red hotspots on thermal maps! 🌡️😓",
+        "category": "science",
+        "relatedTopics": [
+            "temperature_anomaly",
+            "ndvi_urban",
+            "heatwaves"
+        ]
+    },
+    {
+        "id": "arctic_warming",
+        "keywords": [
+            "arctic warming",
+            "polar ice",
+            "ice melting",
+            "north pole"
+        ],
+        "response": "The **Arctic is warming 4x faster** than the rest of the planet! 🧊➡️💧 Satellite images show dramatic ice loss—the region is transforming before our eyes. This accelerates global warming through the albedo effect! ⚠️🌍",
+        "category": "science",
+        "relatedTopics": [
+            "global_warming",
+            "albedo_effect",
+            "climate_change"
+        ]
+    },
+    {
+        "id": "climate_records",
+        "keywords": [
+            "hottest year",
+            "temperature records",
+            "warmest ever",
+            "climate records"
+        ],
+        "response": "The 10 **hottest years on record** have ALL occurred since 2010! 🔥📈 2023 was the warmest year ever measured globally. The evidence is overwhelming—and satellites capture it all! 🌍📡",
+        "category": "science",
+        "relatedTopics": [
+            "global_warming",
+            "temperature_anomaly",
+            "climate_change"
+        ]
+    },
+    {
+        "id": "sea_temperature",
+        "keywords": [
+            "ocean temperature",
+            "sea surface temperature",
+            "warm oceans",
+            "coral bleaching"
+        ],
+        "response": "**Ocean temperatures** are rising too! 🌊🌡️ Warmer seas fuel stronger hurricanes, cause coral bleaching, and disrupt marine ecosystems. The ocean absorbs 90% of excess heat from global warming—it's a giant heat sponge! 🧽🔥",
+        "category": "science",
+        "relatedTopics": [
+            "global_warming",
+            "climate_impacts",
+            "co2_oceans"
+        ]
+    },
+    {
+        "id": "climate_impacts",
+        "keywords": [
+            "climate change effects",
+            "impacts of warming",
+            "consequences",
+            "what happens"
+        ],
+        "response": "**Climate impacts**: extreme weather 🌪️, sea level rise 🌊, crop failures 🌾, species extinction 🦋, wildfires 🔥, ocean acidification 🐠, and climate refugees 🏃. It's not just about temperature—it's about cascading catastrophes! ⚠️🌍",
+        "category": "science",
+        "relatedTopics": [
+            "global_warming",
+            "climate_change",
+            "co2_explained"
+        ]
+    },
+    {
+        "id": "climate_tipping_points",
+        "keywords": [
+            "tipping points",
+            "point of no return",
+            "irreversible",
+            "threshold"
+        ],
+        "response": "**Climate tipping points** are thresholds that, once crossed, trigger irreversible changes! 🎯⚠️ Examples: Amazon forest dieback, Arctic ice collapse, coral reef death. We're dangerously close to several of these! 😰🌍",
+        "category": "science",
+        "relatedTopics": [
+            "global_warming",
+            "climate_impacts",
+            "arctic_warming"
+        ]
+    },
+    {
+        "id": "light_pollution_explained",
+        "keywords": [
+            "light pollution",
+            "sky glow",
+            "artificial light",
+            "city lights"
+        ],
+        "response": "**Light pollution** is excessive artificial light that brightens the night sky! 💡🌃 It washes out stars, disrupts wildlife, wastes energy, and affects human health. About 80% of the world lives under light-polluted skies! 😰✨",
+        "category": "science",
+        "relatedTopics": [
+            "dark_sky",
+            "wildlife_impact",
+            "energy_waste"
+        ]
+    },
+    {
+        "id": "dark_sky",
+        "keywords": [
+            "dark sky",
+            "see stars",
+            "milky way",
+            "stargazing",
+            "where dark"
+        ],
+        "response": "**Dark sky sites** are rare gems! 🌌✨ Only about 20% of Earth still has truly dark nights where the Milky Way is visible. Satellite night maps help identify these precious refuges for astronomy! 🔭🌠",
+        "category": "science",
+        "relatedTopics": [
+            "light_pollution_explained",
+            "bortle_scale",
+            "astronomy"
+        ]
+    },
+    {
+        "id": "bortle_scale",
+        "keywords": [
+            "bortle scale",
+            "sky darkness",
+            "light pollution levels",
+            "class 1"
+        ],
+        "response": "The **Bortle Scale** (1-9) measures sky darkness! 🌃📊 Class 1 = pristine dark sky (Milky Way casts shadows!) 🌌, Class 9 = bright city center (lucky to see a few stars) 😰. Where do you live on the scale? ⭐",
+        "category": "science",
+        "relatedTopics": [
+            "light_pollution_explained",
+            "dark_sky"
+        ]
+    },
+    {
+        "id": "wildlife_impact",
+        "keywords": [
+            "light pollution wildlife",
+            "animals affected",
+            "nocturnal animals",
+            "bird migration"
+        ],
+        "response": "Light pollution **confuses wildlife**! 🦉🐢 Sea turtles hatch toward city lights instead of the ocean, birds crash into lit buildings during migration, and insects swarm streetlights to exhaustion. Nature needs darkness! 🌙💔",
+        "category": "science",
+        "relatedTopics": [
+            "light_pollution_explained",
+            "ecology"
+        ]
+    },
+    {
+        "id": "health_light",
+        "keywords": [
+            "light pollution health",
+            "sleep",
+            "circadian rhythm",
+            "melatonin"
+        ],
+        "response": "Nighttime light exposure disrupts our **circadian rhythms**! 😴💡 It suppresses melatonin, leading to sleep problems, increased cancer risk, and mood disorders. Humans evolved with dark nights—our bodies need them! 🌙🧬",
+        "category": "science",
+        "relatedTopics": [
+            "light_pollution_explained",
+            "human_health"
+        ]
+    },
+    {
+        "id": "energy_waste",
+        "keywords": [
+            "wasted light",
+            "energy waste",
+            "light pollution cost",
+            "inefficient lighting"
+        ],
+        "response": "About **30% of outdoor lighting is wasted**—shining up into the sky instead of down where needed! 💡💸 This wastes ~$3 billion annually in the US alone and generates unnecessary CO2. Better lighting = money saved! 🌍💰",
+        "category": "science",
+        "relatedTopics": [
+            "light_pollution_explained",
+            "co2_explained"
+        ]
+    },
+    {
+        "id": "satellite_night_imagery",
+        "keywords": [
+            "night lights",
+            "earth at night",
+            "nighttime satellite",
+            "suomi npp"
+        ],
+        "response": "Satellites like **SUOMI NPP** photograph Earth at night, revealing civilization's glowing footprint! 🌍💡 These images track urbanization, economic development, and yes—light pollution. Our planet at night is breathtaking and concerning! 🌃✨",
+        "category": "science",
+        "relatedTopics": [
+            "light_pollution_explained",
+            "satellite_types"
+        ]
+    },
+    {
+        "id": "reduce_light_pollution",
+        "keywords": [
+            "reduce light pollution",
+            "dark sky friendly",
+            "better lighting",
+            "solutions"
+        ],
+        "response": "**Fight light pollution**: Use shielded fixtures (light goes down, not up) 🔦, choose warm LED colors 🟡, install motion sensors, and turn off unnecessary lights! 💡 Small changes make our nights darker and more magical! ✨🌙",
+        "category": "science",
+        "relatedTopics": [
+            "light_pollution_explained",
+            "dark_sky"
+        ]
+    },
+    {
+        "id": "clouds_weather",
+        "keywords": [
+            "clouds",
+            "cloud cover",
+            "weather patterns",
+            "why clouds matter"
+        ],
+        "response": "**Clouds** are Earth's climate regulators! ☁️🌍 They reflect sunlight (cooling effect) but also trap heat (warming effect). They influence weather, precipitation, and even satellite visibility. Every cloud tells a weather story! 🌧️✨",
+        "category": "science",
+        "relatedTopics": [
+            "albedo_effect",
+            "weather_prediction",
+            "climate_patterns"
+        ]
+    },
+    {
+        "id": "albedo_effect",
+        "keywords": [
+            "albedo",
+            "reflectivity",
+            "clouds reflect sunlight",
+            "ice reflects"
+        ],
+        "response": "**Albedo** is Earth's reflectivity! 🪞☀️ Ice and clouds have high albedo (reflect lots of sunlight), while oceans and forests have low albedo (absorb heat). Melting ice reduces albedo, accelerating warming—a dangerous feedback loop! 🔄🌡️",
+        "category": "science",
+        "relatedTopics": [
+            "clouds_weather",
+            "arctic_warming",
+            "climate_change"
+        ]
+    },
+    {
+        "id": "cloud_types",
+        "keywords": [
+            "types of clouds",
+            "cumulus",
+            "cirrus",
+            "stratus",
+            "cloud names"
+        ],
+        "response": "Cloud families: **Cumulus** (puffy cotton balls ☁️), **Stratus** (gray blankets 🌫️), **Cirrus** (wispy ice crystals ❄️), **Cumulonimbus** (thunderstorm towers ⛈️). Each type affects weather differently and looks stunning from space! 🛰️✨",
+        "category": "science",
+        "relatedTopics": [
+            "clouds_weather",
+            "weather_prediction"
+        ]
+    },
+    {
+        "id": "satellite_visibility",
+        "keywords": [
+            "clouds block satellites",
+            "can't see through clouds",
+            "cloudy data",
+            "optical satellites"
+        ],
+        "response": "Plot twist: **Optical satellites can't see through clouds**! ☁️🙈 That's why cloudy regions show data gaps. But radar satellites (like Sentinel-1) use microwaves that penetrate clouds—giving us all-weather Earth observation! 🛰️📡",
+        "category": "science",
+        "relatedTopics": [
+            "clouds_weather",
+            "satellite_types",
+            "radar_satellites"
+        ]
+    },
+    {
+        "id": "hurricane_tracking",
+        "keywords": [
+            "hurricanes",
+            "cyclones",
+            "typhoons",
+            "storm tracking",
+            "satellite storms"
+        ],
+        "response": "Satellites are **hurricane hunters**! 🌀🛰️ They track storm formation, measure wind speeds, monitor eye development, and predict paths—saving countless lives through early warnings. We can now see hurricanes from birth to dissipation! ⚠️🌊",
+        "category": "science",
+        "relatedTopics": [
+            "clouds_weather",
+            "weather_prediction",
+            "climate_impacts"
+        ]
+    },
+    {
+        "id": "orbital_debris",
+        "keywords": [
+            "space junk",
+            "orbital debris",
+            "space trash",
+            "satellites debris"
+        ],
+        "response": "**Orbital debris** (space junk) includes defunct satellites, rocket parts, and collision fragments! 🛰️💥 Over 34,000 trackable objects orbit Earth, with millions of smaller pieces. It's a growing hazard for spacecraft! ⚠️🚀",
+        "category": "science",
+        "relatedTopics": [
+            "kessler_syndrome",
+            "iss_safety",
+            "satellite_collisions"
+        ]
+    },
+    {
+        "id": "kessler_syndrome",
+        "keywords": [
+            "kessler syndrome",
+            "cascade collision",
+            "space junk chain reaction",
+            "orbital cascade"
+        ],
+        "response": "**Kessler Syndrome** is a nightmare scenario! 😰💥 One collision creates debris that causes more collisions, creating an unstoppable cascade of destruction. It could make certain orbits unusable for generations! 🛰️⛓️",
+        "category": "science",
+        "relatedTopics": [
+            "orbital_debris",
+            "satellite_collisions",
+            "space_sustainability"
+        ]
+    },
+    {
+        "id": "satellite_collisions",
+        "keywords": [
+            "satellite collision",
+            "crash in space",
+            "iridium cosmos",
+            "space accidents"
+        ],
+        "response": "The 2009 **Iridium-Cosmos collision** was the first major satellite crash! 💥🛰️ An active US satellite hit a defunct Russian one at 26,000 mph, creating 2,300+ debris pieces. Space is getting crowded and dangerous! ⚠️🌌",
+        "category": "science",
+        "relatedTopics": [
+            "orbital_debris",
+            "kessler_syndrome",
+            "space_junk_tracking"
+        ]
+    },
+    {
+        "id": "iss_safety",
+        "keywords": [
+            "iss debris",
+            "space station safety",
+            "astronaut danger",
+            "debris avoidance"
+        ],
+        "response": "The **ISS performs debris avoidance maneuvers** several times a year! 🚀↔️ Even tiny paint flecks travel at 17,500 mph and can damage the station. Astronauts sometimes shelter in escape capsules during close calls! 😰👨‍🚀",
+        "category": "science",
+        "relatedTopics": [
+            "orbital_debris",
+            "iss_facts",
+            "space_safety"
+        ]
+    },
+    {
+        "id": "space_junk_tracking",
+        "keywords": [
+            "tracking debris",
+            "space surveillance",
+            "monitoring junk",
+            "radar tracking"
+        ],
+        "response": "The **Space Surveillance Network** tracks 34,000+ orbital objects using radar and telescopes! 📡🔭 They predict conjunctions (close approaches) and warn satellite operators. It's like air traffic control for space! 🛰️🚦",
+        "category": "science",
+        "relatedTopics": [
+            "orbital_debris",
+            "satellite_collisions"
+        ]
+    },
+    {
+        "id": "space_cleanup",
+        "keywords": [
+            "clean up space",
+            "remove debris",
+            "space sustainability",
+            "debris removal"
+        ],
+        "response": "**Space cleanup missions** are being developed! 🧹🛰️ Ideas include harpoons, nets, robotic arms, and lasers to capture or deorbit debris. The ESA's ClearSpace-1 mission aims to remove junk by 2026! 🚀♻️",
+        "category": "science",
+        "relatedTopics": [
+            "orbital_debris",
+            "space_sustainability",
+            "future_tech"
+        ]
+    },
+    {
+        "id": "black_holes",
+        "keywords": [
+            "black hole",
+            "event horizon",
+            "singularity",
+            "gravity hole"
+        ],
+        "response": "**Black holes** are regions where gravity is so intense that nothing—not even light—can escape! 🌌⚫ They form when massive stars collapse. The edge is called the event horizon—cross it and you're gone forever! 😱✨",
+        "category": "fun_fact",
+        "relatedTopics": [
+            "stars_lifecycle",
+            "gravity",
+            "space_phenomena"
+        ]
+    },
+    {
+        "id": "iss_facts",
+        "keywords": [
+            "international space station",
+            "iss",
+            "space station",
+            "astronauts home"
+        ],
+        "response": "The **ISS** orbits Earth every 90 minutes at 17,500 mph! 🛰️💨 It's the size of a football field, has been continuously inhabited since 2000, and has hosted 280+ astronauts from 23 countries. The ultimate international collaboration! 🌍🤝",
+        "category": "fun_fact",
+        "relatedTopics": [
+            "iss_safety",
+            "orbital_mechanics",
+            "astronaut_life"
+        ]
+    },
+    {
+        "id": "mars_facts",
+        "keywords": [
+            "mars",
+            "red planet",
+            "mars rover",
+            "martian"
+        ],
+        "response": "**Mars** is the Red Planet due to iron oxide (rust) in its soil! 🔴🪐 A day on Mars is 24.6 hours (similar to Earth!), but a year is 687 days. NASA's rovers are currently exploring its ancient river valleys! 🚗🔍",
+        "category": "fun_fact",
+        "relatedTopics": [
+            "planets",
+            "space_exploration",
+            "rover_missions"
+        ]
+    },
+    {
+        "id": "speed_of_light",
+        "keywords": [
+            "speed of light",
+            "light speed",
+            "how fast light",
+            "c constant"
+        ],
+        "response": "Light travels at **299,792,458 meters per second** (186,282 miles/sec)! ⚡✨ That's fast enough to circle Earth 7.5 times in one second! Nothing in the universe can move faster. It's the cosmic speed limit! 🚀🏁",
+        "category": "fun_fact",
+        "relatedTopics": [
+            "physics",
+            "space_distance",
+            "relativity"
+        ]
+    },
+    {
+        "id": "milky_way",
+        "keywords": [
+            "milky way",
+            "our galaxy",
+            "galaxy",
+            "spiral galaxy"
+        ],
+        "response": "Our **Milky Way galaxy** contains 200-400 billion stars! 🌌✨ It's a spiral galaxy about 100,000 light-years across. We're located in a minor arm, about 27,000 light-years from the center. Just one galaxy among trillions! 😮🌠",
+        "category": "fun_fact",
+        "relatedTopics": [
+            "galaxies",
+            "solar_system",
+            "universe_scale"
+        ]
+    },
+    {
+        "id": "auroras",
+        "keywords": [
+            "aurora",
+            "northern lights",
+            "southern lights",
+            "aurora borealis",
+            "aurora australis"
+        ],
+        "response": "**Auroras** (Northern/Southern Lights) occur when solar wind particles hit Earth's magnetic field! ☀️💨🧲 They glow green (oxygen) or red/purple (nitrogen) at high altitudes. It's literally the sky lighting up from space weather! 💚💜✨",
+        "category": "fun_fact",
+        "relatedTopics": [
+            "solar_wind",
+            "magnetosphere",
+            "atmospheric_science"
+        ]
+    },
+    {
+        "id": "meteor_vs_meteorite",
+        "keywords": [
+            "meteor",
+            "meteorite",
+            "shooting star",
+            "space rock",
+            "difference"
+        ],
+        "response": "**Meteor** = space rock burning up in atmosphere (shooting star ⭐💥), **Meteorite** = rock that survives and hits the ground 🪨🌍, **Meteoroid** = rock floating in space 🌌. Most burn up completely—only the lucky ones become meteorites! ✨",
+        "category": "fun_fact",
+        "relatedTopics": [
+            "asteroids",
+            "atmospheric_entry",
+            "space_rocks"
+        ]
+    },
+    {
+        "id": "exoplanets",
+        "keywords": [
+            "exoplanet",
+            "planets other stars",
+            "alien worlds",
+            "extrasolar planets"
+        ],
+        "response": "We've discovered **5,500+ exoplanets** orbiting other stars! 🪐🔭 Some are gas giants, others rocky worlds, and a few might have liquid water (and maybe life?). The universe is full of worlds waiting to be explored! 🌍✨👽",
+        "category": "fun_fact",
+        "relatedTopics": [
+            "planets",
+            "habitable_zone",
+            "astrobiology"
+        ]
+    },
+    {
+        "id": "app_zoom",
+        "keywords": [
+            "how to zoom",
+            "zoom in",
+            "zoom out",
+            "magnify",
+            "get closer"
+        ],
+        "response": "**Zoom controls**: Pinch to zoom on mobile 📱, use mouse wheel on desktop 🖱️, or tap the +/- buttons! 🔍 You can zoom in to see individual cities or zoom out to view entire continents! 🌍✨",
+        "category": "navigation",
+        "relatedTopics": [
+            "app_pan",
+            "app_resolution",
+            "app_features"
+        ]
+    },
+    {
+        "id": "app_layers",
+        "keywords": [
+            "change layer",
+            "switch map",
+            "different view",
+            "layers menu",
+            "what layers"
+        ],
+        "response": "**Switch layers** using the menu icon! 📋 Choose from NDVI (vegetation), CO2, Temperature Anomaly, Light Pollution, Cloud Cover, and Orbital Debris. Each layer tells a different Earth story! 🌍🎨",
+        "category": "navigation",
+        "relatedTopics": [
+            "explain_ndvi",
+            "co2_explained",
+            "temperature_anomaly"
+        ]
+    },
+    {
+        "id": "app_resolution",
+        "keywords": [
+            "resolution",
+            "image quality",
+            "detail level",
+            "best quality",
+            "pixel size"
+        ],
+        "response": "**Resolution** varies by layer! 📏 NDVI uses 10-30m satellites (see individual farms), while CO2 is broader (~few km). Temperature and light pollution are intermediate. Higher zoom doesn't always mean more detail—it depends on the satellite! 🛰️🔍",
+        "category": "navigation",
+        "relatedTopics": [
+            "satellite_types",
+            "app_zoom",
+            "ndvi_resolution"
+        ]
+    },
+    {
+        "id": "app_realtime",
+        "keywords": [
+            "real time",
+            "live data",
+            "current",
+            "how recent",
+            "updated when"
+        ],
+        "response": "Data updates vary: **NDVI updates every 5-10 days**, temperature/CO2 update daily to weekly, orbital debris updates continuously! 📡⏱️ We're not quite \"live\" like a webcam, but we're showing Earth's recent state! 🌍✨",
+        "category": "navigation",
+        "relatedTopics": [
+            "satellite_refresh",
+            "data_sources"
+        ]
+    },
+    {
+        "id": "app_search",
+        "keywords": [
+            "search location",
+            "find place",
+            "go to city",
+            "search bar",
+            "navigate to"
+        ],
+        "response": "Use the **search bar** 🔍 to jump to any location! Type a city, landmark, coordinates, or even your address. SpaceScope will fly you there instantly! 🌍🚀",
+        "category": "navigation",
+        "relatedTopics": [
+            "app_features",
+            "app_zoom"
+        ]
+    },
+    {
+        "id": "app_pan",
+        "keywords": [
+            "move map",
+            "drag",
+            "pan around",
+            "navigate map",
+            "look around"
+        ],
+        "response": "**Pan the map** by clicking and dragging (desktop) 🖱️ or swiping with your finger (mobile) 📱! Explore different regions, compare areas, and discover Earth's diversity! 🌍✨",
+        "category": "navigation",
+        "relatedTopics": [
+            "app_zoom",
+            "app_search"
+        ]
+    },
+    {
+        "id": "app_save",
+        "keywords": [
+            "save location",
+            "bookmark",
+            "favorite place",
+            "remember spot",
+            "save view"
+        ],
+        "response": "Currently, **saving favorite locations** isn't available, but it's on our roadmap! 📍✨ For now, you can take screenshots or note coordinates of interesting spots! 📸🗺️",
+        "category": "navigation",
+        "relatedTopics": [
+            "app_features",
+            "future_features"
+        ]
+    },
+    {
+        "id": "app_share",
+        "keywords": [
+            "share",
+            "send to friend",
+            "link",
+            "export",
+            "show others"
+        ],
+        "response": "Use the **share button** to generate a link to your current view! 🔗✨ Share coordinates, layer, and zoom level with friends so they can see exactly what you're seeing! 🌍📤",
+        "category": "navigation",
+        "relatedTopics": [
+            "app_features"
+        ]
+    },
+    {
+        "id": "satellite_types",
+        "keywords": [
+            "what satellites",
+            "which satellite",
+            "landsat",
+            "sentinel",
+            "satellite names"
+        ],
+        "response": "SpaceScope uses data from **Landsat 8/9**, **Sentinel-2** (optical), **Sentinel-1** (radar), **SUOMI NPP** (night lights), **OCO-2** (CO2), and **NOAA** (temperature)! 🛰️📡 Each specializes in different Earth observations! 🌍✨",
+        "category": "science",
+        "relatedTopics": [
+            "oco2_satellite",
+            "satellite_night_imagery",
+            "radar_satellites"
+        ]
+    },
+    {
+        "id": "how_satellites_work",
+        "keywords": [
+            "how satellites work",
+            "satellite technology",
+            "remote sensing",
+            "satellite sensors"
+        ],
+        "response": "Satellites measure **electromagnetic radiation** reflected/emitted by Earth! 📡🌍 Different wavelengths reveal different info: visible light (what we see), infrared (heat/vegetation), microwaves (radar through clouds). It's like giving Earth a full-body scan! 🔬✨",
+        "category": "science",
+        "relatedTopics": [
+            "satellite_types",
+            "ndvi_infrared",
+            "thermal_imaging"
+        ]
+    },
+    {
+        "id": "app_features",
+        "keywords": [
+            "what can this app do",
+            "features",
+            "capabilities",
+            "app functions"
+        ],
+        "response": "**SpaceScope features**: View Earth in multiple data layers 🌍, track environmental changes over time 📈, search any location 🔍, zoom from global to local scales 🔎, and share views with others! 🔗 Plus, ask me anything! 🤖✨",
+        "category": "navigation",
+        "relatedTopics": [
+            "app_layers",
+            "app_zoom",
+            "who_are_you"
+        ]
+    },
+    {
+        "id": "data_accuracy",
+        "keywords": [
+            "accurate",
+            "reliable",
+            "data quality",
+            "can i trust",
+            "is this real"
+        ],
+        "response": "**All data comes from official sources**: NASA, ESA, NOAA, USGS! 🛰️✅ Satellite data undergoes rigorous calibration and validation. While no dataset is perfect, these are the same sources scientists and governments use for critical decisions! 🌍🔬",
+        "category": "navigation",
+        "relatedTopics": [
+            "satellite_types",
+            "data_sources"
+        ]
+    },
+    {
+        "id": "fun_fact_moon",
+        "keywords": [
+            "moon",
+            "lunar",
+            "earth's moon",
+            "moon facts"
+        ],
+        "response": "The **Moon is slowly drifting away** from Earth at 3.8 cm per year! 🌙↗️ Billions of years ago, it was much closer—days were only 5 hours long! Eventually it'll be far enough that total solar eclipses won't be possible. Enjoy them while they last! 😮✨",
+        "category": "fun_fact",
+        "relatedTopics": [
+            "orbital_mechanics",
+            "tides",
+            "eclipse"
+        ]
+    },
+    {
+        "id": "fun_fact_jupiter",
+        "keywords": [
+            "jupiter",
+            "gas giant",
+            "biggest planet",
+            "great red spot"
+        ],
+        "response": "**Jupiter's Great Red Spot** is a storm that's been raging for at least 400 years! 🌀🔴 It's so massive that 2-3 Earths could fit inside it! The storm is slowly shrinking though—it might disappear in our lifetime! 🪐⚠️",
+        "category": "fun_fact",
+        "relatedTopics": [
+            "planets",
+            "storms",
+            "solar_system"
+        ]
+    },
+    {
+        "id": "fun_fact_neutron_star",
+        "keywords": [
+            "neutron star",
+            "pulsar",
+            "dense star",
+            "collapsed star"
+        ],
+        "response": "**Neutron stars** are so dense that a teaspoon of their material would weigh 6 billion tons on Earth! 🤯⚖️ They're collapsed stellar cores spinning up to 700 times per second. The ultimate cosmic density champions! 🌟💫",
+        "category": "fun_fact",
+        "relatedTopics": [
+            "stars_lifecycle",
+            "black_holes",
+            "extreme_physics"
+        ]
+    },
+    {
+        "id": "climate_change",
+        "keywords": [
+            "climate change",
+            "global climate",
+            "planetary warming",
+            "anthropogenic"
+        ],
+        "response": "**Climate change** refers to long-term shifts in temperatures and weather patterns, primarily caused by human activities since the 1800s! 🏭🌡️ Burning fossil fuels releases greenhouse gases that trap heat. The evidence is overwhelming and satellite data proves it! 📊🌍",
+        "category": "science",
+        "relatedTopics": [
+            "co2_explained",
+            "global_warming",
+            "temperature_anomaly"
+        ]
+    }
+]

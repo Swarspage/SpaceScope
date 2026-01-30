@@ -127,6 +127,9 @@ const AppRoutes = () => {
 
 
 
+import Chatbot from "./components/Chatbot";
+import TargetCursor from "./components/TargetCursor";
+
 function App() {
   return (
     <AuthProvider>
@@ -144,6 +147,8 @@ function App() {
       </div>
       <Router>
         <AppRoutes />
+        <Chatbot />
+        <TargetCursor />
       </Router>
     </AuthProvider>
   );
