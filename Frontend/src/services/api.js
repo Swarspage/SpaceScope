@@ -11,7 +11,7 @@ const api = axios.create({
 // ISS Tracking
 // ============================
 
-export const getISSLocation = () => api.get("/iss");
+export const getISSLocation = () => axios.get(`${API_BASE_URL}/iss`);
 
 export const getISSPass = (lat, lon) =>
   api.get(`/iss-pass?lat=${lat}&lon=${lon}`);

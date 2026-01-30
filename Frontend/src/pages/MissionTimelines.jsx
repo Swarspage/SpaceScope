@@ -14,6 +14,8 @@ import { SiSpacex, SiNasa } from 'react-icons/si';
 import { GiIndiaGate } from 'react-icons/gi';
 
 import NASABackupData from '../data/NASA.json';
+import SpaceXBackupData from '../data/SpaceX.json';
+import ISROBackupData from '../data/ISRO.json';
 
 const MissionTimelines = () => {
     const navigate = useNavigate();
@@ -83,7 +85,7 @@ const MissionTimelines = () => {
             setLoading(true);
 
             // 1. Check Cache
-            const CACHE_KEY = 'mission_timeline_data_v3';
+            const CACHE_KEY = 'mission_timeline_data_v4'; // Bumped version to force refresh
             const CACHE_duration = 60 * 60 * 1000; // 1 Hour
             const cached = localStorage.getItem(CACHE_KEY);
 
@@ -116,12 +118,16 @@ const MissionTimelines = () => {
 
                 let allMissions = [];
 
-                if (data.spacex && Array.isArray(data.spacex)) {
+                if (data.spacex && Array.isArray(data.spacex) && data.spacex.length > 0) {
                     allMissions = [...allMissions, ...data.spacex.map(m => normalizeMission(m, 'SPACEX'))];
+                } else {
+                    console.log('⚠️ SpaceX API unavailable or empty, using backup data');
+                    allMissions = [...allMissions, ...SpaceXBackupData.map(m => normalizeMission(m, 'SPACEX'))];
                 }
-                if (data.isro && Array.isArray(data.isro)) {
-                    allMissions = [...allMissions, ...data.isro.map(m => normalizeMission(m, 'ISRO'))];
-                }
+
+                // ISRO - Always use backup data as requested (API is unreliable)
+                console.log('🇮🇳 Using ISRO Backup Data (Manual Override)');
+                allMissions = [...allMissions, ...ISROBackupData.map(m => normalizeMission(m, 'ISRO'))];
 
                 // NASA data with fallback to local backup
                 if (data.nasa && Array.isArray(data.nasa) && data.nasa.length > 0) {
@@ -147,10 +153,15 @@ const MissionTimelines = () => {
 
             } catch (err) {
                 console.error("Failed to load timeline data", err);
-                // If complete network failure, try to use backup NASA data anyway
-                console.log('🔄 Complete API failure, loading NASA backup data only');
-                const backupMissions = NASABackupData.map(m => normalizeMission(m, 'NASA'));
-                setMasterData(backupMissions);
+                // If complete network failure, try to use backup NASA, SpaceX & ISRO data
+                console.log('🔄 Complete API failure, loading NASA, SpaceX & ISRO backup data');
+                const backupNASA = NASABackupData.map(m => normalizeMission(m, 'NASA'));
+                const backupSpaceX = SpaceXBackupData.map(m => normalizeMission(m, 'SPACEX'));
+                const backupISRO = ISROBackupData.map(m => normalizeMission(m, 'ISRO'));
+
+                // Merge and sort
+                const combinedBackup = [...backupSpaceX, ...backupNASA, ...backupISRO].sort((a, b) => b.date - a.date);
+                setMasterData(combinedBackup);
             } finally {
                 setLoading(false);
             }

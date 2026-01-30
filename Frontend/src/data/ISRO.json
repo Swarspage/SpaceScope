@@ -1,0 +1,30 @@
+[
+    {
+        "UUID": "isro-gaganyaan-1",
+        "Name": "Gaganyaan-1 (Backup)",
+        "LaunchDate": "2024-12-15T05:30:00.000Z",
+        "MissionStatus": "Upcoming uncrewed test flight for India's human spaceflight program.",
+        "Link": "https://www.isro.gov.in/Gaganyaan.html"
+    },
+    {
+        "UUID": "isro-aditya-l1",
+        "Name": "Aditya-L1",
+        "LaunchDate": "2023-09-02T06:20:00.000Z",
+        "MissionStatus": "India's first solar mission. Successfully inserted into Halo Orbit around L1 point.",
+        "Link": "https://www.isro.gov.in/Aditya_L1.html"
+    },
+    {
+        "UUID": "isro-chandrayaan-3",
+        "Name": "Chandrayaan-3",
+        "LaunchDate": "2023-07-14T09:05:00.000Z",
+        "MissionStatus": "Historic Success! First soft landing near the lunar south pole.",
+        "Link": "https://www.isro.gov.in/Chandrayaan3.html"
+    },
+    {
+        "UUID": "isro-nvs-01",
+        "Name": "NVS-01",
+        "LaunchDate": "2023-05-29T05:12:00.000Z",
+        "MissionStatus": "Next-generation heavy communication satellite successfully deployed.",
+        "Link": "https://www.isro.gov.in/NVS-01.html"
+    }
+]

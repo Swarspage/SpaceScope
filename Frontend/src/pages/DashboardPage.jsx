@@ -177,7 +177,17 @@ const DashboardPage = () => {
             try {
                 const response = await getAuroraData();
                 setAuroraData(response.data);
-            } catch (error) { console.error('Error fetching aurora data:', error); }
+            } catch (error) {
+                console.error('Error fetching aurora data:', error);
+                // Mock Data for Demo
+                setAuroraData({
+                    "kp_index": 5.33,
+                    "probability": 85,
+                    "coordinates": [
+                        [-10, 60, 2.5], [0, 65, 5.0], [10, 60, 2.5]
+                    ]
+                });
+            }
         };
         fetchAuroraData();
         const interval = setInterval(fetchAuroraData, 300000);
@@ -376,6 +386,12 @@ const DashboardPage = () => {
                 }
             } catch (err) {
                 console.error("Moon Data Error:", err);
+                // Fallback Mock Data
+                setMoonData([{
+                    datetime: new Date().toISOString(),
+                    moonphase: 0.5,
+                    moonphasename: "Full Moon (Simulated)"
+                }]);
             }
         };
 
