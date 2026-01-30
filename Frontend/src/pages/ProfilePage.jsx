@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import { MdPerson, MdEmail, MdLocationOn, MdCalendarToday, MdEdit, MdLogout, MdSave, MdCancel, MdCameraAlt, MdFavorite } from 'react-icons/md';
