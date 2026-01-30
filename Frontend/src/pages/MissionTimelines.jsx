@@ -236,36 +236,36 @@ const MissionTimelines = () => {
                 <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#00d9ff]/5 via-transparent to-transparent pointer-events-none" />
 
                 {/* Header */}
-                <header className="h-20 flex items-center justify-between px-8 border-b border-white/5 bg-black/20 backdrop-blur-md z-10">
-                    <div>
-                        <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+                <header className="h-auto md:h-20 flex flex-col md:flex-row items-center justify-between px-4 md:px-8 py-4 md:py-0 border-b border-white/5 bg-black/20 backdrop-blur-md z-10 gap-4">
+                    <div className="w-full md:w-auto flex justify-between md:block items-center">
+                        <h1 className="text-xl md:text-2xl font-bold text-white tracking-tight flex items-center gap-2">
                             <MdTimeline className="text-[#00d9ff]" /> Mission Timelines
                         </h1>
-                        <p className="text-xs text-slate-500 font-mono mt-1">
+                        <p className="text-xs text-slate-500 font-mono hidden md:block mt-1">
                             GLOBAL LAUNCH DATABASE • AGGREGATED TELEMETRY
                         </p>
                     </div>
 
-                    <div className="flex items-center gap-6">
+                    <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6 w-full md:w-auto">
                         {/* Search */}
-                        <div className="relative group">
+                        <div className="relative group w-full md:w-auto">
                             <MdSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-[#00d9ff] transition-colors" />
                             <input
                                 type="text"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Search mission name..."
-                                className="cursor-target bg-[#0f1322] border border-white/10 rounded-lg py-2 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-[#00d9ff]/50 transition-all w-64"
+                                className="cursor-target bg-[#0f1322] border border-white/10 rounded-lg py-2 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-[#00d9ff]/50 transition-all w-full md:w-64"
                             />
                         </div>
 
                         {/* Provider Tabs */}
-                        <div className="flex bg-black/30 backdrop-blur-md p-1 rounded-lg border border-white/10">
+                        <div className="flex bg-black/30 backdrop-blur-md p-1 rounded-lg border border-white/10 w-full md:w-auto overflow-x-auto">
                             {['ALL', 'SPACEX', 'ISRO', 'NASA'].map(provider => (
                                 <button
                                     key={provider}
                                     onClick={() => setSelectedProvider(provider)}
-                                    className={`cursor-target px-4 py-1.5 text-xs font-bold rounded-md transition-all duration-300 ${selectedProvider === provider
+                                    className={`cursor-target px-4 py-1.5 text-xs font-bold rounded-md transition-all duration-300 flex-1 md:flex-none text-center whitespace-nowrap ${selectedProvider === provider
                                         ? 'bg-[#00d9ff] text-black shadow-[0_0_10px_rgba(0,217,255,0.4)]'
                                         : 'text-slate-400 hover:text-white hover:bg-white/5'
                                         }`}
@@ -281,14 +281,14 @@ const MissionTimelines = () => {
                 <div className="flex-1 overflow-hidden flex relative">
 
                     {/* Mission List */}
-                    <div className="flex-1 overflow-y-auto p-8 scrollbar-thin scrollbar-thumb-[#1a2036] scrollbar-track-transparent">
+                    <div className="flex-1 overflow-y-auto p-4 md:p-8 scrollbar-thin scrollbar-thumb-[#1a2036] scrollbar-track-transparent">
                         {loading ? (
                             <div className="flex flex-col items-center justify-center h-full gap-4 opacity-70">
                                 <div className="w-16 h-16 border-4 border-[#00d9ff] border-t-transparent rounded-full animate-spin"></div>
                                 <div className="font-mono text-[#00d9ff] animate-pulse">ESTABLISHING UPLINK...</div>
                             </div>
                         ) : (
-                            <div className="max-w-5xl mx-auto space-y-4">
+                            <div className="max-w-5xl mx-auto space-y-3 md:space-y-4">
                                 {filteredMissions.length === 0 && (
                                     <div className="text-center py-20 text-slate-500">No missions found for these parameters.</div>
                                 )}
@@ -302,7 +302,7 @@ const MissionTimelines = () => {
                                             key={mission.id}
                                             onClick={() => setSelectedMission(mission)}
                                             className={`
-                                                cursor-target group relative flex items-center bg-black/30 backdrop-blur-md border rounded-xl p-4 cursor-pointer transition-all duration-200
+                                                cursor-target group relative flex items-center bg-black/30 backdrop-blur-md border rounded-xl p-3 md:p-4 cursor-pointer transition-all duration-200
                                                 hover:bg-[#151a2d] hover:border-white/20 hover:translate-x-1
                                                 ${isSelected ? `border-[#00d9ff] shadow-[0_0_20px_rgba(0,217,255,0.1)]` : 'border-white/5'}
                                             `}
@@ -311,22 +311,24 @@ const MissionTimelines = () => {
                                             <div className={`absolute left-0 top-4 bottom-4 w-1 rounded-r ${style.bg.replace('/10', '')} opacity-50`}></div>
 
                                             {/* Date Box (Highlighted) */}
-                                            <div className="mr-6 flex-shrink-0">
-                                                <DateBox date={mission.date} />
+                                            <div className="mr-3 md:mr-6 flex-shrink-0">
+                                                <div className="scale-90 md:scale-100 origin-left">
+                                                    <DateBox date={mission.date} />
+                                                </div>
                                             </div>
 
                                             {/* Info Section */}
                                             <div className="flex-1 min-w-0">
-                                                <div className="flex items-center gap-3 mb-1">
+                                                <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-1">
                                                     <span className={`flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full border ${style.color} ${style.bg} ${style.border}`}>
                                                         {style.icon} {mission.provider}
                                                     </span>
                                                     <StatusBadge status={mission.status} />
                                                 </div>
-                                                <h3 className={`text-xl font-bold text-white truncate group-hover:text-[#00d9ff] transition-colors`}>
+                                                <h3 className={`text-base md:text-xl font-bold text-white truncate group-hover:text-[#00d9ff] transition-colors`}>
                                                     {mission.name}
                                                 </h3>
-                                                <div className="flex items-center gap-4 mt-2 text-xs text-slate-400 font-mono">
+                                                <div className="flex items-center gap-4 mt-1 md:mt-2 text-xs text-slate-400 font-mono">
                                                     {mission.location && (
                                                         <span className="flex items-center gap-1 truncate">
                                                             <MdLocationOn className="text-slate-500" /> {mission.location}
@@ -335,16 +337,16 @@ const MissionTimelines = () => {
                                                 </div>
                                             </div>
 
-                                            {/* Patch/Image Thumbnail (if valid) */}
+                                            {/* Patch/Image Thumbnail (if valid) - Hidden on very small screens if needed, or scaled */}
                                             {mission.image && (
-                                                <div className="w-16 h-16 ml-4 rounded-lg overflow-hidden border border-white/10 bg-black flex-shrink-0">
+                                                <div className="hidden sm:block w-12 h-12 md:w-16 md:h-16 ml-3 md:ml-4 rounded-lg overflow-hidden border border-white/10 bg-black flex-shrink-0">
                                                     <img src={mission.image} alt="patch" className="w-full h-full object-contain" />
                                                 </div>
                                             )}
 
                                             {/* Chevron/Action */}
-                                            <div className="ml-6 text-slate-600 group-hover:text-white transition-colors">
-                                                <MdOutlineInfo className="text-2xl" />
+                                            <div className="ml-2 md:ml-6 text-slate-600 group-hover:text-white transition-colors">
+                                                <MdOutlineInfo className="text-xl md:text-2xl" />
                                             </div>
                                         </div>
                                     );

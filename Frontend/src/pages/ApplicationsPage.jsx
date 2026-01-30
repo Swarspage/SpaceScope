@@ -456,9 +456,10 @@ const NDVIMap = () => {
 
 
     const leafletPolygon = POLYGON_COORDINATES.map(idx => [idx[1], idx[0]]);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Mobile sidebar state
 
     return (
-        <div className="flex h-screen w-full bg-[#050714] text-white p-4 gap-4 overflow-hidden font-inter">
+        <div className="flex flex-col md:flex-row h-screen w-full bg-[#050714] text-white p-2 md:p-4 gap-4 overflow-hidden font-inter relative">
             <TargetCursor
                 spinDuration={5}
                 hideDefaultCursor
@@ -466,25 +467,62 @@ const NDVIMap = () => {
                 hoverDuration={0.95}
             />
 
-            {/* --- LEFT: CONTROL PANEL --- */}
-            <div className="w-64 flex-shrink-0 flex flex-col gap-4">
+            {/* --- MOBILE HEADER & SIDEBAR TOGGLE --- */}
+            <div className="md:hidden flex items-center justify-between bg-[#0a0e17] p-4 rounded-xl border border-white/10 shrink-0">
+                <button
+                    onClick={() => navigate(-1)}
+                    className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm font-bold"
+                >
+                    <ChevronLeft size={16} /> Back
+                </button>
+                <div className="font-bold text-[#00ff88] flex items-center gap-2">
+                    <Activity size={18} /> {activeChannelData.label}
+                </div>
+                <button
+                    onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                    className="p-2 bg-[#151a25] rounded-lg border border-white/10 text-white"
+                >
+                    <Layers size={20} />
+                </button>
+            </div>
+
+
+            {/* --- LEFT: CONTROL PANEL (Responsive Sidebar) --- */}
+            <div className={`
+                fixed inset-y-0 left-0 z-50 w-64 bg-[#0a0e17] transform transition-transform duration-300 ease-in-out border-r border-white/10 p-4 flex flex-col gap-4
+                md:relative md:transform-none md:border-none md:p-0 md:bg-transparent md:w-64 md:flex-shrink-0
+                ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+            `}>
                 <div className="bg-[#0a0e17] rounded-xl border border-white/10 p-4 flex flex-col h-full shadow-xl">
-                    <button
-                        onClick={() => navigate(-1)}
-                        className="cursor-target flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-4 text-sm font-bold"
-                    >
-                        <ChevronLeft size={16} /> Back
-                    </button>
-                    <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-[#00ff88]">
+                    <div className="flex items-center justify-between mb-6 md:mb-6">
+                        <button
+                            onClick={() => navigate(-1)}
+                            className="hidden md:flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm font-bold"
+                        >
+                            <ChevronLeft size={16} /> Back
+                        </button>
+                        {/* Mobile Close Button */}
+                        <button
+                            onClick={() => setIsSidebarOpen(false)}
+                            className="md:hidden ml-auto p-2 text-slate-400 hover:text-white"
+                        >
+                            <ChevronLeft size={20} />
+                        </button>
+                    </div>
+
+                    <h2 className="hidden md:flex text-xl font-bold mb-6 items-center gap-2 text-[#00ff88]">
                         <Activity size={20} />
                         Control Panel
                     </h2>
 
-                    <div className="space-y-3">
+                    <div className="space-y-3 overflow-y-auto flex-1">
                         {CHANNELS.map((channel) => (
                             <button
                                 key={channel.id}
-                                onClick={() => !channel.disabled && setActiveChannel(channel.id)}
+                                onClick={() => {
+                                    !channel.disabled && setActiveChannel(channel.id);
+                                    setIsSidebarOpen(false); // Close on selection (mobile)
+                                }}
                                 disabled={channel.disabled}
                                 className={`cursor-target w-full p-4 rounded-lg border flex items-center gap-3 transition-all duration-300 text-left group relative overflow-hidden
                                     ${activeChannel === channel.id
@@ -508,7 +546,7 @@ const NDVIMap = () => {
                         ))}
                     </div>
 
-                    <div className="mt-auto pt-6 border-t border-white/10">
+                    <div className="mt-auto pt-6 border-t border-white/10 hidden md:block">
                         <div className="text-xs text-slate-500 text-center">
                             Select a channel to visualize different satellite data layers.
                         </div>
@@ -516,22 +554,30 @@ const NDVIMap = () => {
                 </div>
             </div>
 
+            {/* Overlay for mobile sidebar */}
+            {isSidebarOpen && (
+                <div
+                    className="fixed inset-0 bg-black/80 z-40 md:hidden backdrop-blur-sm"
+                    onClick={() => setIsSidebarOpen(false)}
+                />
+            )}
+
             {/* --- CENTER: MAIN MAP AREA --- */}
-            <div className="flex-1 flex flex-col gap-4 min-w-0"> {/* min-w-0 ensures flex child shrinks properly */}
+            <div className="flex-1 flex flex-col gap-4 min-w-0 overflow-y-auto md:overflow-hidden"> {/* Scroll on mobile */}
 
                 {/* Header Block */}
-                <div className="bg-[#0a0e17] rounded-xl border border-white/10 p-6 flex flex-col justify-center items-center text-center shadow-lg relative overflow-hidden group">
+                <div className="bg-[#0a0e17] rounded-xl border border-white/10 p-4 md:p-6 flex flex-col justify-center items-center text-center shadow-lg relative overflow-hidden group shrink-0">
                     <div className="absolute inset-0 bg-gradient-to-r from-[#00ff88]/5 via-transparent to-[#00d9ff]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                    <h1 className="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 z-10">
+                    <h1 className="text-xl md:text-3xl lg:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 z-10 leading-tight">
                         Check out how space data helps us.
                     </h1>
-                    <p className="text-slate-400 mt-2 z-10">
+                    <p className="text-xs md:text-base text-slate-400 mt-2 z-10 hidden md:block">
                         Explore real-time insights derived from satellite imagery.
                     </p>
                 </div>
 
                 {/* Map Container Block */}
-                <div className="cursor-target flex-1 bg-[#0a0e17] rounded-xl border border-white/10 relative overflow-hidden shadow-2xl flex flex-col">
+                <div className="cursor-target w-full h-[400px] md:h-auto md:flex-1 bg-[#0a0e17] rounded-xl border border-white/10 relative overflow-hidden shadow-2xl flex flex-col shrink-0">
                     {activeChannel === 'co2' ? (
                         <CO2Chart />
                     ) : activeChannel === 'temp' ? (
@@ -555,7 +601,7 @@ const NDVIMap = () => {
                         ) : (
                             <div className="relative w-full h-full">
                                 {/* Search Bar Overlay */}
-                                <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1001] w-full max-w-md px-4">
+                                <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1001] w-[90%] md:w-full md:max-w-md px-0 md:px-4">
                                     <div className="flex gap-2">
                                         <div className="relative flex-1">
                                             <input
@@ -563,14 +609,14 @@ const NDVIMap = () => {
                                                 value={searchQuery}
                                                 onChange={(e) => setSearchQuery(e.target.value)}
                                                 onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                                                placeholder="Enter city, district or coordinates (lat, lon)"
-                                                className="w-full bg-[#0a0e17]/90 backdrop-blur-md border border-white/20 text-white rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:border-[#00ff88] transition-colors shadow-lg placeholder:text-slate-500 text-sm"
+                                                placeholder="Enter city or coords..."
+                                                className="w-full bg-[#0a0e17]/90 backdrop-blur-md border border-white/20 text-white rounded-lg pl-9 md:pl-10 pr-4 py-2 focus:outline-none focus:border-[#00ff88] transition-colors shadow-lg placeholder:text-slate-500 text-xs md:text-sm"
                                             />
-                                            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                                         </div>
                                         <button
                                             onClick={handleSearch}
-                                            className="cursor-target bg-[#00ff88] text-black font-bold px-4 py-2 rounded-lg hover:bg-[#00ff88]/90 transition-colors shadow-lg text-sm whitespace-nowrap"
+                                            className="cursor-target bg-[#00ff88] text-black font-bold px-3 md:px-4 py-2 rounded-lg hover:bg-[#00ff88]/90 transition-colors shadow-lg text-xs md:text-sm whitespace-nowrap"
                                         >
                                             Search
                                         </button>
@@ -581,7 +627,7 @@ const NDVIMap = () => {
                                     <div className="absolute inset-0 z-[1000] bg-[#0a0e17]/80 backdrop-blur-sm flex items-center justify-center">
                                         <div className="flex flex-col items-center gap-3 text-[#00ff88]">
                                             <Loader2 className="animate-spin h-8 w-8" />
-                                            <span className="text-sm font-mono tracking-wider">ACQUIRING SATELLITE FEED...</span>
+                                            <span className="text-sm font-mono tracking-wider">ACQUIRING FEED...</span>
                                         </div>
                                     </div>
                                 )}
@@ -630,20 +676,17 @@ const NDVIMap = () => {
                                     )}
                                 </MapContainer>
 
-
-
-
                                 {/* Stats Overlay on Map */}
                                 {!loading && imagery && activeChannel === 'ndvi' && (
                                     <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end pointer-events-none">
-                                        <div className="bg-black/80 backdrop-blur-md p-3 rounded-lg border border-white/10 text-xs text-slate-300 pointer-events-auto flex items-center gap-4">
+                                        <div className="bg-black/80 backdrop-blur-md p-2 md:p-3 rounded-lg border border-white/10 text-[10px] md:text-xs text-slate-300 pointer-events-auto flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-4">
                                             <div className="flex items-center gap-2">
-                                                <Calendar size={14} className="text-[#00ff88]" />
+                                                <Calendar size={12} className="text-[#00ff88]" />
                                                 <span>{imagery.stats.date}</span>
                                             </div>
                                             <div className="flex items-center gap-2">
-                                                <Cloud size={14} className="text-[#00ff88]" />
-                                                <span>{imagery.stats.clouds.toFixed(1)}% Cloud Cover</span>
+                                                <Cloud size={12} className="text-[#00ff88]" />
+                                                <span>{imagery.stats.clouds.toFixed(1)}% Cloud</span>
                                             </div>
                                         </div>
                                     </div>
@@ -652,11 +695,51 @@ const NDVIMap = () => {
                         )
                     )}
                 </div>
+
+                {/* --- MOBILE INFO PANEL (STACKED) --- */}
+                <div className="block md:hidden shrink-0">
+                    <div className="bg-[#0a0e17] rounded-xl border border-white/10 p-4 shadow-xl">
+                        <div className="flex items-center justify-between mb-4">
+                            <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                                <activeChannelData.icon size={18} className="text-[#00ff88]" />
+                                {activeChannelData.label}
+                            </h2>
+                            <button
+                                onClick={() => setShowInfoModal(true)}
+                                className="text-[#00ff88] text-xs font-bold uppercase border border-[#00ff88]/50 px-3 py-1 rounded-full"
+                            >
+                                Learn More
+                            </button>
+                        </div>
+                        <p className="text-sm text-slate-400 line-clamp-3 mb-4">
+                            {activeChannelData.description}
+                        </p>
+                        {/* Big Number Stat for Temp Mobile */}
+                        {activeChannel === 'temp' && currentTempAnomaly !== null && (
+                            <div className="p-3 rounded-lg bg-[#151a25] border border-white/10 text-center mb-4">
+                                <h4 className="text-[10px] text-slate-400 uppercase tracking-widest font-bold mb-1">Current Deviation</h4>
+                                <div className={`text-2xl font-black ${currentTempAnomaly >= 0 ? 'text-red-400' : 'text-blue-400'}`}>
+                                    {currentTempAnomaly > 0 ? '+' : ''}{currentTempAnomaly}°C
+                                </div>
+                            </div>
+                        )}
+                        <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-2">Key Benefits</h3>
+                        <ul className="space-y-2 mb-4">
+                            {activeChannelData.details.slice(0, 2).map((detail, idx) => (
+                                <li key={idx} className="flex items-start gap-2 text-xs text-slate-300">
+                                    <div className="min-w-[4px] h-[4px] rounded-full bg-[#00ff88] mt-1.5" />
+                                    {detail}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+
             </div>
 
 
-            {/* --- RIGHT: INFO PANEL --- */}
-            <div className="w-80 flex-shrink-0 flex flex-col items-stretch">
+            {/* --- RIGHT: INFO PANEL (DESKTOP) --- */}
+            <div className="hidden md:flex w-80 flex-shrink-0 flex-col items-stretch">
                 <div className="bg-[#0a0e17] rounded-xl border border-white/10 p-6 flex flex-col h-full shadow-xl">
                     <div className="mb-6 pb-6 border-b border-white/10">
                         <div className="w-12 h-12 rounded-lg bg-[#00ff88]/10 text-[#00ff88] flex items-center justify-center mb-4">

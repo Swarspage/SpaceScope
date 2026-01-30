@@ -322,7 +322,7 @@ const LearningPage = () => {
     }, [topicCards]);
 
     const QuizFilters = ({ searchQuery, setSearchQuery }) => (
-        <div className="flex flex-col md:flex-row md:items-center gap-4 mb-8 sticky top-0 z-30 py-4 -mx-2 px-2 border-b border-white/5 backdrop-blur-xl">
+        <div className="flex flex-col md:flex-row md:items-center gap-4 mb-8 sticky top-14 z-30 py-4 -mx-2 px-2 border-b border-white/5 bg-[#0a0e17]/95 backdrop-blur-xl transition-all">
             {/* Search Input - FIRST as requested */}
             <div className="relative w-full md:w-auto md:flex-1 md:max-w-[320px] animate-fade-in group">
                 <MdSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-[#00d9ff] transition-colors" size={18} />
@@ -336,13 +336,13 @@ const LearningPage = () => {
             </div>
 
             {/* Filters Wrapper for mobile wrapping */}
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
                 {/* Topic Selector */}
-                <div className="relative group">
+                <div className="relative group w-full md:w-auto">
                     <select
                         value={filters.topic}
                         onChange={(e) => setFilters(prev => ({ ...prev, topic: e.target.value }))}
-                        className="appearance-none bg-[#0f1322]/80 border border-white/10 rounded-full py-2.5 pl-4 pr-10 text-[13px] font-medium text-slate-300 focus:outline-none focus:border-[#00d9ff]/50 cursor-pointer min-w-[160px] hover:border-white/20 transition-colors"
+                        className="w-full md:w-auto appearance-none bg-[#0f1322]/80 border border-white/10 rounded-full py-2.5 pl-4 pr-10 text-[13px] font-medium text-slate-300 focus:outline-none focus:border-[#00d9ff]/50 cursor-pointer min-w-[160px] hover:border-white/20 transition-colors"
                     >
                         <option value="All Topics">All Topics</option>
                         {topicCategories.map(topic => (
@@ -366,7 +366,7 @@ const LearningPage = () => {
         return (
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                 <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
-                <div className="relative w-full max-w-2xl bg-[#0a0e17] border border-white/10 rounded-3xl overflow-hidden shadow-2xl animate-fade-in-up">
+                <div className="relative w-[95%] md:w-full md:max-w-2xl bg-[#0a0e17] border border-white/10 rounded-3xl overflow-hidden shadow-2xl animate-fade-in-up max-h-[90vh] overflow-y-auto">
 
                     {/* Header */}
                     <div className="p-6 border-b border-white/5 flex items-center justify-between">
@@ -509,7 +509,7 @@ const LearningPage = () => {
         return (
             <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                 <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
-                <div className="relative w-full max-w-lg bg-[#0a0e17] border border-white/10 rounded-2xl overflow-hidden shadow-2xl animate-fade-in-up">
+                <div className="relative w-[95%] md:w-full md:max-w-lg bg-[#0a0e17] border border-white/10 rounded-2xl overflow-hidden shadow-2xl animate-fade-in-up max-h-[90vh] overflow-y-auto">
                     <div className="p-6">
                         <div className="flex items-start justify-between mb-4">
                             <div>
@@ -597,7 +597,7 @@ const LearningPage = () => {
         return (
             <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                 <div className="absolute inset-0 bg-black/90 backdrop-blur-md" onClick={onClose} />
-                <div className="relative w-full max-w-4xl bg-[#0a0e17] border border-white/10 rounded-2xl overflow-hidden shadow-2xl animate-fade-in-up flex flex-col max-h-[90vh]">
+                <div className="relative w-[95%] md:w-full md:max-w-4xl bg-[#0a0e17] border border-white/10 rounded-2xl overflow-hidden shadow-2xl animate-fade-in-up flex flex-col max-h-[85vh]">
 
                     {/* Header */}
                     <div className="p-4 border-b border-white/5 flex items-center justify-between bg-black/40">
@@ -732,7 +732,7 @@ const LearningPage = () => {
                     </div>
 
                     {/* Tabs */}
-                    <div className="h-14 bg-[#0a0e17]/80 border-b border-white/5 px-8 flex items-center gap-2 sticky top-0 z-40">
+                    <div className="h-14 bg-[#0a0e17]/80 border-b border-white/5 px-4 md:px-8 flex items-center gap-2 sticky top-0 z-40 overflow-x-auto scrollbar-hide">
                         {[
                             { id: 'Quizzes', icon: <FileText size={16} /> },
                             { id: 'Articles', icon: <LayoutGrid size={16} /> },
@@ -745,7 +745,7 @@ const LearningPage = () => {
                                     setActiveTab(tab.id);
                                     if (tab.id === 'Leaderboard') setShowLeaderboard(true);
                                 }}
-                                className={`cursor-target flex items-center gap-2 px-6 py-3 text-sm font-medium border-b-2 transition-all ${activeTab === tab.id
+                                className={`cursor-target flex items-center gap-2 px-4 md:px-6 py-3 text-sm font-medium border-b-2 transition-all whitespace-nowrap ${activeTab === tab.id
                                     ? 'border-[#00d9ff] text-[#00d9ff] bg-[#00d9ff]/5'
                                     : 'border-transparent text-[#94a3b8] hover:text-white'
                                     }`}

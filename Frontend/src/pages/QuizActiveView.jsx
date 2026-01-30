@@ -147,17 +147,17 @@ const QuizActiveView = ({
         <div className="fixed inset-0 z-[100] bg-[#050714] flex flex-col animate-fade-in">
 
             {/* HEADER */}
-            <div className="h-20 shrink-0 px-6 md:px-12 flex items-center justify-between border-b border-white/5 bg-[#0a0e17]/80 backdrop-blur-xl">
-                <div className="flex items-center gap-4">
-                    <button onClick={onClose} className="cursor-target p-2 hover:bg-white/5 rounded-full text-[#94a3b8] transition-colors">
+            <div className="h-auto min-h-[5rem] shrink-0 px-4 md:px-12 py-3 flex items-center justify-between border-b border-white/5 bg-[#0a0e17]/80 backdrop-blur-xl gap-4 flex-wrap">
+                <div className="flex items-center gap-3 md:gap-4 flex-1">
+                    <button onClick={onClose} className="cursor-target p-2 hover:bg-white/5 rounded-full text-[#94a3b8] transition-colors shrink-0">
                         <X size={24} />
                     </button>
-                    <div>
-                        <h2 className="font-['Space_Grotesk'] font-bold text-lg text-white leading-tight">{topicTitle}</h2>
+                    <div className="min-w-0">
+                        <h2 className="font-['Space_Grotesk'] font-bold text-base md:text-lg text-white leading-tight line-clamp-1">{topicTitle}</h2>
                         <div className="flex items-center gap-2 text-xs text-[#94a3b8]">
                             <span className="uppercase tracking-wider text-[#00d9ff]">{difficulty}</span>
                             <span className="w-1 h-1 rounded-full bg-white/20" />
-                            <span>Question {currentIndex + 1} of {questions.length}</span>
+                            <span className="whitespace-nowrap">Q {currentIndex + 1} / {questions.length}</span>
                         </div>
                     </div>
                 </div>
@@ -186,11 +186,11 @@ const QuizActiveView = ({
 
             {/* MAIN CONTENT */}
             <div className="flex-1 overflow-y-auto">
-                <div className="max-w-3xl mx-auto px-6 py-12">
+                <div className="max-w-3xl mx-auto px-4 md:px-6 py-6 md:py-12">
 
                     {/* QUESTION CARD */}
-                    <div className="mb-10">
-                        <h3 className="font-['Space_Grotesk'] font-bold text-2xl md:text-3xl text-white leading-relaxed mb-6">
+                    <div className="mb-8 md:mb-10">
+                        <h3 className="font-['Space_Grotesk'] font-bold text-xl md:text-3xl text-white leading-relaxed mb-6">
                             {currentQuestion.question}
                         </h3>
 
