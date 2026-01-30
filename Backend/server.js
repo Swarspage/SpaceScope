@@ -185,6 +185,23 @@ app.get("/api/aurora", async (req, res) => {
       setCache(cacheKey, data, 300);
     }
 
+    // 3. Fetch Real Kp Index (Planetary K-index)
+    try {
+      const kpUrl = "https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json";
+      const kpRes = await axios.get(kpUrl, { timeout: 3000 });
+      if (kpRes.data && Array.isArray(kpRes.data)) {
+        // Format: [time, kp, a_running, station_count]
+        // Get the last valid entry
+        const latest = kpRes.data[kpRes.data.length - 1];
+        if (latest && latest.length >= 2) {
+          data.kp_index = Number(latest[1]);
+        }
+      }
+    } catch (kpErr) {
+      console.warn("Failed to fetch Kp index:", kpErr.message);
+      // Fallback if needed, but dashboard has its own default
+    }
+
     res.json(data);
   } catch (e) {
     console.error("Aurora fetch error:", e?.message);

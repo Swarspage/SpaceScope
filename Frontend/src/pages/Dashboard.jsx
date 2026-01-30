@@ -232,7 +232,7 @@ const Dashboard = () => {
             if (user && user.id) {
                 try {
                     const res = await axios.get(`http://localhost:5000/api/notifications/${user.id}`);
-                    backendNotifs = res.data;
+                    backendNotifs = res.data.notifications || [];
                 } catch (err) {
                     console.error("Failed to fetch notifications", err);
                 }
