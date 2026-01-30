@@ -134,20 +134,25 @@ const AuroraPage = () => {
             />
 
             {/* Header */}
-            <header className="h-[10vh] flex items-center justify-between px-8 border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 focus:z-[2000] z-[2000] p-5">
+            {/* Header */}
+            <header className="h-[10vh] min-h-[80px] flex items-center justify-between px-4 md:px-8 border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 focus:z-[2000] z-[2000] md:p-5">
                 <div className="flex items-center gap-4">
                     <button
                         onClick={() => navigate('/dashboard')}
-                        className="cursor-target w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-[#00d9ff]/30 text-slate-400 hover:text-[#00d9ff] transition-all"
+                        className="cursor-target w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-[#00d9ff]/30 text-slate-400 hover:text-[#00d9ff] transition-all flex-shrink-0"
                     >
                         <MdChevronLeft className="text-2xl" />
                     </button>
                     <div>
-                        <h1 className="text-2xl font-bold text-white tracking-wide flex items-center gap-2">
+                        <h1 className="hidden md:flex text-2xl font-bold text-white tracking-wide items-center gap-2">
                             <FiActivity className="text-[#00d9ff] text-2xl" />
                             AURORA <span className="text-slate-500">FORECAST</span>
                         </h1>
-                        <p className="text-xs text-[#00d9ff] font-mono tracking-widest uppercase">
+                        <h1 className="md:hidden text-lg font-bold text-white tracking-wide flex items-center gap-2">
+                            <FiActivity className="text-[#00d9ff] text-xl" />
+                            AURORA
+                        </h1>
+                        <p className="hidden md:block text-xs text-[#00d9ff] font-mono tracking-widest uppercase">
                             Magnetospheric Particle Map // NOAA Feed
                         </p>
                     </div>
@@ -155,36 +160,45 @@ const AuroraPage = () => {
 
                     <button
                         onClick={() => setShowInfoModal(true)}
-                        className="cursor-target ml-6 px-6 py-3 bg-[#00ff88]/20 hover:bg-[#00ff88]/40 border-2 border-[#00ff88] rounded-full text-white text-xs font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 shadow-[0_0_20px_rgba(0,255,136,0.4)] hover:shadow-[0_0_40px_rgba(0,255,136,0.6)] animate-pulse"
+                        className="hidden md:flex cursor-target ml-6 px-6 py-3 bg-[#00ff88]/20 hover:bg-[#00ff88]/40 border-2 border-[#00ff88] rounded-full text-white text-xs font-black uppercase tracking-widest transition-all duration-300 items-center gap-2 shadow-[0_0_20px_rgba(0,255,136,0.4)] hover:shadow-[0_0_40px_rgba(0,255,136,0.6)] animate-pulse"
                     >
                         <MdInfoOutline className="text-lg" />
                         Learn More
                     </button>
                 </div>
 
-                <div className="flex gap-3">
+                <div className="flex gap-2 md:gap-3 items-center">
                     <button
                         onClick={() => setAutoRefresh(!autoRefresh)}
-                        className={`cursor-target px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider border transition-all flex items-center gap-2 ${autoRefresh ? 'bg-[#00d9ff]/10 border-[#00d9ff]/30 text-[#00d9ff]' : 'bg-black/40 border-white/10 text-slate-400'
+                        className={`cursor-target px-3 md:px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider border transition-all flex items-center gap-2 ${autoRefresh ? 'bg-[#00d9ff]/10 border-[#00d9ff]/30 text-[#00d9ff]' : 'bg-black/40 border-white/10 text-slate-400'
                             }`}
                     >
                         <FiRefreshCw className={dataFetching ? "animate-spin" : ""} />
-                        {autoRefresh ? "Auto-Sync" : "Manual"}
+                        <span className="hidden md:inline">{autoRefresh ? "Auto-Sync" : "Manual"}</span>
                     </button>
 
                     <button
                         onClick={handleForceRefresh}
                         disabled={cooldown > 0}
-                        className={`cursor-target px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider border transition-all flex items-center gap-2 ${cooldown > 0 ? 'opacity-50 cursor-not-allowed border-white/5' : 'bg-white/5 border-white/20 hover:bg-white/10'
+                        className={`cursor-target px-3 md:px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider border transition-all flex items-center gap-2 ${cooldown > 0 ? 'opacity-50 cursor-not-allowed border-white/5' : 'bg-white/5 border-white/20 hover:bg-white/10'
                             }`}
                     >
-                        {cooldown > 0 ? `Wait ${Math.floor(cooldown / 60)}:${(cooldown % 60).toString().padStart(2, '0')}` : "Force Refresh"}
+                        <FiActivity className="md:hidden" />
+                        <span className="hidden md:inline">{cooldown > 0 ? `Wait ${Math.floor(cooldown / 60)}:${(cooldown % 60).toString().padStart(2, '0')}` : "Force Refresh"}</span>
+                        {cooldown > 0 && <span className="md:hidden font-mono">{Math.floor(cooldown / 60)}:{((cooldown % 60).toString().padStart(2, '0'))}</span>}
+                    </button>
+
+                    <button
+                        onClick={() => setShowInfoModal(true)}
+                        className="md:hidden w-10 h-10 rounded-lg bg-[#00ff88]/10 border border-[#00ff88]/30 flex items-center justify-center text-[#00ff88]"
+                    >
+                        <MdInfoOutline size={20} />
                     </button>
                 </div>
             </header >
 
             {/* Main Content (Fullscreen Map) */}
-            <div className="flex-1 relative bg-[#050714] p-6 overflow-hidden">
+            <div className="flex-1 relative bg-[#050714] p-4 md:p-6 overflow-hidden">
                 <div className="cursor-target relative w-full h-full rounded-3xl overflow-hidden border border-white/5 shadow-2xl bg-[#0a0e17]">
                     <MapContainer
                         center={[60, 0]}
@@ -227,7 +241,7 @@ const AuroraPage = () => {
                     </MapContainer>
 
                     {/* Map Controls (Top Right) */}
-                    <div className="absolute top-6 right-6 z-[1000] flex flex-col gap-2">
+                    <div className="absolute top-4 right-4 md:top-6 md:right-6 z-[1000] flex flex-col gap-2">
                         <button onClick={() => mapInstance?.zoomIn()} className="cursor-target w-10 h-10 bg-black/60 backdrop-blur border border-white/10 rounded-lg flex items-center justify-center hover:bg-white/10 text-white"><FiPlus /></button>
                         <button onClick={() => mapInstance?.zoomOut()} className="cursor-target w-10 h-10 bg-black/60 backdrop-blur border border-white/10 rounded-lg flex items-center justify-center hover:bg-white/10 text-white"><FiMinus /></button>
                         <div className="h-2"></div>
@@ -237,7 +251,7 @@ const AuroraPage = () => {
                     {/* KPI Alert (Top Left Overlay) */}
                     {
                         kp >= 5 && (
-                            <div className="absolute top-6 left-6 z-[1000] bg-red-500/10 border border-red-500/50 backdrop-blur-md px-4 py-3 rounded-xl flex items-center gap-3 animate-pulse">
+                            <div className="absolute top-4 left-4 md:top-6 md:left-6 z-[1000] bg-red-500/10 border border-red-500/50 backdrop-blur-md px-4 py-3 rounded-xl flex items-center gap-3 animate-pulse">
                                 <FiAlertTriangle className="text-red-500 text-xl" />
                                 <div>
                                     <div className="text-red-400 font-bold uppercase text-xs tracking-wider">Geomagnetic Storm</div>
@@ -248,8 +262,8 @@ const AuroraPage = () => {
                     }
 
                     {/* Stats HUD (Bottom Overlay) */}
-                    <div className="absolute bottom-6 left-6 right-6 z-[1000] flex flex-wrap gap-4 items-end pointer-events-none">
-                        <div className="pointer-events-auto flex gap-4">
+                    <div className="absolute bottom-4 md:bottom-6 left-4 right-4 md:left-6 md:right-6 z-[1000] flex flex-col justify-end pointer-events-none">
+                        <div className="pointer-events-auto flex gap-4 overflow-x-auto pb-4 md:pb-0 w-full md:w-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
                             <StatCardOverlay
                                 label="Planetary K-Index"
                                 value={kp}
