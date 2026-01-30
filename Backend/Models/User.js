@@ -39,7 +39,15 @@ const userSchema = new mongoose.Schema({
     xp: {
         type: Number,
         default: 0
-    }
+    },
+    quizHistory: [{
+        topic: String,
+        difficulty: String,
+        score: Number,
+        correctAnswers: Number,
+        totalQuestions: Number,
+        date: { type: Date, default: Date.now }
+    }]
 });
 
 // Hash password before saving

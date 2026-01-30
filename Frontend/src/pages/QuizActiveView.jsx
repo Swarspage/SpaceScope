@@ -60,7 +60,13 @@ const QuizActiveView = ({
             setIsAnswered(false);
         } else {
             setShowResult(true);
-            if (onComplete) onComplete(score);
+            if (onComplete) {
+                onComplete({
+                    score,
+                    correctAnswers: score / 10,
+                    totalQuestions: questions.length
+                });
+            }
         }
     };
 

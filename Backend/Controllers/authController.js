@@ -164,7 +164,7 @@ export const getLeaderboard = async (req, res) => {
     try {
         // Fetch top 50 users sorted by XP in descending order
         const leaderboard = await User.find({})
-            .select('username xp avatar') // Select fields to display
+            .select('username xp avatar quizHistory') // Select fields to display
             .sort({ xp: -1 }) // Sort by XP descending
             .limit(50); // Limit to top 50
 
@@ -172,5 +172,58 @@ export const getLeaderboard = async (req, res) => {
     } catch (error) {
         console.error('Get leaderboard error:', error);
         res.status(500).json({ error: 'Failed to fetch leaderboard' });
+    }
+};
+
+// Submit quiz result
+export const submitQuizResult = async (req, res) => {
+    try {
+        // We assume the user is authenticated and req.user or req.body contains userId if not using middleware putting user on req
+        // For this setup, we'll assume userId is passed in body as per other methods or via auth middleware if it existed.
+        // Looking at other methods, they don't seem to use a middleware that populates req.user, but updateProfile uses req.params.userId.
+        // Let's expect userId in the body for now to be safe, or we can add it to the route params. 
+        // Best practice is auth middleware, but sticking to existing pattern: strict body/params.
+
+        // However, usually "submit result" is a POST. Let's use body for userId for now to match style if valid 
+        // OR better: The user should be logged in. 
+        // I will assume userId is sent in the body along with quiz data.
+
+        const { userId, topic, difficulty, score, correctAnswers, totalQuestions } = req.body;
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Update XP
+        user.xp = (user.xp || 0) + score;
+
+        // Add to history
+        user.quizHistory.push({
+            topic,
+            difficulty,
+            score,
+            correctAnswers,
+            totalQuestions,
+            date: new Date()
+        });
+
+        await user.save();
+
+        res.status(200).json({
+            message: 'Quiz result submitted successfully',
+            user: {
+                id: user._id,
+                username: user.username,
+                email: user.email,
+                fullName: user.fullName,
+                xp: user.xp,
+                quizHistory: user.quizHistory
+            }
+        });
+
+    } catch (error) {
+        console.error('Submit quiz result error:', error);
+        res.status(500).json({ error: 'Failed to submit quiz result' });
     }
 };

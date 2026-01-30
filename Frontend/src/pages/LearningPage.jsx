@@ -54,6 +54,7 @@ const LearningPage = () => {
 
     const [quizContent] = useState(quizData);
     const [showLeaderboard, setShowLeaderboard] = useState(true);
+    const [hoveredUser, setHoveredUser] = useState(null);
 
     // MODAL STATE
     const [selectedTopic, setSelectedTopic] = useState(null); // The topic object opened in modal
@@ -274,7 +275,8 @@ const LearningPage = () => {
                         name: userItem.username,
                         xp: userItem.xp || 0,
                         avatar: userItem.avatar || "👨‍🚀", // Fallback avatar if none
-                        isUser: user?.username === userItem.username
+                        isUser: user?.username === userItem.username,
+                        quizHistory: userItem.quizHistory || []
                     }));
 
                     setLeaderboardData(formattedData);
@@ -350,39 +352,10 @@ const LearningPage = () => {
                     <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" size={14} />
                 </div>
 
-                {/* Mode Selector */}
-                <div className="relative group">
-                    <select
-                        value={filters.mode}
-                        onChange={(e) => setFilters(prev => ({ ...prev, mode: e.target.value }))}
-                        className="appearance-none bg-[#0f1322]/80 border border-white/10 rounded-full py-2.5 pl-4 pr-10 text-[13px] font-medium text-slate-300 focus:outline-none focus:border-[#00d9ff]/50 cursor-pointer hover:border-white/20 transition-colors"
-                    >
-                        <option value="All Modes">All Modes</option>
-                        <option value="Learn">Learn</option>
-                        <option value="Practice">Practice</option>
-                        <option value="Challenge">Challenge</option>
-                    </select>
-                    <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" size={14} />
-                </div>
 
-                {/* Sort Selector */}
-                <div className="relative group">
-                    <select
-                        value={filters.sort}
-                        onChange={(e) => setFilters(prev => ({ ...prev, sort: e.target.value }))}
-                        className="appearance-none bg-[#0f1322]/80 border border-white/10 rounded-full py-2.5 pl-4 pr-10 text-[13px] font-medium text-[#94a3b8] focus:outline-none focus:border-[#00d9ff]/50 cursor-pointer min-w-[140px] hover:border-white/20 transition-colors"
-                    >
-                        <option value="Popular">Sort: Popular</option>
-                        <option value="New">Sort: Newest</option>
-                        <option value="XP">Sort: XP Value</option>
-                        <option value="Time">Sort: Duration</option>
-                    </select>
-                    <Filter className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" size={12} />
-                </div>
             </div>
         </div>
     );
-
     // --- COMPONENTS ---
 
     // Modal Component
@@ -1060,7 +1033,9 @@ const LearningPage = () => {
                                                 leaderboardData.map((userItem) => (
                                                     <div
                                                         key={userItem.rank}
-                                                        className={`grid grid-cols-12 gap-4 p-4 items-center hover:bg-white/5 transition-colors ${userItem.isUser ? 'bg-[#00d9ff]/10 hover:bg-[#00d9ff]/15' : ''}`}
+                                                        onMouseEnter={() => setHoveredUser(userItem)}
+                                                        onMouseLeave={() => setHoveredUser(null)}
+                                                        className={`relative grid grid-cols-12 gap-4 p-4 items-center hover:bg-white/5 transition-colors cursor-pointer ${userItem.isUser ? 'bg-[#00d9ff]/10 hover:bg-[#00d9ff]/15' : ''}`}
                                                     >
                                                         <div className="col-span-2 flex justify-center">
                                                             <div className={`
@@ -1087,6 +1062,30 @@ const LearningPage = () => {
                                                         <div className="col-span-4 text-right">
                                                             <div className="font-mono font-bold text-[#00ff88]">{userItem.xp.toLocaleString()} XP</div>
                                                         </div>
+
+                                                        {/* HOVER TOOLTIP */}
+                                                        {hoveredUser && hoveredUser.rank === userItem.rank && (
+                                                            <div className="absolute top-full left-1/2 -translate-x-1/2 z-[100] mt-2 w-64 bg-[#0a0e17] border border-white/10 rounded-xl shadow-2xl p-4 animate-fade-in-up pointer-events-none">
+                                                                <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 pb-2 border-b border-white/5">
+                                                                    Recent Activity
+                                                                </div>
+                                                                {userItem.quizHistory && userItem.quizHistory.length > 0 ? (
+                                                                    <div className="space-y-3">
+                                                                        {userItem.quizHistory.slice().reverse().slice(0, 3).map((history, idx) => (
+                                                                            <div key={idx} className="flex justify-between items-start gap-2">
+                                                                                <div className="flex-1">
+                                                                                    <div className="text-[11px] font-bold text-white leading-tight line-clamp-1">{history.topic || "Unknown Quiz"}</div>
+                                                                                    <div className="text-[9px] text-slate-500 uppercase">{history.difficulty || "Easy"}</div>
+                                                                                </div>
+                                                                                <div className="text-[#00ff88] text-[10px] font-mono font-bold">+{history.score} XP</div>
+                                                                            </div>
+                                                                        ))}
+                                                                    </div>
+                                                                ) : (
+                                                                    <div className="text-xs text-slate-600 italic py-2 text-center">No recent missions.</div>
+                                                                )}
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 ))
                                             ) : (
@@ -1110,18 +1109,7 @@ const LearningPage = () => {
                                             <h3 className="font-bold text-lg text-white">Leaderboard</h3>
                                         </div>
                                     </div>
-                                    <div className="bg-[#00d9ff]/10 border border-[#00d9ff]/30 rounded-xl p-4 mb-4">
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-3">
-                                                <span className="font-black text-2xl text-[#00d9ff]">#5</span>
-                                                <div>
-                                                    <div className="font-bold text-sm text-white">You</div>
-                                                    <div className="text-[10px] text-[#00ff88]">▲ 12 ranks up</div>
-                                                </div>
-                                            </div>
-                                            <div className="font-bold text-[#00d9ff]">12,800 XP</div>
-                                        </div>
-                                    </div>
+
                                     <div className="space-y-2">
                                         {leaderboardData.map((u) => (
                                             <div key={u.rank} className={`flex items-center gap-3 py-3 px-2 rounded-lg ${u.isUser ? 'bg-[#00d9ff]/10' : ''}`}>
@@ -1148,8 +1136,48 @@ const LearningPage = () => {
                     difficulty={activeQuiz.level}
                     questions={activeQuiz.questions}
                     onClose={() => setActiveQuiz(null)}
-                    onComplete={(finalScore) => {
-                        console.log("XP Earned:", finalScore);
+                    onComplete={async (result) => {
+                        console.log("Quiz Result:", result);
+                        try {
+                            if (!user) return; // Guard if user not logged in
+
+                            const response = await fetch('http://localhost:5000/api/auth/quiz-result', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    userId: user.id || user._id, // Ensure we handle both id formats if needed
+                                    topic: activeQuiz.topic,
+                                    difficulty: activeQuiz.level,
+                                    score: result.score,
+                                    correctAnswers: result.correctAnswers,
+                                    totalQuestions: result.totalQuestions
+                                }),
+                            });
+
+                            if (response.ok) {
+                                const data = await response.json();
+                                // Refresh Leaderboard
+                                const lbResponse = await fetch('http://localhost:5000/api/auth/leaderboard');
+                                if (lbResponse.ok) {
+                                    const lbData = await lbResponse.json();
+                                    const formattedData = lbData.leaderboard.map((userItem, index) => ({
+                                        rank: index + 1,
+                                        name: userItem.username,
+                                        xp: userItem.xp || 0,
+                                        avatar: userItem.avatar || "👨‍🚀",
+                                        isUser: user?.username === userItem.username
+                                    }));
+                                    setLeaderboardData(formattedData);
+                                }
+
+                                // TODO: Ideally update user context too to show new XP immediately in navbar
+                                // For now, the leaderboard update reflects it there.
+                            }
+                        } catch (error) {
+                            console.error("Failed to submit quiz result:", error);
+                        }
                     }}
                 />
             )}

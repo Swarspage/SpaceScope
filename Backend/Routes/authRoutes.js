@@ -1,5 +1,5 @@
 import express from 'express';
-import { register, login, getProfile, updateProfile, updateTutorialStatus, getLeaderboard } from '../Controllers/authController.js';
+import { register, login, getProfile, updateProfile, updateTutorialStatus, getLeaderboard, submitQuizResult } from '../Controllers/authController.js';
 
 const router = express.Router();
 
@@ -9,5 +9,6 @@ router.get('/profile/:userId', getProfile);
 router.put('/profile/:userId', updateProfile);
 router.put('/profile/:userId/tutorial', updateTutorialStatus);
 router.get('/leaderboard', getLeaderboard);
+router.post('/quiz-result', submitQuizResult);
 
 export default router;
