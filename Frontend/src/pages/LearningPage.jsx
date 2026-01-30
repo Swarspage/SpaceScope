@@ -35,6 +35,8 @@ import TargetCursor from '../components/TargetCursor';
 import quizData from '../data/Quiz.json';
 import learningVideos from '../data/learningZoneYtVideos.json';
 import articlesData from '../data/articles.json';
+import FeatureInfoModal from "../components/FeatureInfoModal";
+import { MdInfoOutline } from 'react-icons/md';
 
 const LearningPage = () => {
     // Router and Auth
@@ -59,6 +61,8 @@ const LearningPage = () => {
     // MODAL STATE
     const [selectedTopic, setSelectedTopic] = useState(null); // The topic object opened in modal
     const [activeQuiz, setActiveQuiz] = useState(null); // The specific quiz (topic+level) currently being played
+
+    const [showInfoModal, setShowInfoModal] = useState(false);
 
     // --- MOCKED USER MEMORY / PROGRESS ---
     // Tracks progress per difficulty id: "TopicName-level" -> 'completed' | 'in-progress'
@@ -721,7 +725,7 @@ const LearningPage = () => {
 
                 {/* Main Content */}
                 <main className="flex-1 overflow-y-auto">
-                    <div className="px-6 py-4 border-b border-white/5">
+                    <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <GraduationCap className="text-[#00d9ff]" size={28} />
                             <div>
@@ -729,6 +733,13 @@ const LearningPage = () => {
                                 <p className="text-sm font-medium text-slate-400/80 tracking-wide drop-shadow-sm">Explore space science through interactive content</p>
                             </div>
                         </div>
+                        <button
+                            onClick={() => setShowInfoModal(true)}
+                            className="cursor-target px-4 py-2 bg-[#00ff88]/20 hover:bg-[#00ff88]/40 border border-[#00ff88] rounded-full text-white text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2 shadow-[0_0_15px_rgba(0,255,136,0.3)] hover:shadow-[0_0_25px_rgba(0,255,136,0.5)] animate-pulse"
+                        >
+                            <MdInfoOutline className="text-lg" />
+                            Guide
+                        </button>
                     </div>
 
                     {/* Tabs */}
@@ -1136,6 +1147,35 @@ const LearningPage = () => {
                     }}
                 />
             )}
+            {/* Feature Info Modal */}
+            <FeatureInfoModal
+                isOpen={showInfoModal}
+                onClose={() => setShowInfoModal(false)}
+                title="Learning Zone Guide"
+                features={[
+                    {
+                        title: "How to Compete?",
+                        desc: "The Leaderboard ranks users based on Total XP. Earn XP by completing quizzes. Higher difficulty quizzes award more points!",
+                        icon: <Trophy className="text-lg" />
+                    },
+                    {
+                        title: "Attempting Quizzes",
+                        desc: "Select a topic and choose a difficulty (Easy, Medium, Hard). Complete all questions to earn XP and unlock your 'Quiz History'.",
+                        icon: <FileText className="text-lg" />
+                    },
+                    {
+                        title: "Explore Content",
+                        desc: "Read curated articles and watch educational videos to expand your knowledge before testing yourself in the quizzes.",
+                        icon: <Video className="text-lg" />
+                    },
+                    {
+                        title: "Timed Mode",
+                        desc: "Toggle 'Timed Mode' in the quiz start screen to challenge yourself against the clock for a true test of speed and accuracy.",
+                        icon: <Clock className="text-lg" />
+                    }
+                ]}
+                readMoreLink="#"
+            />
         </div>
     );
 };

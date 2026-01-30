@@ -42,19 +42,21 @@ const FeatureInfoModal = ({ isOpen, onClose, title, imageSrc, description, featu
                 <div className="flex-1 overflow-y-auto custom-scrollbar relative z-20 flex flex-col">
 
                     {/* Feature Image (Hero) */}
-                    <div className="w-full relative shrink-0 group perspective-1000 px-8">
-                        <div className="absolute inset-0 bg-gradient-to-b from-[#00d9ff]/5 via-transparent to-transparent opacity-50" />
-                        <div className="relative z-10 w-full h-64 md:h-80 flex items-center justify-center py-6">
-                            {/* Glowing Orb Behind Image */}
-                            <div className="absolute w-48 h-48 bg-[#00d9ff]/20 rounded-full blur-[60px] animate-pulse-slow" />
+                    {imageSrc && (
+                        <div className="w-full relative shrink-0 group perspective-1000 px-8">
+                            <div className="absolute inset-0 bg-gradient-to-b from-[#00d9ff]/5 via-transparent to-transparent opacity-50" />
+                            <div className="relative z-10 w-full h-64 md:h-80 flex items-center justify-center py-6">
+                                {/* Glowing Orb Behind Image */}
+                                <div className="absolute w-48 h-48 bg-[#00d9ff]/20 rounded-full blur-[60px] animate-pulse-slow" />
 
-                            <img
-                                src={imageSrc}
-                                alt={title}
-                                className="h-full w-auto object-contain drop-shadow-[0_0_25px_rgba(0,217,255,0.4)] hover:scale-105 transition-transform duration-700 ease-in-out"
-                            />
+                                <img
+                                    src={imageSrc}
+                                    alt={title}
+                                    className="h-full w-auto object-contain drop-shadow-[0_0_25px_rgba(0,217,255,0.4)] hover:scale-105 transition-transform duration-700 ease-in-out"
+                                />
+                            </div>
                         </div>
-                    </div>
+                    )}
 
                     {/* Bottom: Content */}
                     <div className="px-8 pb-10">

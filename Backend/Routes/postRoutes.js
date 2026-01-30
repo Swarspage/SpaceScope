@@ -3,6 +3,8 @@ import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import Post from '../Models/Post.js';
+import User from '../Models/User.js';
+import Notification from '../Models/Notification.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -57,6 +59,25 @@ router.post('/', upload.single('image'), async (req, res) => {
         });
 
         await newPost.save();
+        await newPost.save();
+
+        // 3. Notify all other users
+        // In a real large-scale app, this would be a background job (BullMQ/Redis)
+        const otherUsers = await User.find({ username: { $ne: user } }).select('_id');
+
+        if (otherUsers.length > 0) {
+            const notifications = otherUsers.map(u => ({
+                recipient: u._id,
+                type: 'community',
+                title: 'New Community Post',
+                message: `${user || 'Traveler'} shared a new cosmic discovery!`,
+                link: '/community',
+                createdAt: new Date()
+            }));
+
+            await Notification.insertMany(notifications);
+        }
+
         res.status(201).json(newPost);
     } catch (error) {
         console.error('Upload error:', error);

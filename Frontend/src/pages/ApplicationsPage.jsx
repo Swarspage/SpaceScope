@@ -152,6 +152,7 @@ const NDVIMap = () => {
     const [mapCenter, setMapCenter] = useState(MAP_CENTER);
     const [searchBoundary, setSearchBoundary] = useState(null);
     const [showInfoModal, setShowInfoModal] = useState(false);
+    const [showGuideModal, setShowGuideModal] = useState(false);
 
     const activeChannelData = CHANNELS.find(c => c.id === activeChannel);
 
@@ -574,6 +575,12 @@ const NDVIMap = () => {
                     <p className="text-xs md:text-base text-slate-400 mt-2 z-10 hidden md:block">
                         Explore real-time insights derived from satellite imagery.
                     </p>
+                    <button
+                        onClick={() => setShowGuideModal(true)}
+                        className="cursor-target mt-4 px-6 py-2 bg-[#00ff88]/20 hover:bg-[#00ff88]/30 border border-[#00ff88]/50 rounded-full text-[#00ff88] text-sm font-bold uppercase tracking-widest transition-all z-10 flex items-center gap-2 hover:shadow-[0_0_20px_rgba(0,255,136,0.3)] animate-fade-in-up"
+                    >
+                        <Info size={16} /> How to use this page
+                    </button>
                 </div>
 
                 {/* Map Container Block */}
@@ -817,6 +824,30 @@ const NDVIMap = () => {
                 imageSrc={modalData.image}
                 features={modalData.features}
                 readMoreLink={modalData.link}
+            />
+
+            {/* Guide Modal (No Image) */}
+            <FeatureInfoModal
+                isOpen={showGuideModal}
+                onClose={() => setShowGuideModal(false)}
+                title="Space Data Explorer Guide"
+                features={[
+                    {
+                        title: "Interactive Layers",
+                        desc: "Use the control panel to switch between different environmental datasets like Vegetation (NDVI), CO2, and Light Pollution.",
+                        icon: <Layers className="text-lg" />
+                    },
+                    {
+                        title: "Real-time Analysis",
+                        desc: "The map visualizes data from NASA and ESA satellites. Use the Search bar to jump to specific cities or coordinates.",
+                        icon: <Activity className="text-lg" />
+                    },
+                    {
+                        title: "Deep Insights",
+                        desc: "Each layer comes with detailed scientific context. Click the 'Info Panel' on the right (or bottom on mobile) to learn more about the data.",
+                        icon: <Info className="text-lg" />
+                    }
+                ]}
             />
         </div >
 

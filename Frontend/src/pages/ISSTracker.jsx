@@ -369,6 +369,11 @@ export default function ISSTracker() {
                         title: "How to use this Tracker?",
                         desc: "Monitor the 'Live Telemetry' for connection status. Use the 'Ground Track' map to see where the ISS will fly over next.",
                         icon: <MdMap className="text-lg" />
+                    },
+                    {
+                        title: "When will the ISS pass over me?",
+                        desc: "The 'Next ISS Pass' panel automatically detects your location and calculates the next time the station will be visible overhead. It requires clear skies and low light pollution for best visibility.",
+                        icon: <WiStars className="text-lg" />
                     }
                 ]}
                 readMoreLink="https://www.nasa.gov/international-space-station/"

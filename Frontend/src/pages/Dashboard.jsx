@@ -224,9 +224,21 @@ const Dashboard = () => {
         };
         fetchSpaceXData();
     }, []);
-    // 6. Generate Notifications Client-Side (No API)
+    // 6. Generate Translations & Fetch Backend Notifications
     useEffect(() => {
-        const generateNotifications = () => {
+        const fetchNotifications = async () => {
+            let backendNotifs = [];
+            // A. Fetch Backend Notifications
+            if (user && user.id) {
+                try {
+                    const res = await axios.get(`http://localhost:5000/api/notifications/${user.id}`);
+                    backendNotifs = res.data;
+                } catch (err) {
+                    console.error("Failed to fetch notifications", err);
+                }
+            }
+
+            // B. Generate Local System Notifications
             const newNotifs = [];
             const addNotif = (id, type, title, message, link = '') => {
                 newNotifs.push({ _id: id, type, title, message, link, createdAt: new Date().toISOString(), isRead: false });
@@ -251,37 +263,80 @@ const Dashboard = () => {
                 if (diffHours > 0 && diffHours < 24) addNotif(`spacex-${nextLaunch.id}`, 'system', 'Launch Imminent', `${nextLaunch.name} launches in ${Math.round(diffHours)} hours.`, '/missions');
             }
 
-            // Filter read
+            // C. Merge & Filter Read Status
             const readIds = JSON.parse(localStorage.getItem('spacescope_read_notifications') || '[]');
-            const finalNotifs = newNotifs.map(n => ({ ...n, isRead: readIds.includes(n._id) })).sort((a, b) => (a.isRead === b.isRead ? 0 : a.isRead ? 1 : -1));
 
-            setNotifications(finalNotifs);
-            setUnreadCount(finalNotifs.filter(n => !n.isRead).length);
+            // Process Local: Check localStorage
+            const localProcessed = newNotifs.map(n => ({ ...n, isRead: readIds.includes(n._id) }));
+
+            // Process Backend: They come with isRead from DB, but let's double check if we want any client-side override (usually not needed if API is source of truth)
+            // We just use backendNotifs as is.
+
+            const allNotifs = [...backendNotifs, ...localProcessed];
+
+            // Sort by newest
+            allNotifs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+            setNotifications(allNotifs);
+            setUnreadCount(allNotifs.filter(n => !n.isRead).length);
         };
-        generateNotifications();
-    }, [auroraData, spacexData, moonData]);
 
-    const handleNotificationClick = (notif) => {
+        fetchNotifications();
+        // Poll every 30s for new backend notifications
+        const interval = setInterval(fetchNotifications, 30000);
+        return () => clearInterval(interval);
+    }, [auroraData, spacexData, moonData, user]);
+
+    const handleNotificationClick = async (notif) => {
+        // 1. Mark as Read
         if (!notif.isRead) {
-            const readIds = JSON.parse(localStorage.getItem('spacescope_read_notifications') || '[]');
-            if (!readIds.includes(notif._id)) {
-                const updatedIds = [...readIds, notif._id];
-                localStorage.setItem('spacescope_read_notifications', JSON.stringify(updatedIds));
-                setNotifications(prev => prev.map(n => n._id === notif._id ? { ...n, isRead: true } : n));
-                setUnreadCount(prev => Math.max(0, prev - 1));
+            // Check if it's a backend notification (Mongodb ID is 24 hex chars)
+            const isBackend = /^[0-9a-fA-F]{24}$/.test(notif._id);
+
+            if (isBackend) {
+                // Call API
+                try {
+                    await axios.put(`http://localhost:5000/api/notifications/${notif._id}/read`);
+                    // Update State Locally
+                    setNotifications(prev => prev.map(n => n._id === notif._id ? { ...n, isRead: true } : n));
+                    setUnreadCount(prev => Math.max(0, prev - 1));
+                } catch (err) {
+                    console.error("Failed to mark read", err);
+                }
+            } else {
+                // Local Notification -> LocalStorage
+                const readIds = JSON.parse(localStorage.getItem('spacescope_read_notifications') || '[]');
+                if (!readIds.includes(notif._id)) {
+                    const updatedIds = [...readIds, notif._id];
+                    localStorage.setItem('spacescope_read_notifications', JSON.stringify(updatedIds));
+                    setNotifications(prev => prev.map(n => n._id === notif._id ? { ...n, isRead: true } : n));
+                    setUnreadCount(prev => Math.max(0, prev - 1));
+                }
             }
         }
+
+        // 2. Navigate
         if (notif.link) {
             navigate(notif.link);
             setShowNotifications(false);
         }
     };
 
-    const handleMarkAllRead = () => {
+    const handleMarkAllRead = async () => {
+        // Mark Backend Read
+        if (user && user.id) {
+            try {
+                await axios.put(`http://localhost:5000/api/notifications/${user.id}/read-all`);
+            } catch (err) { console.error("Failed to mark all API read", err); }
+        }
+
+        // Mark Local Read
+        const localIds = notifications.filter(n => !/^[0-9a-fA-F]{24}$/.test(n._id)).map(n => n._id);
         const readIds = JSON.parse(localStorage.getItem('spacescope_read_notifications') || '[]');
-        const newIds = notifications.map(n => n._id);
-        const uniqueIds = [...new Set([...readIds, ...newIds])];
+        const uniqueIds = [...new Set([...readIds, ...localIds])];
         localStorage.setItem('spacescope_read_notifications', JSON.stringify(uniqueIds));
+
+        // Update UI
         setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
         setUnreadCount(0);
     };

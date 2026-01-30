@@ -121,9 +121,16 @@ const DetailMap = ({ event }) => {
 
 const MeteorCalendar = () => {
     const navigate = useNavigate();
-    const [filter, setFilter] = useState('all');
+    const [filter, setFilter] = useState('all'); // 'all', 'high_zhr', 'upcoming'
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [showInfoModal, setShowInfoModal] = useState(false);
+
+    const filteredEvents = meteorEvents.filter(event => {
+        if (filter === 'high_zhr') return event.zhr > 50;
+        if (filter === 'upcoming') return new Date(event.peak_date_utc) > new Date();
+        return true;
+    });
 
     return (
         <div className="flex h-screen bg-[#050714] text-slate-300 font-sans overflow-hidden">
@@ -149,7 +156,7 @@ const MeteorCalendar = () => {
                         >
                             <MdChevronLeft className="text-2xl" />
                         </button>
-                        <div>
+                        <div className="pl-4 p-4">
                             <h1 className="text-lg md:text-2xl font-bold text-white tracking-wide flex items-center gap-2">
                                 <WiMeteor className="text-[#00d9ff] text-2xl md:text-3xl" />
                                 METEOR <span className="text-slate-500">SURVEILLANCE</span>
@@ -160,10 +167,32 @@ const MeteorCalendar = () => {
                         </div>
                     </div>
 
-                    <div className="flex flex-wrap justify-center md:justify-end gap-2 md:gap-3 w-full md:w-auto">
-                        <button className="cursor-target px-3 md:px-4 py-2 rounded-lg bg-black/40 border border-white/10 text-[10px] md:text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white hover:border-white/20 transition-all flex items-center gap-2 whitespace-nowrap">
-                            <MdFilterList /> Filter
+                    <div className="flex flex-wrap justify-center md:justify-end gap-2 md:gap-3 w-full md:w-auto relative">
+                        <button
+                            onClick={() => setIsFilterOpen(!isFilterOpen)}
+                            className={`cursor-target px-3 md:px-4 py-2 rounded-lg border text-[10px] md:text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2 whitespace-nowrap ${filter !== 'all' ? 'bg-[#00d9ff]/20 border-[#00d9ff] text-[#00d9ff]' : 'bg-black/40 border-white/10 text-slate-400 hover:text-white'}`}
+                        >
+                            <MdFilterList /> {filter === 'all' ? 'Filter' : filter.replace('_', ' ')}
                         </button>
+
+                        {/* Filter Dropdown */}
+                        {isFilterOpen && (
+                            <div className="absolute top-12 right-0 md:left-0 z-[100] bg-[#0a0e17] border border-white/10 rounded-xl shadow-2xl p-2 flex flex-col min-w-[150px]">
+                                {[
+                                    { id: 'all', label: 'Show All' },
+                                    { id: 'high_zhr', label: 'High Intensity (>50)' },
+                                    { id: 'upcoming', label: 'Upcoming Only' }
+                                ].map(opt => (
+                                    <button
+                                        key={opt.id}
+                                        onClick={() => { setFilter(opt.id); setIsFilterOpen(false); }}
+                                        className={`px-3 py-2 text-left text-xs font-bold uppercase tracking-wider rounded-lg hover:bg-white/5 ${filter === opt.id ? 'text-[#00d9ff]' : 'text-slate-400'}`}
+                                    >
+                                        {opt.label}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
                         <button className="cursor-target px-3 md:px-4 py-2 rounded-lg bg-[#00d9ff]/10 border border-[#00d9ff]/30 text-[#00d9ff] text-[10px] md:text-xs font-bold uppercase tracking-wider hover:bg-[#00d9ff] hover:text-black transition-all shadow-[0_0_15px_rgba(0,217,255,0.2)] whitespace-nowrap">
                             Sync Calendar
                         </button>
@@ -234,7 +263,7 @@ const MeteorCalendar = () => {
                     </h3>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                        {meteorEvents.slice(1).map((event) => (
+                        {filteredEvents.length > 0 ? filteredEvents.slice(1).map((event) => (
                             <div
                                 key={event.id}
                                 className="cursor-target bg-black/30 backdrop-blur-md border border-white/5 rounded-2xl overflow-hidden hover:border-[#00d9ff]/30 hover:bg-black/50 transition-all duration-300 group flex flex-col h-full"
@@ -299,7 +328,12 @@ const MeteorCalendar = () => {
                                     </div>
                                 </div>
                             </div>
-                        ))}
+                        )) : (
+                            <div className="col-span-full text-center py-20 text-slate-500">
+                                <WiStars className="text-6xl mx-auto mb-4 opacity-50" />
+                                <p>No meteor showers match your filter.</p>
+                            </div>
+                        )}
                     </div>
 
                 </div>

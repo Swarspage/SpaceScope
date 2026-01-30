@@ -1,10 +1,14 @@
 import React, { useEffect, useMemo, useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import {
     MapContainer,
     TileLayer,
     CircleMarker,
     Tooltip,
+    Polyline,
+    Marker,
+    Popup
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import {
@@ -16,7 +20,9 @@ import {
     FiAlertTriangle,
     FiPlus,
     FiMinus,
-    FiGlobe
+    FiGlobe,
+    FiNavigation,
+    FiTarget
 } from "react-icons/fi";
 import { MdChevronLeft, MdInfoOutline } from "react-icons/md";
 import { getAuroraData } from "../services/api";
@@ -39,6 +45,19 @@ const estimateKpFromIntensity = (maxIntensity) => {
     const maxPossible = 14;
     const kp = Math.round((maxIntensity / maxPossible) * 9);
     return Math.max(0, Math.min(9, kp));
+};
+
+const haversineDistance = (lat1, lon1, lat2, lon2) => {
+    const toRad = (x) => (x * Math.PI) / 180;
+    const R = 6371; // Earth radius in km
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
 };
 
 const StatCardOverlay = ({ label, value, subtext, icon: Icon, alertLevel = "normal" }) => (
@@ -64,6 +83,11 @@ const AuroraPage = () => {
     const [forecastTime, setForecastTime] = useState(null);
     const [mapInstance, setMapInstance] = useState(null);
     const [showInfoModal, setShowInfoModal] = useState(false);
+
+    // Best Location State
+    const [userLocation, setUserLocation] = useState(null);
+    const [bestSpot, setBestSpot] = useState(null);
+    const [isLocating, setIsLocating] = useState(false);
 
     // UI State
     const [showAurora, setShowAurora] = useState(true);
@@ -114,6 +138,87 @@ const AuroraPage = () => {
             return () => clearInterval(timer);
         }
     }, [cooldown]);
+
+    const handleLocateBestSpot = () => {
+        if (!navigator.geolocation) {
+            alert("Geolocation is not supported by your browser.");
+            return;
+        }
+
+        setIsLocating(true);
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                const { latitude, longitude } = position.coords;
+                setUserLocation({ lat: latitude, lon: longitude });
+
+                if (coords.length > 0) {
+                    // Filter for points with decent intensity
+                    const visiblePoints = coords.filter(p => p.intensity > 1);
+                    const candidates = visiblePoints.length > 0 ? visiblePoints : coords;
+
+                    // Calculate distances for ALL candidates
+                    const scoredCandidates = candidates.map(p => ({
+                        ...p,
+                        distance: haversineDistance(latitude, longitude, p.lat, p.lon)
+                    })).sort((a, b) => a.distance - b.distance); // Sort by closest
+
+                    // Check top candidates for land/reachability
+                    let best = null;
+                    const topCandidates = scoredCandidates.slice(0, 5); // Check top 5 closest
+
+                    for (const candidate of topCandidates) {
+                        try {
+                            const res = await axios.get(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${candidate.lat}&lon=${candidate.lon}&zoom=10`);
+                            if (res.data && res.data.address) {
+                                // Check if it's a "place" (not just ocean)
+                                const addr = res.data.address;
+                                const placeName = addr.city || addr.town || addr.village || addr.hamlet || addr.county || addr.state;
+                                const country = addr.country;
+
+                                if (placeName) {
+                                    best = {
+                                        ...candidate,
+                                        locationName: `${placeName}, ${country || ""}`,
+                                        reachable: true
+                                    };
+                                    break; // Found a good one!
+                                }
+                            }
+                        } catch (err) {
+                            console.warn("Geocoding failed for candidate", err);
+                        }
+                    }
+
+                    // Fallback to absolute closest if no land found
+                    if (!best && scoredCandidates.length > 0) {
+                        best = {
+                            ...scoredCandidates[0],
+                            locationName: "Remote / Ocean Location",
+                            reachable: false
+                        };
+                    }
+
+                    if (best) {
+                        setBestSpot(best);
+                        // Fly to fit bounds
+                        if (mapInstance) {
+                            const bounds = [
+                                [latitude, longitude],
+                                [best.lat, best.lon]
+                            ];
+                            mapInstance.fitBounds(bounds, { padding: [100, 100] });
+                        }
+                    }
+                }
+                setIsLocating(false);
+            },
+            (error) => {
+                console.error("Error getting location", error);
+                alert("Unable to retrieve your location.");
+                setIsLocating(false);
+            }
+        );
+    };
 
     const handleForceRefresh = async () => {
         if (cooldown > 0) return;
@@ -178,6 +283,15 @@ const AuroraPage = () => {
                     </button>
 
                     <button
+                        onClick={handleLocateBestSpot}
+                        disabled={isLocating}
+                        className={`cursor-target px-3 md:px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider border transition-all flex items-center gap-2 ${isLocating ? 'bg-[#00d9ff]/10 border-[#00d9ff]/30 text-[#00d9ff]' : 'bg-white/5 border-white/20 hover:bg-white/10 hover:border-[#00d9ff]/50 hover:text-[#00d9ff]'}`}
+                    >
+                        {isLocating ? <FiRefreshCw className="animate-spin" /> : <FiNavigation />}
+                        <span className="hidden md:inline">{isLocating ? "Locating..." : "Find Best View"}</span>
+                    </button>
+
+                    <button
                         onClick={handleForceRefresh}
                         disabled={cooldown > 0}
                         className={`cursor-target px-3 md:px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider border transition-all flex items-center gap-2 ${cooldown > 0 ? 'opacity-50 cursor-not-allowed border-white/5' : 'bg-white/5 border-white/20 hover:bg-white/10'
@@ -238,6 +352,65 @@ const AuroraPage = () => {
                                 </CircleMarker>
                             );
                         })}
+
+                        {/* User Location Marker */}
+                        {userLocation && (
+                            <CircleMarker
+                                center={[userLocation.lat, userLocation.lon]}
+                                radius={6}
+                                pathOptions={{
+                                    color: "#3b82f6", // Blue
+                                    fillColor: "#3b82f6",
+                                    fillOpacity: 1,
+                                    weight: 2,
+                                    className: "animate-pulse"
+                                }}
+                            >
+                                <Tooltip direction="top" permanent>
+                                    <div className="text-xs font-bold bg-blue-500 text-white px-2 py-1 rounded">You are Here</div>
+                                </Tooltip>
+                            </CircleMarker>
+                        )}
+
+                        {/* Best Spot Marker */}
+                        {bestSpot && (
+                            <CircleMarker
+                                center={[bestSpot.lat, bestSpot.lon]}
+                                radius={10}
+                                pathOptions={{
+                                    color: "#ffffff",
+                                    fillColor: "transparent",
+                                    weight: 2,
+                                    dashArray: "4, 4"
+                                }}
+                            >
+                                <CircleMarker
+                                    center={[bestSpot.lat, bestSpot.lon]}
+                                    radius={4}
+                                    pathOptions={{
+                                        color: "#ffffff",
+                                        fillColor: "#ffffff",
+                                        fillOpacity: 1
+                                    }}
+                                />
+                            </CircleMarker>
+                        )}
+
+                        {/* Connection Line */}
+                        {userLocation && bestSpot && (
+                            <Polyline
+                                positions={[
+                                    [userLocation.lat, userLocation.lon],
+                                    [bestSpot.lat, bestSpot.lon]
+                                ]}
+                                pathOptions={{
+                                    color: "#ffffff",
+                                    weight: 2,
+                                    dashArray: "5, 10",
+                                    opacity: 0.5
+                                }}
+                            />
+                        )}
                     </MapContainer>
 
                     {/* Map Controls (Top Right) */}
@@ -260,6 +433,29 @@ const AuroraPage = () => {
                             </div>
                         )
                     }
+
+                    {/* Best Spot Info Card */}
+                    {bestSpot && (
+                        <div className="absolute top-20 left-4 md:top-24 md:left-6 z-[1000] bg-black/80 backdrop-blur-md border border-[#00d9ff]/30 p-4 rounded-xl max-w-xs animate-in fade-in slide-in-from-bottom-4 duration-500">
+                            <div className="flex items-start gap-4">
+                                <div className="p-3 bg-[#00d9ff]/10 rounded-lg text-[#00d9ff]">
+                                    <FiTarget size={24} />
+                                </div>
+                                <div>
+                                    <h4 className="text-[#00d9ff] font-bold text-sm uppercase tracking-wider mb-1">Optimal Viewing</h4>
+                                    <div className="text-white font-bold text-lg leading-tight mb-1">{bestSpot.locationName || "Unknown Location"}</div>
+                                    <div className="text-slate-400 font-mono text-sm mb-2">{Math.round(bestSpot.distance)} km away</div>
+
+                                    <div className="flex gap-2 mb-1">
+                                        <span className="text-[10px] uppercase bg-[#00d9ff]/20 text-[#00d9ff] px-2 py-0.5 rounded border border-[#00d9ff]/30">
+                                            {bestSpot.intensity.toFixed(1)} GW Intensity
+                                        </span>
+                                        {!bestSpot.reachable && <span className="text-[10px] uppercase bg-red-500/20 text-red-400 px-2 py-0.5 rounded border border-red-500/30">Remote</span>}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Stats HUD (Bottom Overlay) */}
                     <div className="absolute bottom-4 md:bottom-6 left-4 right-4 md:left-6 md:right-6 z-[1000] flex flex-col justify-end pointer-events-none">
@@ -325,6 +521,11 @@ const AuroraPage = () => {
                         title: "When is the Best Time to Watch?",
                         desc: "Auroras are best seen around midnight in dark, clear skies. Use the 'Forecast Time' on this dashboard to check for real-time spikes in Hemispheric Power.",
                         icon: <FiClock className="text-lg" />
+                    },
+                    {
+                        title: "How does 'Find Best View' work?",
+                        desc: "We analyze the aurora heatmap relative to your GPS location to find the closest reachable landmass (city/town) with high viewing probability, ignoring open ocean.",
+                        icon: <FiNavigation className="text-lg" />
                     }
                 ]}
                 readMoreLink="https://www.swpc.noaa.gov/"
