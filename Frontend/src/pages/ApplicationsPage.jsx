@@ -490,7 +490,7 @@ const NDVIMap = () => {
 
             {/* --- LEFT: CONTROL PANEL (Responsive Sidebar) --- */}
             <div className={`
-                fixed inset-y-0 left-0 z-50 w-64 bg-[#0a0e17] transform transition-transform duration-300 ease-in-out border-r border-white/10 p-4 flex flex-col gap-4
+                fixed inset-y-0 left-0 z-[2000] w-64 bg-[#0a0e17] transform transition-transform duration-300 ease-in-out border-r border-white/10 p-4 flex flex-col gap-4
                 md:relative md:transform-none md:border-none md:p-0 md:bg-transparent md:w-64 md:flex-shrink-0
                 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
             `}>
@@ -558,7 +558,7 @@ const NDVIMap = () => {
             {/* Overlay for mobile sidebar */}
             {isSidebarOpen && (
                 <div
-                    className="fixed inset-0 bg-black/80 z-40 md:hidden backdrop-blur-sm"
+                    className="fixed inset-0 bg-black/80 z-[1500] md:hidden backdrop-blur-sm"
                     onClick={() => setIsSidebarOpen(false)}
                 />
             )}

@@ -74,7 +74,6 @@ const TempAnomalyChart = ({ onDataLoaded, downsampleFactor = 1 }) => {
                         {
                             label: 'Temperature Anomaly (°C)',
                             data: values,
-                            data: values,
                             backgroundColor: backgroundColors,
                             borderRadius: 0,
                             borderWidth: 0,
