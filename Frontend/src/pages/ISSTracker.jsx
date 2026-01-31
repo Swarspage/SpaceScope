@@ -11,6 +11,7 @@ import FeatureInfoModal from "../components/FeatureInfoModal";
 
 import ISSPassPredictor from "../components/ISSPassPredictor";
 import issImage from "../assets/images/app_isstrackerimage.png";
+import api from "../services/api";
 
 /* ---------- Theme tokens (Singularity) ---------- */
 const THEME = {
@@ -83,9 +84,8 @@ export default function ISSTracker() {
         async function fetchISS() {
             try {
                 // USE BACKEND PROXY (Fixes Mixed Content Error on Vercel)
-                const res = await fetch("http://localhost:5000/api/iss");
-                if (!res.ok) throw new Error("Network error " + res.status);
-                const data = await res.json();
+                const res = await api.get("/iss");
+                const data = res.data;
                 const lat = parseFloat(data.iss_position.latitude);
                 const lng = parseFloat(data.iss_position.longitude);
                 const timestamp = data.timestamp;

@@ -28,6 +28,7 @@ import {
 import { FaUserAstronaut } from 'react-icons/fa';
 import Sidebar from '../components/Sidebar';
 import { useAuth } from '../context/AuthContext';
+import api from '../services/api';
 import QuizActiveView from './QuizActiveView';
 
 
@@ -269,9 +270,9 @@ const LearningPage = () => {
     useEffect(() => {
         const fetchLeaderboard = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/auth/leaderboard');
-                if (response.ok) {
-                    const data = await response.json();
+                const response = await api.get('/auth/leaderboard');
+                if (response.status === 200) {
+                    const data = response.data;
 
                     // Transform data to match UI requirements
                     const formattedData = data.leaderboard.map((userItem, index) => ({
@@ -1102,27 +1103,21 @@ const LearningPage = () => {
                         try {
                             if (!user) return; // Guard if user not logged in
 
-                            const response = await fetch('http://localhost:5000/api/auth/quiz-result', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify({
-                                    userId: user.id || user._id, // Ensure we handle both id formats if needed
-                                    topic: activeQuiz.topic,
-                                    difficulty: activeQuiz.level,
-                                    score: result.score,
-                                    correctAnswers: result.correctAnswers,
-                                    totalQuestions: result.totalQuestions
-                                }),
+                            const response = await api.post('/auth/quiz-result', {
+                                userId: user.id || user._id, // Ensure we handle both id formats if needed
+                                topic: activeQuiz.topic,
+                                difficulty: activeQuiz.level,
+                                score: result.score,
+                                correctAnswers: result.correctAnswers,
+                                totalQuestions: result.totalQuestions
                             });
 
-                            if (response.ok) {
-                                const data = await response.json();
+                            if (response.status === 200 || response.status === 201) {
+                                const data = response.data;
                                 // Refresh Leaderboard
-                                const lbResponse = await fetch('http://localhost:5000/api/auth/leaderboard');
-                                if (lbResponse.ok) {
-                                    const lbData = await lbResponse.json();
+                                const lbResponse = await api.get('/auth/leaderboard');
+                                if (lbResponse.status === 200) {
+                                    const lbData = lbResponse.data;
                                     const formattedData = lbData.leaderboard.map((userItem, index) => ({
                                         rank: index + 1,
                                         name: userItem.username,

@@ -319,6 +319,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import api from '../services/api';
 import {
   MdRocketLaunch,
   MdEmail,
@@ -390,22 +391,11 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(loginData)
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Login failed');
-      }
-
-      login(data.user);
+      const response = await api.post('/auth/login', loginData);
+      login(response.data.user);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.error || err.message || 'Login failed');
     } finally {
       setLoading(false);
     }
@@ -418,17 +408,7 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(registerData)
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Registration failed');
-      }
+      const response = await api.post('/auth/register', registerData);
 
       // Show success message and switch to login
       setShowVerifyOverlay(true);
@@ -440,7 +420,7 @@ const LoginPage = () => {
         location: ''
       });
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.error || err.message || 'Registration failed');
     } finally {
       setLoading(false);
     }

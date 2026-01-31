@@ -38,6 +38,7 @@ import {
     getISSPass,
     getAuroraData,
     getSolarFlares,
+    default as api
 } from '../services/api';
 import SpaceDebrisGlobe from '../components/SpaceDebrisGlobe';
 import TempAnomalyChart from '../components/TempAnomalyChart';
@@ -122,11 +123,7 @@ const Dashboard = () => {
         if (user) {
             try {
                 // Update backend
-                await fetch(`http://localhost:5000/api/users/profile/${user.id}/tutorial`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ tutorialCompleted: true })
-                });
+                await api.put(`/users/profile/${user.id}/tutorial`, { tutorialCompleted: true });
 
                 // Update local context
                 updateUser({ ...user, tutorialCompleted: true });
@@ -202,19 +199,15 @@ const Dashboard = () => {
         const fetchSpaceXData = async () => {
             try {
                 // Using the backend query endpoint to get upcoming launches
-                const response = await fetch('http://localhost:5000/api/spacex/launches/query', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        query: { upcoming: true },
-                        options: {
-                            limit: 3,
-                            sort: { date_utc: 'asc' },
-                            select: ['name', 'date_utc', 'details', 'links', 'flight_number', 'rocket']
-                        }
-                    })
+                const response = await api.post('/spacex/launches/query', {
+                    query: { upcoming: true },
+                    options: {
+                        limit: 3,
+                        sort: { date_utc: 'asc' },
+                        select: ['name', 'date_utc', 'details', 'links', 'flight_number', 'rocket']
+                    }
                 });
-                const data = await response.json();
+                const data = response.data;
                 if (data.docs) {
                     setSpacexData(data.docs);
                 }
@@ -231,7 +224,7 @@ const Dashboard = () => {
             // A. Fetch Backend Notifications
             if (user && user.id) {
                 try {
-                    const res = await axios.get(`http://localhost:5000/api/notifications/${user.id}`);
+                    const res = await api.get(`/notifications/${user.id}`);
                     backendNotifs = res.data.notifications || [];
                 } catch (err) {
                     console.error("Failed to fetch notifications", err);
@@ -296,7 +289,7 @@ const Dashboard = () => {
             if (isBackend) {
                 // Call API
                 try {
-                    await axios.put(`http://localhost:5000/api/notifications/${notif._id}/read`);
+                    await api.put(`/notifications/${notif._id}/read`);
                     // Update State Locally
                     setNotifications(prev => prev.map(n => n._id === notif._id ? { ...n, isRead: true } : n));
                     setUnreadCount(prev => Math.max(0, prev - 1));
@@ -326,7 +319,7 @@ const Dashboard = () => {
         // Mark Backend Read
         if (user && user.id) {
             try {
-                await axios.put(`http://localhost:5000/api/notifications/${user.id}/read-all`);
+                await api.put(`/notifications/${user.id}/read-all`);
             } catch (err) { console.error("Failed to mark all API read", err); }
         }
 

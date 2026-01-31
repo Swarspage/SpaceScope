@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../services/api';
 import Sidebar from '../components/Sidebar';
 import {
     MdTimeline,
@@ -113,8 +114,8 @@ const MissionTimelines = () => {
             // 2. Network Fetch (if no cache or expired)
             try {
                 // Calling the backend aggregate endpoint
-                const res = await fetch('http://localhost:5000/api/aggregate/launches');
-                const data = await res.json();
+                const res = await api.get('/aggregate/launches');
+                const data = res.data;
 
                 let allMissions = [];
 

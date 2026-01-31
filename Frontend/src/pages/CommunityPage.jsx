@@ -43,6 +43,7 @@ import {
   Loader2,
 } from "lucide-react";
 
+import api from "../services/api";
 import axios from "axios";
 import { formatDistanceToNow, format } from "date-fns";
 
@@ -206,7 +207,7 @@ const CommunityPage = () => {
 
   const fetchPosts = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/posts");
+      const res = await api.get("/posts");
       setPosts(res.data);
       setLoading(false);
     } catch (err) {
@@ -247,7 +248,7 @@ const CommunityPage = () => {
     formData.append("user", user?.username || "CosmicExplorer");
 
     try {
-      await axios.post("http://localhost:5000/api/posts", formData, {
+      await api.post("/posts", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       handleCancelCreate();
@@ -287,7 +288,7 @@ const CommunityPage = () => {
       setSelectedPost(updatedPost);
 
     try {
-      await axios.post(`http://localhost:5000/api/posts/${post._id}/like`, {
+      await api.post(`/posts/${post._id}/like`, {
         userId: user.username,
       });
     } catch (err) {
@@ -305,7 +306,7 @@ const CommunityPage = () => {
         setPosts(posts.filter((p) => p._id !== postId));
         if (selectedPost?._id === postId) setSelectedPost(null);
 
-        await axios.delete(`http://localhost:5000/api/posts/${postId}`, {
+        await api.delete(`/posts/${postId}`, {
           data: { userId: user.username },
         });
       } catch (err) {
