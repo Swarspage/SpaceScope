@@ -390,11 +390,19 @@ const LoginPage = () => {
     setError('');
     setLoading(true);
 
+    console.log("Attempting Login...");
+    console.log("API Base URL:", api.defaults.baseURL);
+
     try {
       const response = await api.post('/auth/login', loginData);
+      console.log("Login Success:", response.data);
       login(response.data.user);
       navigate('/dashboard');
     } catch (err) {
+      console.error("Login Error Full:", err);
+      console.log("Error Response:", err.response);
+      console.log("Request URL:", err.config?.url);
+      console.log("Full Request URL:", (err.config?.baseURL || "") + (err.config?.url || ""));
       setError(err.response?.data?.error || err.message || 'Login failed');
     } finally {
       setLoading(false);
@@ -406,6 +414,9 @@ const LoginPage = () => {
     e.preventDefault();
     setError('');
     setLoading(true);
+
+    console.log("Attempting Register...");
+    console.log("API Base URL:", api.defaults.baseURL);
 
     try {
       const response = await api.post('/auth/register', registerData);
@@ -420,6 +431,10 @@ const LoginPage = () => {
         location: ''
       });
     } catch (err) {
+      console.error("Register Error Full:", err);
+      console.log("Error Response:", err.response);
+      console.log("Request URL:", err.config?.url);
+      console.log("Full Request URL:", (err.config?.baseURL || "") + (err.config?.url || ""));
       setError(err.response?.data?.error || err.message || 'Registration failed');
     } finally {
       setLoading(false);
