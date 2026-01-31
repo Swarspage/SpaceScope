@@ -318,11 +318,8 @@ const AuroraPage = () => {
                         whenCreated={setMapInstance}
                     >
                         <TileLayer
-                            attribution='&copy; OpenStreetMap'
-                            url={showCityLights
-                                ? "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}.png"
-                                : "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-                            }
+                            attribution='&copy; OpenStreetMap &copy; CartoDB'
+                            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
                         />
                         {showAurora && coords.map((p, idx) => {
                             if (p.intensity <= 0) return null;
@@ -412,8 +409,6 @@ const AuroraPage = () => {
                     <div className="absolute top-4 right-4 md:top-6 md:right-6 z-[1000] flex flex-col gap-2">
                         <button onClick={() => mapInstance?.zoomIn()} className="cursor-target w-10 h-10 bg-black/60 backdrop-blur border border-white/10 rounded-lg flex items-center justify-center hover:bg-white/10 text-white"><FiPlus /></button>
                         <button onClick={() => mapInstance?.zoomOut()} className="cursor-target w-10 h-10 bg-black/60 backdrop-blur border border-white/10 rounded-lg flex items-center justify-center hover:bg-white/10 text-white"><FiMinus /></button>
-                        <div className="h-2"></div>
-                        <button onClick={() => setShowCityLights(!showCityLights)} className={`cursor-target w-10 h-10 backdrop-blur border rounded-lg flex items-center justify-center transition-all ${showCityLights ? 'bg-[#00d9ff]/20 border-[#00d9ff] text-[#00d9ff]' : 'bg-black/60 border-white/10 text-slate-400'}`}><FiLayers /></button>
                     </div>
 
                     {/* KPI Alert (Top Left Overlay) */}

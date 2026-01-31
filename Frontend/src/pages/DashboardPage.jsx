@@ -8,7 +8,7 @@ import { MapContainer, TileLayer, CircleMarker } from "react-leaflet";
 import Sidebar from '../components/Sidebar';
 import Tutorial from '../components/Tutorial';
 import meteorEvents from '../data/meteorData.json';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import {
     MdRocketLaunch,
     MdNotifications,
@@ -33,7 +33,7 @@ import {
 } from 'react-icons/wi';
 import { BsFillLightningChargeFill } from 'react-icons/bs';
 import { FaUserAstronaut } from 'react-icons/fa';
-import {
+import api, {
     getISSLocation,
     getISSPass,
     getAuroraData,
@@ -122,11 +122,8 @@ const DashboardPage = () => {
         if (user) {
             try {
                 // Update backend
-                await fetch(`http://localhost:5000/api/users/profile/${user.id}/tutorial`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ tutorialCompleted: true })
-                });
+                // Update backend using configured API client (handles URL and Auth)
+                await api.put(`/auth/profile/${user.id}/tutorial`, { tutorialCompleted: true });
 
                 // Update local context
                 updateUser({ ...user, tutorialCompleted: true });
@@ -703,7 +700,7 @@ const DashboardPage = () => {
                                         zoomControl={false}
                                         scrollWheelZoom={false}
                                     >
-                                        <TileLayer attribution='&copy; CartoDB' url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}.png" />
+                                        <TileLayer attribution='&copy; OpenStreetMap &copy; CartoDB' url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" />
                                         {auroraPoints.map((p, idx) => (
                                             <CircleMarker
                                                 key={`aurora-${idx}`}
@@ -1087,4 +1084,4 @@ const DashboardPage = () => {
     );
 };
 
-export default Dashboard;
+export default DashboardPage;
