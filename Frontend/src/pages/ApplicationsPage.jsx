@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { MapContainer, TileLayer, Polygon, useMap, GeoJSON } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
-import { Layers, Cloud, Calendar, AlertTriangle, Loader2, ArrowLeftRight, Activity, Wind, Info, Map as MapIcon, Thermometer, ChevronLeft, Search, Satellite } from 'lucide-react';
+import { Layers, Cloud, Calendar, AlertTriangle, Loader2, ArrowLeftRight, Activity, Wind, Info, Map as MapIcon, Thermometer, ChevronLeft, Search, Satellite, Leaf } from 'lucide-react';
 import CO2Chart from '../components/CO2Chart';
 import TempAnomalyChart from '../components/TempAnomalyChart';
 import LightPollutionMap from '../components/LightPollutionMap';
 import CloudCoverMap from '../components/CloudCoverMap';
 import SpaceDebrisGlobe from '../components/SpaceDebrisGlobe';
 import FeatureInfoModal from '../components/FeatureInfoModal';
+import CO2CalculatorModal from '../components/CO2CalculatorModal';
 
 
 // Images
@@ -153,6 +154,7 @@ const NDVIMap = () => {
     const [searchBoundary, setSearchBoundary] = useState(null);
     const [showInfoModal, setShowInfoModal] = useState(false);
     const [showGuideModal, setShowGuideModal] = useState(false);
+    const [showCalculator, setShowCalculator] = useState(false);
 
     const activeChannelData = CHANNELS.find(c => c.id === activeChannel);
 
@@ -725,6 +727,15 @@ const NDVIMap = () => {
                                 Learn More
                             </button>
                         </div>
+                        {activeChannel === 'co2' && (
+                            <button
+                                onClick={() => setShowCalculator(true)}
+                                className="w-full mb-4 py-3 bg-gradient-to-r from-[#00ff88]/20 to-[#00d9ff]/20 hover:from-[#00ff88]/30 hover:to-[#00d9ff]/30 border border-[#00ff88]/50 rounded-xl flex items-center justify-center gap-2 text-white font-bold transition-all shadow-lg animate-pulse"
+                            >
+                                <Leaf className="text-[#00ff88]" size={20} />
+                                <span className="uppercase tracking-wider text-xs">Simulate Solution</span>
+                            </button>
+                        )}
                         <p className="text-sm text-slate-400 line-clamp-3 mb-4">
                             {activeChannelData.description}
                         </p>
@@ -772,6 +783,21 @@ const NDVIMap = () => {
                             <Info size={18} className="group-hover:scale-110 transition-transform relative z-10" />
                             <span className="relative z-10">Learn More</span>
                         </button>
+
+                        {activeChannel === 'co2' && (
+                            <button
+                                onClick={() => setShowCalculator(true)}
+                                className="cursor-target relative mt-3 w-full py-4 bg-gradient-to-r from-[#00ff88]/10 to-[#00d9ff]/10 hover:from-[#00ff88]/20 hover:to-[#00d9ff]/20 border border-[#00ff88]/30 hover:border-[#00ff88] rounded-xl text-white font-bold transition-all duration-300 flex items-center justify-center gap-3 group shadow-lg"
+                            >
+                                <div className="p-2 bg-[#00ff88]/20 rounded-full text-[#00ff88] group-hover:scale-110 transition-transform">
+                                    <Leaf size={20} />
+                                </div>
+                                <div className="text-left">
+                                    <div className="text-[10px] uppercase text-[#00ff88] tracking-widest font-black">Interactive</div>
+                                    <div className="text-sm leading-none">Simulate Solutions</div>
+                                </div>
+                            </button>
+                        )}
                     </div>
 
 
@@ -855,6 +881,11 @@ const NDVIMap = () => {
                         icon: <Info className="text-lg" />
                     }
                 ]}
+            />
+            {/* Calculator Modal */}
+            <CO2CalculatorModal
+                isOpen={showCalculator}
+                onClose={() => setShowCalculator(false)}
             />
         </div >
 
