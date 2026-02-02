@@ -19,30 +19,56 @@ const THEME = {
     glowCSS: "0 0 18px rgba(0,217,255,0.18)",
 };
 
-/* ---------- Cyan ISS icon for the map ---------- */
+/* ---------- Detailed Satellite icon for the 2D Leaflet map ---------- */
 const issIcon = L.divIcon({
     className: 'custom-iss-marker',
     html: `
-        <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-            <g filter="url(#glow)">
-                <path d="M12 24h-8v-2h8v2zm32 0h-8v-2h8v2zM24 12v-8h2v8h-2zm0 32v-8h2v8h-2zm-4-20h8v8h-8v-8z" 
-                      fill="#00d9ff" stroke="#00d9ff" stroke-width="1"/>
-                <circle cx="24" cy="24" r="3" fill="#ffffff" />
-            </g>
-            <defs>
-                <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-                    <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-                    <feMerge>
-                        <feMergeNode in="coloredBlur"/>
-                        <feMergeNode in="SourceGraphic"/>
-                    </feMerge>
-                </filter>
-            </defs>
-        </svg>
+        <div style="position: relative; width: 64px; height: 64px; animation: pulse-glow 2s ease-in-out infinite;">
+            <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 8px #00d9ff) drop-shadow(0 0 20px rgba(0,217,255,0.5));">
+                <!-- Solar Panel Left -->
+                <rect x="4" y="26" width="18" height="12" rx="1" fill="#1a3a4a" stroke="#00d9ff" stroke-width="1.5"/>
+                <line x1="8" y1="26" x2="8" y2="38" stroke="#00d9ff" stroke-width="0.5" opacity="0.6"/>
+                <line x1="12" y1="26" x2="12" y2="38" stroke="#00d9ff" stroke-width="0.5" opacity="0.6"/>
+                <line x1="16" y1="26" x2="16" y2="38" stroke="#00d9ff" stroke-width="0.5" opacity="0.6"/>
+                <line x1="4" y1="32" x2="22" y2="32" stroke="#00d9ff" stroke-width="0.5" opacity="0.6"/>
+                
+                <!-- Solar Panel Right -->
+                <rect x="42" y="26" width="18" height="12" rx="1" fill="#1a3a4a" stroke="#00d9ff" stroke-width="1.5"/>
+                <line x1="46" y1="26" x2="46" y2="38" stroke="#00d9ff" stroke-width="0.5" opacity="0.6"/>
+                <line x1="50" y1="26" x2="50" y2="38" stroke="#00d9ff" stroke-width="0.5" opacity="0.6"/>
+                <line x1="54" y1="26" x2="54" y2="38" stroke="#00d9ff" stroke-width="0.5" opacity="0.6"/>
+                <line x1="42" y1="32" x2="60" y2="32" stroke="#00d9ff" stroke-width="0.5" opacity="0.6"/>
+                
+                <!-- Main Body -->
+                <rect x="22" y="24" width="20" height="16" rx="3" fill="#0d1b2a" stroke="#00d9ff" stroke-width="2"/>
+                
+                <!-- Body Details -->
+                <rect x="26" y="28" width="12" height="3" rx="1" fill="#00d9ff" opacity="0.3"/>
+                <rect x="26" y="33" width="8" height="2" rx="0.5" fill="#00d9ff" opacity="0.5"/>
+                
+                <!-- Antenna -->
+                <line x1="32" y1="24" x2="32" y2="16" stroke="#00d9ff" stroke-width="1.5"/>
+                <circle cx="32" cy="14" r="2" fill="#00d9ff"/>
+                
+                <!-- Thrusters -->
+                <rect x="24" y="40" width="4" height="4" fill="#ff6b6b" opacity="0.8"/>
+                <rect x="36" y="40" width="4" height="4" fill="#ff6b6b" opacity="0.8"/>
+                
+                <!-- Center Glow -->
+                <circle cx="32" cy="32" r="4" fill="#00d9ff" opacity="0.4"/>
+                <circle cx="32" cy="32" r="2" fill="#ffffff"/>
+            </svg>
+        </div>
+        <style>
+            @keyframes pulse-glow {
+                0%, 100% { filter: drop-shadow(0 0 5px rgba(0,217,255,0.8)); }
+                50% { filter: drop-shadow(0 0 15px rgba(0,217,255,1)); }
+            }
+        </style>
     `,
-    iconSize: [48, 48],
-    iconAnchor: [24, 24],
-    popupAnchor: [0, -24],
+    iconSize: [64, 64],
+    iconAnchor: [32, 32],
+    popupAnchor: [0, -32],
 });
 
 function formatTimestamp(ts) {
@@ -151,14 +177,75 @@ export default function ISSTracker() {
         } catch (e) { }
     }, [iss]);
 
-    const globeMarkers = useMemo(() => {
+    // Create satellite element for the 3D globe
+    const createSatelliteElement = () => {
+        const el = document.createElement('div');
+        el.innerHTML = `
+            <div style="position: relative; width: 80px; height: 80px; transform: translate(-50%, -50%);">
+                <svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 12px #00d9ff) drop-shadow(0 0 30px rgba(0,217,255,0.6)); animation: satellite-pulse 2s ease-in-out infinite;">
+                    <!-- Outer Glow Ring -->
+                    <circle cx="40" cy="40" r="38" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.3" style="animation: ring-pulse 3s ease-in-out infinite;"/>
+                    
+                    <!-- Solar Panel Left -->
+                    <rect x="5" y="32" width="22" height="16" rx="2" fill="#0d2137" stroke="#00d9ff" stroke-width="2"/>
+                    <line x1="10" y1="32" x2="10" y2="48" stroke="#00d9ff" stroke-width="0.8" opacity="0.5"/>
+                    <line x1="15" y1="32" x2="15" y2="48" stroke="#00d9ff" stroke-width="0.8" opacity="0.5"/>
+                    <line x1="20" y1="32" x2="20" y2="48" stroke="#00d9ff" stroke-width="0.8" opacity="0.5"/>
+                    <line x1="5" y1="40" x2="27" y2="40" stroke="#00d9ff" stroke-width="0.8" opacity="0.5"/>
+                    
+                    <!-- Solar Panel Right -->
+                    <rect x="53" y="32" width="22" height="16" rx="2" fill="#0d2137" stroke="#00d9ff" stroke-width="2"/>
+                    <line x1="58" y1="32" x2="58" y2="48" stroke="#00d9ff" stroke-width="0.8" opacity="0.5"/>
+                    <line x1="63" y1="32" x2="63" y2="48" stroke="#00d9ff" stroke-width="0.8" opacity="0.5"/>
+                    <line x1="68" y1="32" x2="68" y2="48" stroke="#00d9ff" stroke-width="0.8" opacity="0.5"/>
+                    <line x1="53" y1="40" x2="75" y2="40" stroke="#00d9ff" stroke-width="0.8" opacity="0.5"/>
+                    
+                    <!-- Main Body -->
+                    <rect x="27" y="28" width="26" height="24" rx="4" fill="#0a1929" stroke="#00d9ff" stroke-width="2.5"/>
+                    
+                    <!-- Body Panels -->
+                    <rect x="31" y="33" width="18" height="5" rx="1" fill="#00d9ff" opacity="0.25"/>
+                    <rect x="31" y="41" width="12" height="3" rx="1" fill="#00d9ff" opacity="0.4"/>
+                    
+                    <!-- Antenna -->
+                    <line x1="40" y1="28" x2="40" y2="16" stroke="#00d9ff" stroke-width="2"/>
+                    <circle cx="40" cy="13" r="3" fill="#00d9ff"/>
+                    <circle cx="40" cy="13" r="5" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.5" style="animation: signal-pulse 1.5s ease-out infinite;"/>
+                    
+                    <!-- Thrusters -->
+                    <rect x="30" y="52" width="6" height="5" rx="1" fill="#ff6b6b" opacity="0.9"/>
+                    <rect x="44" y="52" width="6" height="5" rx="1" fill="#ff6b6b" opacity="0.9"/>
+                    
+                    <!-- Center Core Glow -->
+                    <circle cx="40" cy="40" r="6" fill="#00d9ff" opacity="0.5"/>
+                    <circle cx="40" cy="40" r="3" fill="#ffffff"/>
+                </svg>
+                <style>
+                    @keyframes satellite-pulse {
+                        0%, 100% { opacity: 0.9; }
+                        50% { opacity: 1; }
+                    }
+                    @keyframes ring-pulse {
+                        0%, 100% { r: 38; opacity: 0.3; }
+                        50% { r: 40; opacity: 0.5; }
+                    }
+                    @keyframes signal-pulse {
+                        0% { r: 5; opacity: 0.5; }
+                        100% { r: 12; opacity: 0; }
+                    }
+                </style>
+            </div>
+        `;
+        el.style.pointerEvents = 'none';
+        return el;
+    };
+
+    const globeHtmlElements = useMemo(() => {
         if (!iss) return [];
         return [{
             lat: iss.lat,
             lng: iss.lng,
-            size: 1.5,
-            color: "#ffffff",
-            label: `ISS`,
+            id: 'iss',
         }];
     }, [iss]);
 
@@ -274,13 +361,11 @@ export default function ISSTracker() {
                         showAtmosphere={true}
                         atmosphereColor={THEME.primary}
                         atmosphereAltitude={0.15}
-                        pointsData={globeMarkers}
-                        pointLat={(d) => d.lat}
-                        pointLng={(d) => d.lng}
-                        pointColor={(d) => d.color}
-                        pointRadius={(d) => d.size}
-                        pointAltitude={0.1}
-                        pointLabel={(d) => d.label}
+                        htmlElementsData={globeHtmlElements}
+                        htmlLat={(d) => d.lat}
+                        htmlLng={(d) => d.lng}
+                        htmlAltitude={0.08}
+                        htmlElement={createSatelliteElement}
                         animateIn={true}
                     />
                     <div className="absolute top-4 left-4 md:top-6 md:left-6 pointer-events-none">

@@ -670,7 +670,7 @@ const LearningPage = () => {
     const VideoCard = ({ video, onClick }) => (
         <div
             onClick={() => onClick(video)}
-            className="cursor-target group min-w-[300px] md:min-w-[360px] rounded-2xl overflow-hidden bg-black/30 backdrop-blur-md border border-white/5 hover:border-[#00d9ff]/30 transition-all hover:-translate-y-1 cursor-pointer flex flex-col snap-start"
+            className="cursor-target group min-w-[85vw] sm:min-w-[300px] md:min-w-[360px] rounded-2xl overflow-hidden bg-black/30 backdrop-blur-md border border-white/5 hover:border-[#00d9ff]/30 transition-all hover:-translate-y-1 cursor-pointer flex flex-col snap-start"
         >
             <div className="relative aspect-video bg-black overflow-hidden">
                 {video.thumbnail ? (
@@ -721,7 +721,7 @@ const LearningPage = () => {
 
                 {/* Main Content */}
                 <main className="flex-1 overflow-y-auto">
-                    <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between">
+                    <div className="px-4 py-3 md:px-6 md:py-4 border-b border-white/5 flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <GraduationCap className="text-[#00d9ff]" size={28} />
                             <div>
@@ -763,7 +763,7 @@ const LearningPage = () => {
                     </div>
 
                     {/* Content */}
-                    <div className="flex p-8">
+                    <div className="flex flex-col md:flex-row p-4 md:p-8">
                         <div className={`flex-1 ${showLeaderboard && activeTab !== 'Leaderboard' ? 'xl:w-[70%]' : 'w-full'}`}>
                             {activeTab === 'Quizzes' && (
                                 <div>
@@ -855,7 +855,7 @@ const LearningPage = () => {
                                                 <button
                                                     key={topic}
                                                     onClick={() => setArticleTopic(topic)}
-                                                    className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all border ${articleTopic === topic
+                                                    className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all border shrink-0 ${articleTopic === topic
                                                         ? 'bg-[#00d9ff] text-black border-[#00d9ff]'
                                                         : 'bg-white/5 text-slate-400 border-white/5 hover:bg-white/10 hover:text-white'
                                                         }`}
@@ -876,7 +876,7 @@ const LearningPage = () => {
                                                     <div className="p-2 rounded-lg bg-green-500/10 text-green-400"><FileText size={18} /></div>
                                                     <h2 className="text-xl font-bold text-white">Start Here</h2>
                                                 </div>
-                                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                                                     {articleSections.startHere.map((article, idx) => (
                                                         <ArticleCard key={article.id || idx} article={article} onClick={setActiveArticle} />
                                                     ))}
@@ -891,7 +891,7 @@ const LearningPage = () => {
                                                     <div className="p-2 rounded-lg bg-purple-500/10 text-purple-400"><LayoutGrid size={18} /></div>
                                                     <h2 className="text-xl font-bold text-white">Deep Dives</h2>
                                                 </div>
-                                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                                                     {articleSections.deepDives.map((article, idx) => (
                                                         <ArticleCard key={article.id || idx} article={article} onClick={setActiveArticle} />
                                                     ))}
@@ -906,7 +906,7 @@ const LearningPage = () => {
                                                     <div className="p-2 rounded-lg bg-blue-500/10 text-blue-400"><Sparkles size={18} /></div>
                                                     <h2 className="text-xl font-bold text-white">Updates & Discoveries</h2>
                                                 </div>
-                                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                                                     {articleSections.updates.map((article, idx) => (
                                                         <ArticleCard key={article.id || idx} article={article} onClick={setActiveArticle} />
                                                     ))}
@@ -938,7 +938,7 @@ const LearningPage = () => {
                                                         <div className="p-2 rounded-lg bg-[#00d9ff]/10 text-[#00d9ff]"><Video size={18} /></div>
                                                         <h2 className="text-xl font-bold text-white">{section.title}</h2>
                                                     </div>
-                                                    <div className="flex gap-2">
+                                                    <div className="hidden md:flex gap-2">
                                                         <button
                                                             onClick={() => document.getElementById(`carousel-${section.id}`).scrollBy({ left: -300, behavior: 'smooth' })}
                                                             className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
