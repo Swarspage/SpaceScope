@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
+import { getAuroraData } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import {
     MapContainer,
@@ -84,6 +85,7 @@ const AuroraPage = () => {
     const [mapInstance, setMapInstance] = useState(null);
     const [showInfoModal, setShowInfoModal] = useState(false);
     const [showAIPopup, setShowAIPopup] = useState(false);
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false); // Mobile Settings Toggle
 
     const auroraFeatureData = {
         label: "Aurora Forecast",
@@ -256,54 +258,45 @@ const AuroraPage = () => {
 
             {/* Header */}
             {/* Header */}
-            <header className="h-[10vh] min-h-[80px] flex items-center justify-between px-4 md:px-8 border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 focus:z-[2000] z-[2000] md:p-5">
-                <div className="flex items-center gap-4">
-                    <button
-                        onClick={() => navigate('/dashboard')}
-                        className="cursor-target w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-[#00d9ff]/30 text-slate-400 hover:text-[#00d9ff] transition-all flex-shrink-0"
-                    >
-                        <MdChevronLeft className="text-2xl" />
-                    </button>
-                    <div>
-                        <h1 className="hidden md:flex text-2xl font-bold text-white tracking-wide items-center gap-2">
-                            <FiActivity className="text-[#00d9ff] text-2xl" />
-                            AURORA <span className="text-slate-500">FORECAST</span>
-                        </h1>
-                        <h1 className="md:hidden text-lg font-bold text-white tracking-wide flex items-center gap-2">
-                            <FiActivity className="text-[#00d9ff] text-xl" />
-                            AURORA
-                        </h1>
-                        <p className="hidden md:block text-xs text-[#00d9ff] font-mono tracking-widest uppercase">
-                            Magnetospheric Particle Map // NOAA Feed
-                        </p>
+            <header className="h-[auto] md:h-[10vh] min-h-[80px] px-4 py-4 md:px-8 border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 focus:z-[2000] z-[2000] flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-0">
+                <div className="flex items-center justify-between w-full md:w-auto">
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => navigate('/dashboard')}
+                            className="cursor-target w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-[#00d9ff]/30 text-slate-400 hover:text-[#00d9ff] transition-all flex-shrink-0"
+                        >
+                            <MdChevronLeft className="text-2xl" />
+                        </button>
+                        <div>
+                            <h1 className="md:flex text-lg md:text-2xl font-bold text-white tracking-wide flex items-center gap-2">
+                                <FiActivity className="text-[#00d9ff] text-xl md:text-2xl" />
+                                AURORA <span className="hidden md:inline text-slate-500">FORECAST</span>
+                            </h1>
+                            <p className="hidden md:block text-xs text-[#00d9ff] font-mono tracking-widest uppercase">
+                                Magnetospheric Particle Map // NOAA Feed
+                            </p>
+                        </div>
                     </div>
 
-
+                    {/* Mobile Settings Toggle */}
                     <button
-                        onClick={() => setShowInfoModal(true)}
-                        className="hidden md:flex cursor-target ml-6 px-6 py-3 bg-[#00ff88]/20 hover:bg-[#00ff88]/40 border-2 border-[#00ff88] rounded-full text-white text-xs font-black uppercase tracking-widest transition-all duration-300 items-center gap-2 shadow-[0_0_20px_rgba(0,255,136,0.4)] hover:shadow-[0_0_40px_rgba(0,255,136,0.6)] animate-pulse"
+                        onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+                        className="md:hidden p-2 text-[#00d9ff] border border-[#00d9ff]/30 rounded-lg bg-[#00d9ff]/10"
                     >
-                        <MdInfoOutline className="text-lg" />
-                        Learn More
-                    </button>
-
-                    <button
-                        onClick={() => setShowAIPopup(true)}
-                        className="hidden md:flex cursor-target ml-2 px-6 py-3 bg-[#0a0e17] hover:bg-[#151a25] border border-[#00ff88]/50 rounded-full text-[#00ff88] text-xs font-black uppercase tracking-widest transition-all duration-300 items-center gap-2 hover:shadow-[0_0_15px_rgba(0,255,136,0.2)]"
-                    >
-                        <MdSmartToy className="text-lg" />
-                        Ask AI
+                        {isSettingsOpen ? <FiMinus size={20} /> : <FiLayers size={20} />}
                     </button>
                 </div>
 
-                <div className="flex gap-2 md:gap-3 items-center">
+
+                {/* Desktop Controls (Standard) */}
+                <div className="hidden md:flex gap-3 items-center">
                     <button
                         onClick={() => setAutoRefresh(!autoRefresh)}
                         className={`cursor-target px-3 md:px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider border transition-all flex items-center gap-2 ${autoRefresh ? 'bg-[#00d9ff]/10 border-[#00d9ff]/30 text-[#00d9ff]' : 'bg-black/40 border-white/10 text-slate-400'
                             }`}
                     >
                         <FiRefreshCw className={dataFetching ? "animate-spin" : ""} />
-                        <span className="hidden md:inline">{autoRefresh ? "Auto-Sync" : "Manual"}</span>
+                        <span>{autoRefresh ? "Auto-Sync" : "Manual"}</span>
                     </button>
 
                     <button
@@ -312,7 +305,7 @@ const AuroraPage = () => {
                         className={`cursor-target px-3 md:px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider border transition-all flex items-center gap-2 ${isLocating ? 'bg-[#00d9ff]/10 border-[#00d9ff]/30 text-[#00d9ff]' : 'bg-white/5 border-white/20 hover:bg-white/10 hover:border-[#00d9ff]/50 hover:text-[#00d9ff]'}`}
                     >
                         {isLocating ? <FiRefreshCw className="animate-spin" /> : <FiNavigation />}
-                        <span className="hidden md:inline">{isLocating ? "Locating..." : "Find Best View"}</span>
+                        <span>{isLocating ? "Locating..." : "Find Best View"}</span>
                     </button>
 
                     <button
@@ -321,25 +314,94 @@ const AuroraPage = () => {
                         className={`cursor-target px-3 md:px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider border transition-all flex items-center gap-2 ${cooldown > 0 ? 'opacity-50 cursor-not-allowed border-white/5' : 'bg-white/5 border-white/20 hover:bg-white/10'
                             }`}
                     >
-                        <FiActivity className="md:hidden" />
-                        <span className="hidden md:inline">{cooldown > 0 ? `Wait ${Math.floor(cooldown / 60)}:${(cooldown % 60).toString().padStart(2, '0')}` : "Force Refresh"}</span>
-                        {cooldown > 0 && <span className="md:hidden font-mono">{Math.floor(cooldown / 60)}:{((cooldown % 60).toString().padStart(2, '0'))}</span>}
+                        <FiActivity />
+                        <span>{cooldown > 0 ? `Wait ${Math.floor(cooldown / 60)}:${(cooldown % 60).toString().padStart(2, '0')}` : "Force Refresh"}</span>
                     </button>
 
                     <button
                         onClick={() => setShowInfoModal(true)}
-                        className="md:hidden w-10 h-10 rounded-lg bg-[#00ff88]/10 border border-[#00ff88]/30 flex items-center justify-center text-[#00ff88]"
+                        className="cursor-target ml-4 px-6 py-3 bg-[#00ff88]/20 hover:bg-[#00ff88]/40 border-2 border-[#00ff88] rounded-full text-white text-xs font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 shadow-[0_0_20px_rgba(0,255,136,0.4)] hover:shadow-[0_0_40px_rgba(0,255,136,0.6)] animate-pulse"
                     >
-                        <MdInfoOutline size={20} />
+                        <MdInfoOutline className="text-lg" />
+                        Learn More
                     </button>
 
                     <button
                         onClick={() => setShowAIPopup(true)}
-                        className="md:hidden w-10 h-10 rounded-lg bg-[#00ff88]/10 border border-[#00ff88]/30 flex items-center justify-center text-[#00ff88]"
+                        className="cursor-target ml-1 px-6 py-3 bg-[#0a0e17] hover:bg-[#151a25] border border-[#00ff88]/50 rounded-full text-[#00ff88] text-xs font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 hover:shadow-[0_0_15px_rgba(0,255,136,0.2)]"
                     >
-                        <MdSmartToy size={20} />
+                        <MdSmartToy className="text-lg" />
+                        Ask AI
                     </button>
                 </div>
+
+                {/* Mobile Collapsible Menu */}
+                {isSettingsOpen && (
+                    <div className="md:hidden flex flex-col gap-3 mt-2 bg-[#0a0e17] border border-white/10 p-4 rounded-xl animate-in slide-in-from-top-2">
+                        <div className="grid grid-cols-2 gap-3">
+                            <button
+                                onClick={() => setAutoRefresh(!autoRefresh)}
+                                className={`p-3 rounded-lg text-xs font-bold uppercase border flex items-center justify-center gap-2 ${autoRefresh ? 'bg-[#00d9ff]/20 text-[#00d9ff] border-[#00d9ff]/50' : 'bg-white/5 border-white/10 text-slate-400'}`}
+                            >
+                                <FiRefreshCw className={dataFetching ? "animate-spin" : ""} />
+                                {autoRefresh ? "Sync On" : "Sync Off"}
+                            </button>
+
+                            <button
+                                onClick={handleForceRefresh}
+                                disabled={cooldown > 0}
+                                className={`p-3 rounded-lg text-xs font-bold uppercase border flex items-center justify-center gap-2 ${cooldown > 0 ? 'bg-white/5 border-white/5 text-slate-600' : 'bg-white/5 border-white/20 text-white'}`}
+                            >
+                                <FiActivity />
+                                {cooldown > 0 ? `${Math.floor(cooldown / 60)}:${(cooldown % 60).toString().padStart(2, '0')}` : "Refresh"}
+                            </button>
+                        </div>
+
+                        <button
+                            onClick={() => { handleLocateBestSpot(); setIsSettingsOpen(false); }}
+                            className="w-full p-3 bg-blue-500/20 border border-blue-500/50 text-blue-400 rounded-lg text-xs font-bold uppercase flex items-center justify-center gap-2"
+                        >
+                            <FiNavigation />
+                            Find Best Viewing Spot
+                        </button>
+
+                        <div className="flex gap-2 mt-2 pt-3 border-t border-white/10">
+                            <button
+                                onClick={() => { setShowAIPopup(true); setIsSettingsOpen(false); }}
+                                className="flex-1 py-3 bg-[#0a0e17] border border-[#00ff88]/50 rounded-lg text-[#00ff88] text-xs font-bold uppercase flex items-center justify-center gap-2"
+                            >
+                                <MdSmartToy size={16} />
+                                Ask AI
+                            </button>
+                            <button
+                                onClick={() => { setShowInfoModal(true); setIsSettingsOpen(false); }}
+                                className="flex-1 py-3 bg-[#00ff88]/10 border border-[#00ff88]/30 rounded-lg text-[#00ff88] text-xs font-bold uppercase flex items-center justify-center gap-2"
+                            >
+                                <MdInfoOutline size={16} />
+                                Learn More
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {/* Mobile Persistent AI Button (Bottom Right Optional or Header Inline) */}
+                {!isSettingsOpen && (
+                    <div className="md:hidden flex gap-2">
+                        <button
+                            onClick={handleLocateBestSpot}
+                            className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-xs font-bold text-slate-300 flex items-center justify-center gap-2"
+                        >
+                            <FiNavigation /> Best Spot
+                        </button>
+                        <button
+                            onClick={() => setShowAIPopup(true)}
+                            className="px-4 py-2 bg-[#0a0e17] border border-[#00ff88]/50 rounded-lg text-[#00ff88]"
+                        >
+                            <MdSmartToy size={20} />
+                        </button>
+                    </div>
+                )}
+
             </header >
 
             {/* Main Content (Fullscreen Map) */}

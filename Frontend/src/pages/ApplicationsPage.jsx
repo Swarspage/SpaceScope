@@ -732,12 +732,20 @@ const NDVIMap = () => {
                                 <activeChannelData.icon size={18} className="text-[#00ff88]" />
                                 {activeChannelData.label}
                             </h2>
-                            <button
-                                onClick={() => setShowInfoModal(true)}
-                                className="text-[#00ff88] text-xs font-bold uppercase border border-[#00ff88]/50 px-3 py-1 rounded-full"
-                            >
-                                Learn More
-                            </button>
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() => setShowAIPopup(true)}
+                                    className="text-[#00ff88] text-xs font-bold uppercase border border-[#00ff88]/50 px-3 py-1 rounded-full flex items-center gap-1"
+                                >
+                                    <MdSmartToy size={14} /> Ask AI
+                                </button>
+                                <button
+                                    onClick={() => setShowInfoModal(true)}
+                                    className="text-[#00ff88] text-xs font-bold uppercase border border-[#00ff88]/50 px-3 py-1 rounded-full"
+                                >
+                                    Learn More
+                                </button>
+                            </div>
                         </div>
                         {activeChannel === 'co2' && (
                             <button

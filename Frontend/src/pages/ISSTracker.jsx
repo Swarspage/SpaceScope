@@ -86,10 +86,11 @@ export default function ISSTracker() {
     const navigate = useNavigate();
     const [activeView, setActiveView] = useState('map');
     const [iss, setIss] = useState(null);
-    const [pollMs, setPollMs] = useState(5000);
+    const [pollMs, setPollMs] = useState(15000);
     const [showInfoModal, setShowInfoModal] = useState(false);
     const [showAIPopup, setShowAIPopup] = useState(false);
     const [trajectory, setTrajectory] = useState([]);
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false); // For mobile settings collapse
 
     const issFeatureData = useMemo(() => ({
         label: "ISS Live Tracker",
@@ -323,71 +324,40 @@ export default function ISSTracker() {
             <div className="fixed bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-purple-500/5 rounded-full blur-[100px] pointer-events-none z-0" />
 
             {/* Header */}
-            <header className="h-[10vh] min-h-[80px] flex items-center justify-between px-4 md:px-8 border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 md:p-5 z-[2000]">
-                <div className="flex items-center gap-4">
-                    <button
-                        onClick={() => navigate('/dashboard')}
-                        className="cursor-target w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-[#00d9ff]/30 text-slate-400 hover:text-[#00d9ff] transition-all flex-shrink-0"
-                    >
-                        <MdChevronLeft className="text-2xl" />
-                    </button>
-                    <div className="hidden md:block">
-                        <h1 className="text-2xl font-bold text-white tracking-wide flex items-center gap-2">
-                            <MdSatelliteAlt className="text-[#00d9ff] text-3xl" />
-                            ISS <span className="text-slate-500">TRACKER</span>
-                        </h1>
-                        <p className="text-xs text-[#00d9ff] font-mono tracking-widest uppercase">
-                            Orbital Telemetry // Live Feed
-                        </p>
-                    </div>
+            <header className="h-[auto] md:h-[10vh] min-h-[80px] px-4 py-4 md:px-8 border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 z-[2000] flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-0">
 
-                    {/* Mobile Title (Simplified) */}
-                    <div className="md:hidden">
-                        <h1 className="text-lg font-bold text-white tracking-wide flex items-center gap-2">
-                            ISS <span className="text-slate-500">TRACKER</span>
-                        </h1>
-                    </div>
-
-                    <button
-                        onClick={() => setShowInfoModal(true)}
-                        className="hidden md:flex cursor-target ml-6 px-6 py-3 bg-[#00ff88]/20 hover:bg-[#00ff88]/40 border-2 border-[#00ff88] rounded-full text-white text-xs font-black uppercase tracking-widest transition-all duration-300 items-center gap-2 shadow-[0_0_20px_rgba(0,255,136,0.4)] hover:shadow-[0_0_40px_rgba(0,255,136,0.6)] animate-pulse"
-                    >
-                        <MdInfoOutline className="text-lg" />
-                        Learn More
-                    </button>
-
-                    <button
-                        onClick={() => setShowAIPopup(true)}
-                        className="hidden md:flex cursor-target ml-2 px-6 py-3 bg-[#0a0e17] hover:bg-[#151a25] border border-[#00ff88]/50 rounded-full text-[#00ff88] text-xs font-black uppercase tracking-widest transition-all duration-300 items-center gap-2 hover:shadow-[0_0_15px_rgba(0,255,136,0.2)]"
-                    >
-                        <MdSmartToy className="text-lg" />
-                        Ask AI
-                    </button>
-                </div>
-
-                {/* Mobile View Switcher */}
-                <div className="lg:hidden flex bg-white/5 rounded-lg p-1 border border-white/10 mx-2">
-                    {[
-                        { id: 'orbit', label: '3D' },
-                        { id: 'map', label: '2D' },
-                        { id: 'both', label: 'Both' }
-                    ].map((view) => (
+                {/* Top Row (Mobile & Desktop) */}
+                <div className="flex items-center justify-between w-full md:w-auto">
+                    <div className="flex items-center gap-4">
                         <button
-                            key={view.id}
-                            onClick={() => setActiveView(view.id)}
-                            className={`px-3 py-1.5 rounded-md text-[10px] font-bold uppercase transition-all ${activeView === view.id
-                                ? 'bg-[#00d9ff] text-black shadow-[0_0_15px_rgba(0,217,255,0.4)]'
-                                : 'text-slate-400 hover:text-white'
-                                }`}
+                            onClick={() => navigate('/dashboard')}
+                            className="cursor-target w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-[#00d9ff]/30 text-slate-400 hover:text-[#00d9ff] transition-all flex-shrink-0"
                         >
-                            {view.label}
+                            <MdChevronLeft className="text-2xl" />
                         </button>
-                    ))}
+                        <div>
+                            <h1 className="text-lg md:text-2xl font-bold text-white tracking-wide flex items-center gap-2">
+                                <MdSatelliteAlt className="text-[#00d9ff] text-2xl md:text-3xl" />
+                                ISS <span className="text-slate-500">TRACKER</span>
+                            </h1>
+                            <p className="hidden md:block text-xs text-[#00d9ff] font-mono tracking-widest uppercase">
+                                Orbital Telemetry // Live Feed
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Mobile Desktop Control Toggle */}
+                    <button
+                        onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+                        className="md:hidden p-2 text-[#00d9ff] border border-[#00d9ff]/30 rounded-lg bg-[#00d9ff]/10"
+                    >
+                        <MdAnalytics size={20} />
+                    </button>
                 </div>
 
-
-                <div className="flex items-center gap-3">
-                    <div className="hidden md:flex items-center gap-3 bg-black/40 border border-white/10 rounded-lg p-1.5">
+                {/* Desktop Buttons (Standard) */}
+                <div className="hidden md:flex items-center gap-4">
+                    <div className="flex items-center gap-3 bg-black/40 border border-white/10 rounded-lg p-1.5">
                         <span className="text-[10px] font-bold text-slate-500 px-2 uppercase">Poll Rate</span>
                         {[2000, 5000, 15000].map((ms) => (
                             <button
@@ -403,21 +373,115 @@ export default function ISSTracker() {
                         ))}
                     </div>
 
-                    {/* Mobile Info Button */}
                     <button
                         onClick={() => setShowInfoModal(true)}
-                        className="md:hidden w-10 h-10 rounded-lg bg-[#00ff88]/10 border border-[#00ff88]/30 flex items-center justify-center text-[#00ff88]"
+                        className="cursor-target px-6 py-3 bg-[#00ff88]/20 hover:bg-[#00ff88]/40 border-2 border-[#00ff88] rounded-full text-white text-xs font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 shadow-[0_0_20px_rgba(0,255,136,0.4)] hover:shadow-[0_0_40px_rgba(0,255,136,0.6)] animate-pulse"
                     >
-                        <MdInfoOutline size={20} />
+                        <MdInfoOutline className="text-lg" />
+                        Learn More
                     </button>
 
                     <button
                         onClick={() => setShowAIPopup(true)}
-                        className="md:hidden w-10 h-10 rounded-lg bg-[#00ff88]/10 border border-[#00ff88]/30 flex items-center justify-center text-[#00ff88]"
+                        className="cursor-target px-6 py-3 bg-[#0a0e17] hover:bg-[#151a25] border border-[#00ff88]/50 rounded-full text-[#00ff88] text-xs font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 hover:shadow-[0_0_15px_rgba(0,255,136,0.2)]"
                     >
-                        <MdSmartToy size={20} />
+                        <MdSmartToy className="text-lg" />
+                        Ask AI
                     </button>
                 </div>
+
+                {/* Mobile Collapsible Menu */}
+                {isSettingsOpen && (
+                    <div className="md:hidden flex flex-col gap-4 mt-2 bg-[#0a0e17] border border-white/10 p-4 rounded-xl animate-in slide-in-from-top-2">
+                        {/* View Switcher */}
+                        <div className="flex bg-white/5 rounded-lg p-1 border border-white/10">
+                            {[
+                                { id: 'orbit', label: '3D Globe' },
+                                { id: 'map', label: '2D Map' },
+                                { id: 'both', label: 'Both' }
+                            ].map((view) => (
+                                <button
+                                    key={view.id}
+                                    onClick={() => { setActiveView(view.id); setIsSettingsOpen(false); }}
+                                    className={`flex-1 px-3 py-2 rounded-md text-[10px] font-bold uppercase transition-all ${activeView === view.id
+                                        ? 'bg-[#00d9ff] text-black shadow-[0_0_15px_rgba(0,217,255,0.4)]'
+                                        : 'text-slate-400 hover:text-white'
+                                        }`}
+                                >
+                                    {view.label}
+                                </button>
+                            ))}
+                        </div>
+
+                        {/* Poll Rate */}
+                        <div className="flex flex-col gap-2">
+                            <span className="text-[10px] font-bold text-slate-500 uppercase">Update Frequency</span>
+                            <div className="flex gap-2">
+                                {[2000, 5000, 15000].map((ms) => (
+                                    <button
+                                        key={ms}
+                                        onClick={() => setPollMs(ms)}
+                                        className={`flex-1 py-2 rounded border text-xs font-bold transition-all ${pollMs === ms
+                                            ? 'bg-[#00d9ff]/20 text-[#00d9ff] border-[#00d9ff]/50'
+                                            : 'border-white/10 text-slate-400'
+                                            }`}
+                                    >
+                                        {ms / 1000}s
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="flex gap-2">
+                            <button
+                                onClick={() => { setShowAIPopup(true); setIsSettingsOpen(false); }}
+                                className="flex-1 py-3 bg-[#0a0e17] border border-[#00ff88]/50 rounded-lg text-[#00ff88] text-xs font-bold uppercase flex items-center justify-center gap-2"
+                            >
+                                <MdSmartToy size={16} />
+                                Ask AI
+                            </button>
+                            <button
+                                onClick={() => { setShowInfoModal(true); setIsSettingsOpen(false); }}
+                                className="flex-1 py-3 bg-[#00ff88]/10 border border-[#00ff88]/30 rounded-lg text-[#00ff88] text-xs font-bold uppercase flex items-center justify-center gap-2"
+                            >
+                                <MdInfoOutline size={16} />
+                                Learn More
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {/* Mobile Persistent View Switcher (Bottom Inline) - Optional if collapsible is too hidden */}
+                {/* Only show if settings NOT open to save space */}
+                {!isSettingsOpen && (
+                    <div className="md:hidden flex justify-between items-center gap-2">
+                        <div className="flex bg-white/5 rounded-lg p-1 border border-white/10 flex-1">
+                            {[
+                                { id: 'orbit', label: '3D' },
+                                { id: 'map', label: '2D' },
+                                { id: 'both', label: 'Mix' }
+                            ].map((view) => (
+                                <button
+                                    key={view.id}
+                                    onClick={() => setActiveView(view.id)}
+                                    className={`flex-1 px-2 py-1.5 rounded-md text-[10px] font-bold uppercase transition-all ${activeView === view.id
+                                        ? 'bg-[#00d9ff] text-black'
+                                        : 'text-slate-400'
+                                        }`}
+                                >
+                                    {view.label}
+                                </button>
+                            ))}
+                        </div>
+                        <button
+                            onClick={() => setShowAIPopup(true)}
+                            className="p-2 bg-[#0a0e17] border border-[#00ff88]/50 rounded-lg text-[#00ff88]"
+                        >
+                            <MdSmartToy size={20} />
+                        </button>
+                    </div>
+                )}
+
             </header >
 
             {/* Main Content: Split View */}
