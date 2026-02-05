@@ -2,8 +2,10 @@ import React, { useEffect, useRef, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Globe from "react-globe.gl";
 import "leaflet/dist/leaflet.css";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
 import L from "leaflet";
+import * as satellite from 'satellite.js';
+import axios from 'axios';
 import { MdChevronLeft, MdSatelliteAlt, MdPublic, MdWifi, MdInfoOutline, MdAnalytics, MdViewInAr, MdMap, MdSmartToy } from "react-icons/md";
 import { WiStars } from "react-icons/wi";
 import FeatureInfoModal from "../components/FeatureInfoModal";
@@ -87,6 +89,7 @@ export default function ISSTracker() {
     const [pollMs, setPollMs] = useState(5000);
     const [showInfoModal, setShowInfoModal] = useState(false);
     const [showAIPopup, setShowAIPopup] = useState(false);
+    const [trajectory, setTrajectory] = useState([]);
 
     const issFeatureData = useMemo(() => ({
         label: "ISS Live Tracker",
@@ -118,11 +121,41 @@ export default function ISSTracker() {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    // 1. Poll ISS position
+    // 1. Poll ISS position & Calculate Trajectory
     useEffect(() => {
         let mounted = true;
-        async function fetchISS() {
+
+        const fetchISSAndTrajectory = async () => {
             try {
+                // A. Fetch TLE for Orbit Path (Full Globe Trajectory)
+                // We fetch TLEs once or periodically to generate the path
+                const tleReq = await axios.get('https://api.wheretheiss.at/v1/satellites/25544/tles');
+                if (tleReq.data && mounted) {
+                    const { line1, line2 } = tleReq.data;
+                    const satrec = satellite.twoline2satrec(line1, line2);
+
+                    // Generate points for 2 orbits (approx 3 hours)
+                    // Start from 45 mins ago to 135 mins future to cover "now" and "next"
+                    const now = new Date();
+                    const orbitalPoints = [];
+                    // Calculate a point every minute
+                    for (let i = -45; i <= 135; i++) {
+                        const time = new Date(now.getTime() + i * 60000);
+                        const positionAndVelocity = satellite.propagate(satrec, time);
+                        const gmst = satellite.gstime(time);
+
+                        if (positionAndVelocity.position) { // Check if position exists
+                            const positionGd = satellite.eciToGeodetic(positionAndVelocity.position, gmst);
+                            const lat = satellite.degreesToRadians(positionGd.latitude);
+                            const lng = satellite.degreesToRadians(positionGd.longitude);
+                            // React-Leaflet and Globe expect degrees
+                            orbitalPoints.push([satellite.radiansToDegrees(positionGd.latitude), satellite.radiansToDegrees(positionGd.longitude)]);
+                        }
+                    }
+                    setTrajectory(orbitalPoints);
+                }
+
+                // B. Fetch Current Position (for the Icon)
                 // USE BACKEND PROXY (Fixes Mixed Content Error on Vercel)
                 const res = await api.get("/iss");
                 const data = res.data;
@@ -131,12 +164,16 @@ export default function ISSTracker() {
                 const timestamp = data.timestamp;
                 if (!mounted) return;
                 setIss({ lat, lng, timestamp });
+
+                // Note: We don't append to trajectory anymore, we use the calculated orbit.
             } catch (err) {
-                console.error("ISS fetch error:", err);
+                console.error("ISS data error:", err);
             }
-        }
-        fetchISS();
-        const id = setInterval(fetchISS, pollMs);
+        };
+
+        fetchISSAndTrajectory();
+        const id = setInterval(fetchISSAndTrajectory, pollMs); // Re-calc orbit and pos every poll (a bit expensive to re-calc orbit every 2s, but safe for now)
+
         return () => {
             mounted = false;
             clearInterval(id);
@@ -163,6 +200,8 @@ export default function ISSTracker() {
                         lng: lng,
                         timestamp: Math.floor(time)
                     });
+                    // In sim mode, we don't have TLE, so we can't show full path unless we simulate that too.
+                    // For now, let's just show the point.
                 }, 1000);
 
                 return () => clearInterval(simInterval);
@@ -262,6 +301,10 @@ export default function ISSTracker() {
             id: 'iss',
         }];
     }, [iss]);
+
+    const globePathsData = useMemo(() => {
+        return trajectory.length > 1 ? [[trajectory]] : [];
+    }, [trajectory]);
 
     return (
         <div className="flex flex-col h-screen bg-[#050714] text-slate-300 font-sans overflow-hidden relative">
@@ -404,6 +447,13 @@ export default function ISSTracker() {
                         htmlAltitude={0.08}
                         htmlElement={createSatelliteElement}
                         animateIn={true}
+                        pathsData={globePathsData}
+                        pathPoints={d => d[0]}
+                        pathPointLat={p => p[0]}
+                        pathPointLng={p => p[1]}
+                        pathPointAlt={0.05}
+                        pathColor={() => "#00d9ff"}
+                        pathStroke={2}
                     />
                     <div className="absolute top-4 left-4 md:top-6 md:left-6 pointer-events-none">
                         <div className="bg-black/60 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded text-xs font-mono text-[#00d9ff] flex items-center gap-2">
@@ -439,6 +489,7 @@ export default function ISSTracker() {
                                 </Popup>
                             </Marker>
                         )}
+                        {trajectory.length > 1 && <Polyline positions={trajectory} color="#00d9ff" weight={3} />}
                     </MapContainer>
 
                     <div className="absolute top-4 right-4 md:top-6 md:right-6 pointer-events-none z-[1000]">
