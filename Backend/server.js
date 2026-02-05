@@ -642,4 +642,5 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`SpaceX base: ${SPACEX_BASE}`);
   console.log(`ISRO base: ${ISRO_BASE}`);
+  console.log(`Available Env Vars: ${Object.keys(process.env).filter(k => !k.startsWith('npm_')).join(', ')}`);
 });

@@ -39,6 +39,8 @@ export const chatWithAstro = async (req, res) => {
         }
 
         const apiKey = process.env.GROQ_API_KEY;
+        console.log(`[DEBUG] AI Request - Key Present: ${!!apiKey}, Key Length: ${apiKey ? apiKey.length : 0}`);
+
         if (!apiKey) {
             console.error("GROQ_API_KEY missing");
             return res.status(500).json({
