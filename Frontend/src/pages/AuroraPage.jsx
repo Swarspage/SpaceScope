@@ -24,9 +24,9 @@ import {
     FiNavigation,
     FiTarget
 } from "react-icons/fi";
-import { MdChevronLeft, MdInfoOutline } from "react-icons/md";
-import { getAuroraData } from "../services/api";
 import FeatureInfoModal from "../components/FeatureInfoModal";
+import FeatureAIPopup from "../components/FeatureAIPopup";
+import { MdChevronLeft, MdInfoOutline, MdSmartToy } from "react-icons/md";
 
 import auroraImage from "../assets/images/app_auroraimage.png";
 
@@ -83,6 +83,19 @@ const AuroraPage = () => {
     const [forecastTime, setForecastTime] = useState(null);
     const [mapInstance, setMapInstance] = useState(null);
     const [showInfoModal, setShowInfoModal] = useState(false);
+    const [showAIPopup, setShowAIPopup] = useState(false);
+
+    const auroraFeatureData = {
+        label: "Aurora Forecast",
+        description: "The Aurora Forecast uses real-time solar wind data to predict the visibility of Northern Lights (Aurora Borealis). It serves as a warning system for geomagnetic storms.",
+        details: [
+            "Kp Index Monitoring",
+            "Hemispheric Power Estimates",
+            "Geomagnetic Storm Alerts"
+        ],
+        satelliteHelp: "Satellites like DSCOVR and ACE monitor simple solar wind parameters like speed, density, and magnetic field direction to predict auroral activity.",
+        didYouKnow: "Auroras occur on other planets too! Jupiter and Saturn have permanent auroras caused by their powerful magnetic fields."
+    };
 
     // Best Location State
     const [userLocation, setUserLocation] = useState(null);
@@ -233,6 +246,14 @@ const AuroraPage = () => {
         <div className="flex flex-col h-screen bg-[#050714] text-slate-300 font-sans overflow-hidden relative">
             {/* TargetCursor removed (global) */}
 
+            {/* === Feature AI Popup === */}
+            {showAIPopup && (
+                <FeatureAIPopup
+                    feature={auroraFeatureData}
+                    onClose={() => setShowAIPopup(false)}
+                />
+            )}
+
             {/* Header */}
             {/* Header */}
             <header className="h-[10vh] min-h-[80px] flex items-center justify-between px-4 md:px-8 border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 focus:z-[2000] z-[2000] md:p-5">
@@ -264,6 +285,14 @@ const AuroraPage = () => {
                     >
                         <MdInfoOutline className="text-lg" />
                         Learn More
+                    </button>
+
+                    <button
+                        onClick={() => setShowAIPopup(true)}
+                        className="hidden md:flex cursor-target ml-2 px-6 py-3 bg-[#0a0e17] hover:bg-[#151a25] border border-[#00ff88]/50 rounded-full text-[#00ff88] text-xs font-black uppercase tracking-widest transition-all duration-300 items-center gap-2 hover:shadow-[0_0_15px_rgba(0,255,136,0.2)]"
+                    >
+                        <MdSmartToy className="text-lg" />
+                        Ask AI
                     </button>
                 </div>
 
@@ -302,6 +331,13 @@ const AuroraPage = () => {
                         className="md:hidden w-10 h-10 rounded-lg bg-[#00ff88]/10 border border-[#00ff88]/30 flex items-center justify-center text-[#00ff88]"
                     >
                         <MdInfoOutline size={20} />
+                    </button>
+
+                    <button
+                        onClick={() => setShowAIPopup(true)}
+                        className="md:hidden w-10 h-10 rounded-lg bg-[#00ff88]/10 border border-[#00ff88]/30 flex items-center justify-center text-[#00ff88]"
+                    >
+                        <MdSmartToy size={20} />
                     </button>
                 </div>
             </header >

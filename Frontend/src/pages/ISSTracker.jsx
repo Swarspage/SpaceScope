@@ -4,9 +4,10 @@ import Globe from "react-globe.gl";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
-import { MdChevronLeft, MdSatelliteAlt, MdPublic, MdWifi, MdInfoOutline, MdAnalytics, MdViewInAr, MdMap } from "react-icons/md";
+import { MdChevronLeft, MdSatelliteAlt, MdPublic, MdWifi, MdInfoOutline, MdAnalytics, MdViewInAr, MdMap, MdSmartToy } from "react-icons/md";
 import { WiStars } from "react-icons/wi";
 import FeatureInfoModal from "../components/FeatureInfoModal";
+import FeatureAIPopup from "../components/FeatureAIPopup";
 
 
 import ISSPassPredictor from "../components/ISSPassPredictor";
@@ -85,6 +86,19 @@ export default function ISSTracker() {
     const [iss, setIss] = useState(null);
     const [pollMs, setPollMs] = useState(5000);
     const [showInfoModal, setShowInfoModal] = useState(false);
+    const [showAIPopup, setShowAIPopup] = useState(false);
+
+    const issFeatureData = useMemo(() => ({
+        label: "ISS Live Tracker",
+        description: "Track the International Space Station (ISS) in real-time as it orbits Earth at 17,500 mph. The ISS orbits Earth every 90 minutes, experiencing 16 sunrises and sunsets a day.",
+        details: [
+            "Real-time Coordinates",
+            "Ground Track Mapping",
+            "Pass Predictions"
+        ],
+        satelliteHelp: "We use TDRS (Tracking and Data Relay Satellites) to maintain constant communication with the ISS, relaying telemetry and video feeds to Mission Control.",
+        didYouKnow: "The ISS is the single most expensive object ever built, costing over $150 billion. It has been continuously occupied since November 2000."
+    }), []);
 
     const globeRef = useRef(null);
     const mapRef = useRef(null);
@@ -253,6 +267,14 @@ export default function ISSTracker() {
         <div className="flex flex-col h-screen bg-[#050714] text-slate-300 font-sans overflow-hidden relative">
             {/* TargetCursor removed (global) */}
 
+            {/* === Feature AI Popup === */}
+            {showAIPopup && (
+                <FeatureAIPopup
+                    feature={issFeatureData}
+                    onClose={() => setShowAIPopup(false)}
+                />
+            )}
+
             {/* Background Atmosphere */}
             <div className="fixed top-[-20%] right-[-10%] w-[800px] h-[800px] bg-cyan-500/5 rounded-full blur-[120px] pointer-events-none z-0" />
             <div className="fixed bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-purple-500/5 rounded-full blur-[100px] pointer-events-none z-0" />
@@ -289,6 +311,14 @@ export default function ISSTracker() {
                     >
                         <MdInfoOutline className="text-lg" />
                         Learn More
+                    </button>
+
+                    <button
+                        onClick={() => setShowAIPopup(true)}
+                        className="hidden md:flex cursor-target ml-2 px-6 py-3 bg-[#0a0e17] hover:bg-[#151a25] border border-[#00ff88]/50 rounded-full text-[#00ff88] text-xs font-black uppercase tracking-widest transition-all duration-300 items-center gap-2 hover:shadow-[0_0_15px_rgba(0,255,136,0.2)]"
+                    >
+                        <MdSmartToy className="text-lg" />
+                        Ask AI
                     </button>
                 </div>
 
@@ -336,6 +366,13 @@ export default function ISSTracker() {
                         className="md:hidden w-10 h-10 rounded-lg bg-[#00ff88]/10 border border-[#00ff88]/30 flex items-center justify-center text-[#00ff88]"
                     >
                         <MdInfoOutline size={20} />
+                    </button>
+
+                    <button
+                        onClick={() => setShowAIPopup(true)}
+                        className="md:hidden w-10 h-10 rounded-lg bg-[#00ff88]/10 border border-[#00ff88]/30 flex items-center justify-center text-[#00ff88]"
+                    >
+                        <MdSmartToy size={20} />
                     </button>
                 </div>
             </header >

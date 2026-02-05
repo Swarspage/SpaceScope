@@ -10,6 +10,8 @@ import {
     HelpCircle,
     Zap
 } from 'lucide-react';
+import { MdSmartToy } from 'react-icons/md';
+import FeatureAIPopup from "../components/FeatureAIPopup";
 
 const QuizActiveView = ({
     topicTitle = "Space Missions",
@@ -31,6 +33,25 @@ const QuizActiveView = ({
 
     const currentQuestion = questions[currentIndex];
     const progress = ((currentIndex + 1) / questions.length) * 100;
+
+    const [showAIPopup, setShowAIPopup] = useState(false);
+
+    const quizSuggestions = [
+        "What is the answer?",
+        "Explain the solution",
+        "Explain the question"
+    ];
+
+    const quizFeatureData = {
+        label: "Quiz Assistant",
+        description: `Current Question: "${currentQuestion.question}"`,
+        details: [
+            ...currentQuestion.options.map(opt => `- ${opt}`),
+            `[HIDDEN CONTEXT]: The Correct Answer is "${currentQuestion.answer}". Content: ${currentQuestion.explanation}`
+        ],
+        satelliteHelp: "You are a helpful tutor. If the user asks for the answer, give it to them but explain why. If they ask for an explanation, explain the concept clearly. Use the hidden context to verify the correct answer.",
+        didYouKnow: "Focus on keywords in the question to find the right path."
+    };
 
     // --- LOGIC ---
 
@@ -144,7 +165,14 @@ const QuizActiveView = ({
 
     // --- ACTIVE QUIZ VIEW ---
     return (
-        <div className="fixed inset-0 z-[100] bg-[#050714] flex flex-col animate-fade-in">
+        <div className="fixed inset-0 z-[10000] bg-[#050714] flex flex-col animate-fade-in">
+
+            {showAIPopup && (
+                <FeatureAIPopup
+                    feature={quizFeatureData}
+                    onClose={() => setShowAIPopup(false)}
+                />
+            )}
 
             {/* HEADER */}
             <div className="h-auto min-h-[5rem] shrink-0 px-4 md:px-12 py-3 flex items-center justify-between border-b border-white/5 bg-[#0a0e17]/80 backdrop-blur-xl gap-4 flex-wrap">
@@ -257,7 +285,16 @@ const QuizActiveView = ({
             </div>
 
             {/* BOTTOM ACTION BAR */}
-            <div className="h-24 shrink-0 border-t border-white/5 bg-[#0a0e17]/80 backdrop-blur-xl flex items-center justify-center px-6">
+            <div className="h-24 shrink-0 border-t border-white/5 bg-[#0a0e17]/80 backdrop-blur-xl flex items-center justify-between px-6">
+                <button
+                    onClick={() => setShowAIPopup(true)}
+                    className="cursor-target px-4 md:px-6 py-3 rounded-xl border border-[#00ff88]/30 bg-[#00ff88]/10 text-[#00ff88] font-bold text-sm hover:bg-[#00ff88]/20 flex items-center gap-2 transition-all hover:shadow-[0_0_15px_rgba(0,255,136,0.2)]"
+                >
+                    <MdSmartToy size={20} />
+                    <span className="hidden md:inline">Ask AI Help</span>
+                    <span className="md:hidden">AI Help</span>
+                </button>
+
                 <div className="max-w-3xl w-full flex justify-end">
                     {!isAnswered ? (
                         <button

@@ -18,6 +18,7 @@ import { GiIndiaGate } from 'react-icons/gi';
 import NASABackupData from '../data/NASA.json';
 import SpaceXBackupData from '../data/SpaceX.json';
 import ISROBackupData from '../data/ISRO.json';
+import MissionAIPopup from '../components/MissionAIPopup';
 
 const MissionTimelines = () => {
     const navigate = useNavigate();
@@ -29,6 +30,7 @@ const MissionTimelines = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedMission, setSelectedMission] = useState(null);
     const [activeSidebar, setActiveSidebar] = useState('Missions');
+    const [showAIPopup, setShowAIPopup] = useState(false);
 
     // --- Helpers for Normalization ---
     // This converts the different API responses into one clean format for our UI
@@ -206,6 +208,13 @@ const MissionTimelines = () => {
             </div>
         );
     };
+
+    // Reset popup state when mission modal closes
+    useEffect(() => {
+        if (!selectedMission) {
+            setShowAIPopup(false);
+        }
+    }, [selectedMission]);
 
     // --- Branding Helpers ---
     const getProviderStyle = (provider) => {
@@ -442,12 +451,7 @@ const MissionTimelines = () => {
                                     {/* Footer Action */}
                                     <div className="mt-6 pt-4 border-t border-white/5 flex justify-end">
                                         <button
-                                            onClick={() => {
-                                                const event = new CustomEvent('SpaceScope:OpenChatbot', {
-                                                    detail: { message: `Tell me about the ${selectedMission.name} mission by ${selectedMission.provider}.` }
-                                                });
-                                                window.dispatchEvent(event);
-                                            }}
+                                            onClick={() => setShowAIPopup(true)}
                                             className="cursor-target flex items-center gap-2 px-6 py-2 bg-[#00ff88]/10 hover:bg-[#00ff88]/20 text-[#00ff88] text-xs font-bold rounded-lg border border-[#00ff88]/30 uppercase tracking-widest transition-all hover:scale-105"
                                         >
                                             <MdSmartToy className="text-lg" /> Ask AI
@@ -458,9 +462,17 @@ const MissionTimelines = () => {
                             </div>
                         </div>
                     )}
+
+                    {/* === Mission AI Popup === */}
+                    {showAIPopup && selectedMission && (
+                        <MissionAIPopup
+                            mission={selectedMission}
+                            onClose={() => setShowAIPopup(false)}
+                        />
+                    )}
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 

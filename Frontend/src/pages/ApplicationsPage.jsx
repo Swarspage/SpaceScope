@@ -4,6 +4,7 @@ import { MapContainer, TileLayer, Polygon, useMap, GeoJSON } from 'react-leaflet
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
 import { Layers, Cloud, Calendar, AlertTriangle, Loader2, ArrowLeftRight, Activity, Wind, Info, Map as MapIcon, Thermometer, ChevronLeft, Search, Satellite, Leaf } from 'lucide-react';
+import { MdSmartToy } from 'react-icons/md';
 import CO2Chart from '../components/CO2Chart';
 import TempAnomalyChart from '../components/TempAnomalyChart';
 import LightPollutionMap from '../components/LightPollutionMap';
@@ -12,6 +13,8 @@ import SpaceDebrisGlobe from '../components/SpaceDebrisGlobe';
 import FeatureInfoModal from '../components/FeatureInfoModal';
 import CO2CalculatorModal from '../components/CO2CalculatorModal';
 
+
+import FeatureAIPopup from '../components/FeatureAIPopup';
 
 // Images
 import ndviImage from '../assets/images/app_ndviimage.png';
@@ -459,10 +462,19 @@ const NDVIMap = () => {
 
     const leafletPolygon = POLYGON_COORDINATES.map(idx => [idx[1], idx[0]]);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Mobile sidebar state
+    const [showAIPopup, setShowAIPopup] = useState(false);
 
     return (
         <div className="flex flex-col md:flex-row h-screen w-full bg-[#050714] text-white p-2 md:p-4 gap-4 overflow-hidden font-inter relative">
             {/* TargetCursor removed (global) */}
+
+            {/* === Feature AI Popup === */}
+            {showAIPopup && (
+                <FeatureAIPopup
+                    feature={activeChannelData}
+                    onClose={() => setShowAIPopup(false)}
+                />
+            )}
 
             {/* --- MOBILE HEADER & SIDEBAR TOGGLE --- */}
             <div className="md:hidden flex items-center justify-between bg-[#0a0e17] p-4 rounded-xl border border-white/10 shrink-0">
@@ -782,6 +794,14 @@ const NDVIMap = () => {
                         >
                             <Info size={18} className="group-hover:scale-110 transition-transform relative z-10" />
                             <span className="relative z-10">Learn More</span>
+                        </button>
+
+                        <button
+                            onClick={() => setShowAIPopup(true)}
+                            className="cursor-target relative mt-3 w-full py-3 bg-[#0a0e17] hover:bg-[#151a25] border border-[#00ff88]/50 rounded-full text-[#00ff88] text-sm font-bold uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2 group hover:shadow-[0_0_15px_rgba(0,255,136,0.2)]"
+                        >
+                            <MdSmartToy size={18} className="text-[#00ff88]" />
+                            <span className="">Ask AI</span>
                         </button>
 
                         {activeChannel === 'co2' && (
