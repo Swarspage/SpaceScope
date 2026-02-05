@@ -92,7 +92,9 @@ const Chatbot = () => {
             });
 
             if (!response.ok) {
-                throw new Error(`Server error: ${response.status}`);
+                const errorData = await response.json().catch(() => ({}));
+                console.error("Chat API Error Details:", errorData);
+                throw new Error(errorData.details || errorData.error || `Server error: ${response.status}`);
             }
 
             const data = await response.json();
