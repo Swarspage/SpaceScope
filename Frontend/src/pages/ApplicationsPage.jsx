@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { MapContainer, TileLayer, Polygon, useMap, GeoJSON } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
-import { Layers, Cloud, Calendar, AlertTriangle, Loader2, ArrowLeftRight, Activity, Wind, Info, Map as MapIcon, Thermometer, ChevronLeft, Search, Satellite, Leaf } from 'lucide-react';
+import { Layers, Cloud, Calendar, AlertTriangle, Loader2, ArrowLeftRight, Activity, Wind, Info, Map as MapIcon, Thermometer, ChevronLeft, Search, Satellite, Leaf, ExternalLink, Clock, MapPin } from 'lucide-react';
+import impactStoriesData from '../data/ImpactStories.json';
 import { MdSmartToy } from 'react-icons/md';
 import CO2Chart from '../components/CO2Chart';
 import TempAnomalyChart from '../components/TempAnomalyChart';
@@ -144,6 +145,107 @@ const MapUpdater = ({ center }) => {
     return null;
 };
 
+// --- CONSTANTS ---
+const CHANNEL_TO_FEATURE = {
+    ndvi: 'ndvi_map',
+    co2: 'co2_chart',
+    temp: 'temperature_chart',
+    light: 'light_pollution_map',
+    weather: 'cloud_cover_map',
+    debris: 'orbital_debris_map'
+};
+
+// --- IMPACT STORIES COMPONENT ---
+const ImpactStoriesView = ({ activeChannel, onBack }) => {
+    const featureKey = CHANNEL_TO_FEATURE[activeChannel];
+    const stories = impactStoriesData.filter(s => s.feature === featureKey);
+
+    return (
+        <div className="w-full h-full flex flex-col bg-[#0a0e17] text-white p-4 md:p-6 overflow-y-auto">
+            {/* Header */}
+            <div className="flex items-center gap-4 mb-6">
+                <button
+                    onClick={onBack}
+                    className="flex items-center gap-2 px-4 py-2 bg-[#151a25] border border-white/10 rounded-lg hover:border-[#00ff88] hover:text-[#00ff88] transition-all group"
+                >
+                    <ChevronLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+                    <span className="font-bold text-sm uppercase tracking-wider">Back to Map</span>
+                </button>
+                <div>
+                    <h2 className="text-2xl font-black uppercase tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400">
+                        Impact Stories
+                    </h2>
+                    <p className="text-xs text-slate-400">Real-world applications and events</p>
+                </div>
+            </div>
+
+            {/* Stories Grid */}
+            {stories.length > 0 ? (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-8">
+                    {stories.map(story => (
+                        <div key={story.id} className="bg-[#151a25] border border-white/10 rounded-xl overflow-hidden hover:border-[#00ff88]/50 transition-all hover:shadow-[0_0_20px_rgba(0,255,136,0.1)] group flex flex-col">
+                            {/* Image */}
+                            <div className="relative h-48 overflow-hidden">
+                                <img
+                                    src={story.image_url}
+                                    alt={story.title}
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                />
+                                <div className="absolute top-3 right-3">
+                                    <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border backdrop-blur-md ${story.impact_type === 'positive'
+                                        ? 'bg-green-500/20 border-green-500 text-green-400'
+                                        : 'bg-red-500/20 border-red-500 text-red-400'
+                                        }`}>
+                                        {story.impact_type}
+                                    </span>
+                                </div>
+                                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-4">
+                                    <div className="text-[10px] text-slate-400 uppercase tracking-widest font-bold mb-1 flex items-center gap-2">
+                                        <Calendar size={12} className="text-[#00ff88]" /> {story.date}
+                                        <span className="text-slate-600">|</span>
+                                        <MapPin size={12} className="text-[#00ff88]" /> {story.location.name}
+                                    </div>
+                                    <h3 className="text-lg font-bold text-white leading-tight group-hover:text-[#00ff88] transition-colors">{story.title}</h3>
+                                </div>
+                            </div>
+
+                            {/* Content */}
+                            <div className="p-5 flex flex-col flex-1">
+                                <div className="text-sm text-slate-300 leading-relaxed mb-4 flex-1 whitespace-pre-wrap">
+                                    {story.story}
+                                </div>
+
+                                <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                                    <div className="flex gap-2">
+                                        {story.tags.slice(0, 2).map(tag => (
+                                            <span key={tag} className="text-[10px] text-slate-500 bg-black/30 px-2 py-1 rounded border border-white/5">
+                                                #{tag}
+                                            </span>
+                                        ))}
+                                    </div>
+                                    <a
+                                        href={story.source_url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-[#00ff88] text-xs font-bold uppercase tracking-wider flex items-center gap-1 hover:underline"
+                                    >
+                                        Source <ExternalLink size={12} />
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <div className="flex flex-col items-center justify-center h-64 text-slate-500">
+                    <Info size={48} className="mb-4 opacity-50" />
+                    <p>No stories found for this category yet.</p>
+                </div>
+            )}
+        </div>
+    );
+};
+
 const NDVIMap = () => {
     const navigate = useNavigate();
     const [activeChannel, setActiveChannel] = useState('ndvi');
@@ -158,6 +260,7 @@ const NDVIMap = () => {
     const [showInfoModal, setShowInfoModal] = useState(false);
     const [showGuideModal, setShowGuideModal] = useState(false);
     const [showCalculator, setShowCalculator] = useState(false);
+    const [showImpactStories, setShowImpactStories] = useState(false);
 
     const activeChannelData = CHANNELS.find(c => c.id === activeChannel);
 
@@ -593,135 +696,141 @@ const NDVIMap = () => {
 
                 {/* Map Container Block */}
                 <div className="cursor-target w-full h-[400px] md:h-auto md:flex-1 bg-[#0a0e17] rounded-xl border border-white/10 relative overflow-hidden shadow-2xl flex flex-col shrink-0">
-                    {activeChannel === 'co2' ? (
-                        <CO2Chart />
-                    ) : activeChannel === 'temp' ? (
-                        <TempAnomalyChart onDataLoaded={setCurrentTempAnomaly} />
-                    ) : activeChannel === 'light' ? (
-                        <LightPollutionMap />
-                    ) : activeChannel === 'weather' ? (
-                        <CloudCoverMap />
-                    ) : activeChannel === 'debris' ? (
-                        <SpaceDebrisGlobe />
+                    {showImpactStories ? (
+                        <ImpactStoriesView
+                            activeChannel={activeChannel}
+                            onBack={() => setShowImpactStories(false)}
+                        />
                     ) : (
-                        /* Map Error State */
-                        /* Map Error/Fallback State */
-                        error ? (
-                            <div className="flex h-full w-full items-center justify-center text-center p-6 relative">
-                                <div className="absolute inset-0 z-0 opacity-50 pointer-events-none">
-                                    {/* Show Base Map in background even on error if possible, but here we are replacing the map content. 
+                        activeChannel === 'co2' ? (
+                            <CO2Chart />
+                        ) : activeChannel === 'temp' ? (
+                            <TempAnomalyChart onDataLoaded={setCurrentTempAnomaly} />
+                        ) : activeChannel === 'light' ? (
+                            <LightPollutionMap />
+                        ) : activeChannel === 'weather' ? (
+                            <CloudCoverMap />
+                        ) : activeChannel === 'debris' ? (
+                            <SpaceDebrisGlobe />
+                        ) : (
+                            /* Map Error State */
+                            /* Map Error/Fallback State */
+                            error ? (
+                                <div className="flex h-full w-full items-center justify-center text-center p-6 relative">
+                                    <div className="absolute inset-0 z-0 opacity-50 pointer-events-none">
+                                        {/* Show Base Map in background even on error if possible, but here we are replacing the map content. 
                                         Better approach: Render MapContainer ALWAYS, and overlay error. 
                                         But to keep diff small, we just show a nice "Optical Mode" message.
                                     */}
-                                </div>
-                                <div className="bg-black/80 backdrop-blur-md p-6 rounded-2xl border border-white/10 max-w-sm relative z-10">
-                                    <AlertTriangle className="mx-auto mb-3 h-10 w-10 text-yellow-500" />
-                                    <h3 className="text-lg font-bold text-white">Live Feed Offline</h3>
-                                    <p className="text-sm text-slate-400 mt-2 mb-4">{error}</p>
-                                    <button
-                                        onClick={() => setError(null)}
-                                        className="px-4 py-2 bg-[#00ff88]/20 border border-[#00ff88] rounded-lg text-[#00ff88] text-sm font-bold uppercase hover:bg-[#00ff88]/30 transition-colors"
-                                    >
-                                        Enable Optical Mode
-                                    </button>
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="relative w-full h-full">
-                                {/* Search Bar Overlay */}
-                                <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1001] w-[90%] md:w-full md:max-w-md px-0 md:px-4">
-                                    <div className="flex gap-2">
-                                        <div className="relative flex-1">
-                                            <input
-                                                type="text"
-                                                value={searchQuery}
-                                                onChange={(e) => setSearchQuery(e.target.value)}
-                                                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                                                placeholder="Enter city or coords..."
-                                                className="w-full bg-[#0a0e17]/90 backdrop-blur-md border border-white/20 text-white rounded-lg pl-9 md:pl-10 pr-4 py-2 focus:outline-none focus:border-[#00ff88] transition-colors shadow-lg placeholder:text-slate-500 text-xs md:text-sm"
-                                            />
-                                            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                                        </div>
+                                    </div>
+                                    <div className="bg-black/80 backdrop-blur-md p-6 rounded-2xl border border-white/10 max-w-sm relative z-10">
+                                        <AlertTriangle className="mx-auto mb-3 h-10 w-10 text-yellow-500" />
+                                        <h3 className="text-lg font-bold text-white">Live Feed Offline</h3>
+                                        <p className="text-sm text-slate-400 mt-2 mb-4">{error}</p>
                                         <button
-                                            onClick={handleSearch}
-                                            className="cursor-target bg-[#00ff88] text-black font-bold px-3 md:px-4 py-2 rounded-lg hover:bg-[#00ff88]/90 transition-colors shadow-lg text-xs md:text-sm whitespace-nowrap"
+                                            onClick={() => setError(null)}
+                                            className="px-4 py-2 bg-[#00ff88]/20 border border-[#00ff88] rounded-lg text-[#00ff88] text-sm font-bold uppercase hover:bg-[#00ff88]/30 transition-colors"
                                         >
-                                            Search
+                                            Enable Optical Mode
                                         </button>
                                     </div>
                                 </div>
-                                {/* Map Loading State */}
-                                {loading && (
-                                    <div className="absolute inset-0 z-[1000] bg-[#0a0e17]/80 backdrop-blur-sm flex items-center justify-center">
-                                        <div className="flex flex-col items-center gap-3 text-[#00ff88]">
-                                            <Loader2 className="animate-spin h-8 w-8" />
-                                            <span className="text-sm font-mono tracking-wider">ACQUIRING FEED...</span>
+                            ) : (
+                                <div className="relative w-full h-full">
+                                    {/* Search Bar Overlay */}
+                                    <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1001] w-[90%] md:w-full md:max-w-md px-0 md:px-4">
+                                        <div className="flex gap-2">
+                                            <div className="relative flex-1">
+                                                <input
+                                                    type="text"
+                                                    value={searchQuery}
+                                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                                                    placeholder="Enter city or coords..."
+                                                    className="w-full bg-[#0a0e17]/90 backdrop-blur-md border border-white/20 text-white rounded-lg pl-9 md:pl-10 pr-4 py-2 focus:outline-none focus:border-[#00ff88] transition-colors shadow-lg placeholder:text-slate-500 text-xs md:text-sm"
+                                                />
+                                                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                            </div>
+                                            <button
+                                                onClick={handleSearch}
+                                                className="cursor-target bg-[#00ff88] text-black font-bold px-3 md:px-4 py-2 rounded-lg hover:bg-[#00ff88]/90 transition-colors shadow-lg text-xs md:text-sm whitespace-nowrap"
+                                            >
+                                                Search
+                                            </button>
                                         </div>
                                     </div>
-                                )}
+                                    {/* Map Loading State */}
+                                    {loading && (
+                                        <div className="absolute inset-0 z-[1000] bg-[#0a0e17]/80 backdrop-blur-sm flex items-center justify-center">
+                                            <div className="flex flex-col items-center gap-3 text-[#00ff88]">
+                                                <Loader2 className="animate-spin h-8 w-8" />
+                                                <span className="text-sm font-mono tracking-wider">ACQUIRING FEED...</span>
+                                            </div>
+                                        </div>
+                                    )}
 
-                                <MapContainer
-                                    center={MAP_CENTER}
-                                    zoom={15}
-                                    style={{ height: "100%", width: "100%", background: '#0a0e17' }}
-                                    className="z-0"
-                                    zoomControl={false} // Clean look
-                                >
-                                    <MapUpdater center={mapCenter} />
-                                    <TileLayer
-                                        url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-                                        attribution='&copy; Esri'
-                                    />
+                                    <MapContainer
+                                        center={MAP_CENTER}
+                                        zoom={15}
+                                        style={{ height: "100%", width: "100%", background: '#0a0e17' }}
+                                        className="z-0"
+                                        zoomControl={false} // Clean look
+                                    >
+                                        <MapUpdater center={mapCenter} />
+                                        <TileLayer
+                                            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                                            attribution='&copy; Esri'
+                                        />
 
-                                    <Polygon
-                                        positions={leafletPolygon}
-                                        pathOptions={{
-                                            color: '#00ff88',
-                                            fillOpacity: 0.1,
-                                            weight: 2,
-                                            dashArray: '5, 5'
-                                        }}
-                                    />
-
-                                    {searchBoundary && (
-                                        <GeoJSON
-                                            key={JSON.stringify(searchBoundary)} // Force re-render on change
-                                            data={searchBoundary}
-                                            style={{
+                                        <Polygon
+                                            positions={leafletPolygon}
+                                            pathOptions={{
                                                 color: '#00ff88',
-                                                weight: 3,
                                                 fillOpacity: 0.1,
-                                                fillColor: '#00ff88'
+                                                weight: 2,
+                                                dashArray: '5, 5'
                                             }}
                                         />
-                                    )}
 
-                                    {imagery && !loading && activeChannel === 'ndvi' && (
-                                        <TileLayer
-                                            url={imagery.ndvi}
-                                            attribution="Agromonitoring"
-                                        />
-                                    )}
-                                </MapContainer>
+                                        {searchBoundary && (
+                                            <GeoJSON
+                                                key={JSON.stringify(searchBoundary)} // Force re-render on change
+                                                data={searchBoundary}
+                                                style={{
+                                                    color: '#00ff88',
+                                                    weight: 3,
+                                                    fillOpacity: 0.1,
+                                                    fillColor: '#00ff88'
+                                                }}
+                                            />
+                                        )}
 
-                                {/* Stats Overlay on Map */}
-                                {!loading && imagery && activeChannel === 'ndvi' && (
-                                    <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end pointer-events-none">
-                                        <div className="bg-black/80 backdrop-blur-md p-2 md:p-3 rounded-lg border border-white/10 text-[10px] md:text-xs text-slate-300 pointer-events-auto flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-4">
-                                            <div className="flex items-center gap-2">
-                                                <Calendar size={12} className="text-[#00ff88]" />
-                                                <span>{imagery.stats.date}</span>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <Cloud size={12} className="text-[#00ff88]" />
-                                                <span>{imagery.stats.clouds.toFixed(1)}% Cloud</span>
+                                        {imagery && !loading && activeChannel === 'ndvi' && (
+                                            <TileLayer
+                                                url={imagery.ndvi}
+                                                attribution="Agromonitoring"
+                                            />
+                                        )}
+                                    </MapContainer>
+
+                                    {/* Stats Overlay on Map */}
+                                    {!loading && imagery && activeChannel === 'ndvi' && (
+                                        <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end pointer-events-none">
+                                            <div className="bg-black/80 backdrop-blur-md p-2 md:p-3 rounded-lg border border-white/10 text-[10px] md:text-xs text-slate-300 pointer-events-auto flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-4">
+                                                <div className="flex items-center gap-2">
+                                                    <Calendar size={12} className="text-[#00ff88]" />
+                                                    <span>{imagery.stats.date}</span>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <Cloud size={12} className="text-[#00ff88]" />
+                                                    <span>{imagery.stats.clouds.toFixed(1)}% Cloud</span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                )}
-                            </div>
-                        )
-                    )}
+                                    )}
+                                </div>
+                            )
+                        ))}
                 </div>
 
                 {/* --- MOBILE INFO PANEL (STACKED) --- */}
@@ -738,6 +847,13 @@ const NDVIMap = () => {
                                     className="text-[#00ff88] text-xs font-bold uppercase border border-[#00ff88]/50 px-3 py-1 rounded-full flex items-center gap-1"
                                 >
                                     <MdSmartToy size={14} /> Ask AI
+                                </button>
+                                <button
+                                    onClick={() => setShowImpactStories(true)}
+                                    className="text-white text-xs font-bold uppercase bg-[#00ff88]/20 border border-[#00ff88]/50 px-3 py-1 rounded-full flex items-center gap-1"
+                                >
+                                    <div className="w-2 h-2 rounded-full bg-[#00ff88] animate-pulse"></div>
+                                    Stories
                                 </button>
                                 <button
                                     onClick={() => setShowInfoModal(true)}
@@ -784,98 +900,108 @@ const NDVIMap = () => {
 
 
             {/* --- RIGHT: INFO PANEL (DESKTOP) --- */}
-            <div className="hidden md:flex w-80 flex-shrink-0 flex-col items-stretch">
-                <div className="bg-[#0a0e17] rounded-xl border border-white/10 p-6 flex flex-col h-full shadow-xl">
-                    <div className="mb-6 pb-6 border-b border-white/10">
-                        <div className="w-12 h-12 rounded-lg bg-[#00ff88]/10 text-[#00ff88] flex items-center justify-center mb-4">
-                            <activeChannelData.icon size={24} />
-                        </div>
-                        <h2 className="text-2xl font-bold text-white mb-2">{activeChannelData.label}</h2>
-                        <div className="flex items-center gap-2 text-xs text-slate-500 uppercase tracking-widest font-semibold">
-                            <Info size={12} />
-                            Info Panel
+            {!showImpactStories && (
+                <div className="hidden md:flex w-80 flex-shrink-0 flex-col items-stretch">
+                    <div className="bg-[#0a0e17] rounded-xl border border-white/10 p-6 flex flex-col h-full shadow-xl">
+                        <div className="mb-6 pb-6 border-b border-white/10">
+                            <div className="w-12 h-12 rounded-lg bg-[#00ff88]/10 text-[#00ff88] flex items-center justify-center mb-4">
+                                <activeChannelData.icon size={24} />
+                            </div>
+                            <h2 className="text-2xl font-bold text-white mb-2">{activeChannelData.label}</h2>
+                            <div className="flex items-center gap-2 text-xs text-slate-500 uppercase tracking-widest font-semibold">
+                                <Info size={12} />
+                                Info Panel
 
-                        </div>
-                        <button
-                            onClick={() => setShowInfoModal(true)}
-                            className="cursor-target relative mt-4 w-full py-3 bg-[#00ff88]/20 hover:bg-[#00ff88]/40 border-2 border-[#00ff88] rounded-full text-white text-sm font-black uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2 group shadow-[0_0_20px_rgba(0,255,136,0.4)] hover:shadow-[0_0_40px_rgba(0,255,136,0.6)] animate-pulse"
-                        >
-                            <Info size={18} className="group-hover:scale-110 transition-transform relative z-10" />
-                            <span className="relative z-10">Learn More</span>
-                        </button>
-
-                        <button
-                            onClick={() => setShowAIPopup(true)}
-                            className="cursor-target relative mt-3 w-full py-3 bg-[#0a0e17] hover:bg-[#151a25] border border-[#00ff88]/50 rounded-full text-[#00ff88] text-sm font-bold uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2 group hover:shadow-[0_0_15px_rgba(0,255,136,0.2)]"
-                        >
-                            <MdSmartToy size={18} className="text-[#00ff88]" />
-                            <span className="">Ask AI</span>
-                        </button>
-
-                        {activeChannel === 'co2' && (
+                            </div>
                             <button
-                                onClick={() => setShowCalculator(true)}
-                                className="cursor-target relative mt-3 w-full py-4 bg-gradient-to-r from-[#00ff88]/10 to-[#00d9ff]/10 hover:from-[#00ff88]/20 hover:to-[#00d9ff]/20 border border-[#00ff88]/30 hover:border-[#00ff88] rounded-xl text-white font-bold transition-all duration-300 flex items-center justify-center gap-3 group shadow-lg"
+                                onClick={() => setShowInfoModal(true)}
+                                className="cursor-target relative mt-4 w-full py-3 bg-[#00ff88]/20 hover:bg-[#00ff88]/40 border-2 border-[#00ff88] rounded-full text-white text-sm font-black uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2 group shadow-[0_0_20px_rgba(0,255,136,0.4)] hover:shadow-[0_0_40px_rgba(0,255,136,0.6)] animate-pulse"
                             >
-                                <div className="p-2 bg-[#00ff88]/20 rounded-full text-[#00ff88] group-hover:scale-110 transition-transform">
-                                    <Leaf size={20} />
-                                </div>
-                                <div className="text-left">
-                                    <div className="text-[10px] uppercase text-[#00ff88] tracking-widest font-black">Interactive</div>
-                                    <div className="text-sm leading-none">Simulate Solutions</div>
-                                </div>
+                                <Info size={18} className="group-hover:scale-110 transition-transform relative z-10" />
+                                <span className="relative z-10">Learn More</span>
                             </button>
+
+                            <button
+                                onClick={() => setShowAIPopup(true)}
+                                className="cursor-target relative mt-3 w-full py-3 bg-[#0a0e17] hover:bg-[#151a25] border border-[#00ff88]/50 rounded-full text-[#00ff88] text-sm font-bold uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2 group hover:shadow-[0_0_15px_rgba(0,255,136,0.2)]"
+                            >
+                                <MdSmartToy size={18} className="text-[#00ff88]" />
+                                <span className="">Ask AI</span>
+                            </button>
+
+                            <button
+                                onClick={() => setShowImpactStories(true)}
+                                className="cursor-target relative mt-3 w-full py-3 bg-[#0a0e17] hover:bg-[#151a25] border border-white/10 hover:border-[#00ff88]/50 rounded-full text-slate-300 hover:text-white text-sm font-bold uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2 group hover:shadow-[0_0_15px_rgba(0,255,136,0.1)]"
+                            >
+                                <Calendar size={18} className="text-slate-500 group-hover:text-[#00ff88] transition-colors" />
+                                <span className="">View Impact Stories</span>
+                            </button>
+
+                            {activeChannel === 'co2' && (
+                                <button
+                                    onClick={() => setShowCalculator(true)}
+                                    className="cursor-target relative mt-3 w-full py-4 bg-gradient-to-r from-[#00ff88]/10 to-[#00d9ff]/10 hover:from-[#00ff88]/20 hover:to-[#00d9ff]/20 border border-[#00ff88]/30 hover:border-[#00ff88] rounded-xl text-white font-bold transition-all duration-300 flex items-center justify-center gap-3 group shadow-lg"
+                                >
+                                    <div className="p-2 bg-[#00ff88]/20 rounded-full text-[#00ff88] group-hover:scale-110 transition-transform">
+                                        <Leaf size={20} />
+                                    </div>
+                                    <div className="text-left">
+                                        <div className="text-[10px] uppercase text-[#00ff88] tracking-widest font-black">Interactive</div>
+                                        <div className="text-sm leading-none">Simulate Solutions</div>
+                                    </div>
+                                </button>
+                            )}
+                        </div>
+
+
+                        {/* Big Number Stat for Temp */}
+                        {activeChannel === 'temp' && currentTempAnomaly !== null && (
+                            <div className="mb-6 p-4 rounded-xl bg-[#151a25] border border-white/10 text-center shadow-lg">
+                                <h4 className="text-xs text-slate-400 uppercase tracking-widest font-semibold mb-2">Current Deviation</h4>
+                                <div className={`text-4xl font-black ${currentTempAnomaly >= 0 ? 'text-red-400' : 'text-blue-400'}`}>
+                                    {currentTempAnomaly > 0 ? '+' : ''}{currentTempAnomaly}°C
+                                </div>
+                            </div>
                         )}
-                    </div>
+
+                        <div className="flex-1 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
+                            <p className="text-slate-300 leading-relaxed mb-6">
+                                {activeChannelData.description}
+                            </p>
+
+                            <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-3">Key Benefits</h3>
+                            <ul className="space-y-3">
+                                {activeChannelData.details.map((detail, idx) => (
+                                    <li key={idx} className="flex items-start gap-3 p-3 rounded-lg bg-[#151a25] border border-white/5 text-sm text-slate-300">
+                                        <div className="min-w-[6px] h-[6px] rounded-full bg-[#00ff88] mt-1.5" />
+                                        {detail}
+                                    </li>
+                                ))}
+                            </ul>
 
 
-                    {/* Big Number Stat for Temp */}
-                    {activeChannel === 'temp' && currentTempAnomaly !== null && (
-                        <div className="mb-6 p-4 rounded-xl bg-[#151a25] border border-white/10 text-center shadow-lg">
-                            <h4 className="text-xs text-slate-400 uppercase tracking-widest font-semibold mb-2">Current Deviation</h4>
-                            <div className={`text-4xl font-black ${currentTempAnomaly >= 0 ? 'text-red-400' : 'text-blue-400'}`}>
-                                {currentTempAnomaly > 0 ? '+' : ''}{currentTempAnomaly}°C
+
+                            <div className="mt-6 mb-2">
+                                <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-3">How Satellites Help</h3>
+                                <div className="p-3 rounded-lg bg-[#151a25] border border-white/5 text-sm text-slate-300 italic">
+                                    "{activeChannelData.satelliteHelp}"
+                                </div>
                             </div>
-                        </div>
-                    )}
 
-                    <div className="flex-1 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
-                        <p className="text-slate-300 leading-relaxed mb-6">
-                            {activeChannelData.description}
-                        </p>
-
-                        <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-3">Key Benefits</h3>
-                        <ul className="space-y-3">
-                            {activeChannelData.details.map((detail, idx) => (
-                                <li key={idx} className="flex items-start gap-3 p-3 rounded-lg bg-[#151a25] border border-white/5 text-sm text-slate-300">
-                                    <div className="min-w-[6px] h-[6px] rounded-full bg-[#00ff88] mt-1.5" />
-                                    {detail}
-                                </li>
-                            ))}
-                        </ul>
-
-
-
-                        <div className="mt-6 mb-2">
-                            <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-3">How Satellites Help</h3>
-                            <div className="p-3 rounded-lg bg-[#151a25] border border-white/5 text-sm text-slate-300 italic">
-                                "{activeChannelData.satelliteHelp}"
-                            </div>
                         </div>
 
-                    </div>
-
-                    <div className="mt-auto pt-8 p-4 rounded-lg bg-blue-500/10 border border-blue-500/20">
-                        <h4 className="flex items-center gap-2 text-blue-400 font-bold text-sm mb-2">
-                            <MapIcon size={14} />
-                            Did you know?
-                        </h4>
-                        <p className="text-xs text-blue-200/70 leading-relaxed">
-                            {activeChannelData.didYouKnow || "Satellite data provides critical global insights."}
-                        </p>
+                        <div className="mt-auto pt-8 p-4 rounded-lg bg-blue-500/10 border border-blue-500/20">
+                            <h4 className="flex items-center gap-2 text-blue-400 font-bold text-sm mb-2">
+                                <MapIcon size={14} />
+                                Did you know?
+                            </h4>
+                            <p className="text-xs text-blue-200/70 leading-relaxed">
+                                {activeChannelData.didYouKnow || "Satellite data provides critical global insights."}
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
 
 
             <FeatureInfoModal

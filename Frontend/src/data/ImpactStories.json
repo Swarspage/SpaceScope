@@ -1,0 +1,396 @@
+[
+  {
+    "id": "iss-001",
+    "feature": "iss_tracker",
+    "title": "Protein Crystal Growth Leads to Duchenne Muscular Dystrophy Treatment",
+    "date": "2004-06-15",
+    "time": "14:30:00",
+    "timezone": "UTC",
+    "location": {
+      "latitude": 0,
+      "longitude": 0,
+      "name": "International Space Station"
+    },
+    "impact_type": "positive",
+    "story": "In 2004, researchers used the microgravity environment of the International Space Station to grow exceptionally pure protein crystals related to muscular dystrophy. The absence of gravity-induced convection allowed crystals to form with unprecedented clarity, enabling scientists to map protein structures in far greater detail than possible on Earth.\n\nThese high-quality crystals provided crucial insights into the molecular mechanisms of Duchenne muscular dystrophy, a devastating genetic disorder affecting approximately 1 in 3,500 boys worldwide. The structural data obtained from ISS experiments contributed to the development of potential therapeutic approaches targeting the dystrophin protein.\n\nThis breakthrough demonstrated the practical medical benefits of space-based research. The techniques pioneered through ISS protein crystallography have since been applied to numerous other diseases, from cancer to Alzheimer's, showcasing how investments in space exploration yield tangible benefits for human health on Earth.",
+    "source_url": "https://www.nasa.gov/wp-content/uploads/2022/09/iss_benefits_for_humanity_2022_book.pdf",
+    "image_url": "https://issnationallab.org/wp-content/uploads/2024/05/2015-05-12-Ng-Protein-Crystals-Space-1.jpg",
+    "image_credit": "ISS National Lab",
+    "tags": [
+      "medical_research",
+      "protein_crystallography",
+      "muscular_dystrophy",
+      "microgravity"
+    ]
+  },
+  {
+    "id": "iss-002",
+    "feature": "iss_tracker",
+    "title": "Ultrasound Scans in Space Transform Medicine on Earth",
+    "date": "2013-08-20",
+    "time": "00:00:00",
+    "timezone": "UTC",
+    "location": {
+      "latitude": 0,
+      "longitude": 0,
+      "name": "International Space Station"
+    },
+    "impact_type": "positive",
+    "story": "The Advanced Diagnostic Ultrasound in Microgravity (ADUM) investigation on the ISS developed techniques for remote ultrasound diagnosis. Astronauts performed ultrasound scans on each other, guided by experts on Earth. This technology has been adapted for use in remote areas on Earth, where medical facilities are limited. It has been used in rural communities, sports medicine, and disaster response, allowing for quick diagnosis without the need for large equipment or specialists on site. The ISS research has led to portable ultrasound devices that are now common in ambulances and remote clinics worldwide.",
+    "source_url": "https://www.nasa.gov/image-article/astronauts-perform-spinal-ultrasound-investigation/",
+    "image_url": "https://www.nasa.gov/wp-content/uploads/2023/03/iss036e035750.jpg",
+    "image_credit": "NASA",
+    "tags": [
+      "medical_research",
+      "ultrasound",
+      "remote_diagnosis",
+      "microgravity"
+    ]
+  },
+  {
+    "id": "iss-003",
+    "feature": "iss_tracker",
+    "title": "Blood Clot Discovered in Astronaut on ISS",
+    "date": "2019-01-01",
+    "time": "00:00:00",
+    "timezone": "UTC",
+    "location": {
+      "latitude": 0,
+      "longitude": 0,
+      "name": "International Space Station"
+    },
+    "impact_type": "negative",
+    "story": "In 2019, during a study on blood flow in space, an unidentified astronaut was found to have a jugular vein blood clot two months into the mission, with no prior symptoms. Blood thinners were used for the remaining mission. The clot disappeared after landing with no symptoms. This incident highlighted potential health risks of long-duration spaceflight, including increased risk of thrombosis due to microgravity effects on blood circulation. It prompted additional testing on subsequent missions to monitor for similar conditions.",
+    "source_url": "https://en.wikipedia.org/wiki/List_of_accidents_and_incidents_involving_the_International_Space_Station",
+    "image_url": "https://www.nasa.gov/wp-content/uploads/2022/06/iss036e006639_resized.jpg",
+    "image_credit": "NASA",
+    "tags": [
+      "health_risks",
+      "space_medicine",
+      "thrombosis",
+      "microgravity"
+    ]
+  },
+  {
+    "id": "aurora-001",
+    "feature": "aurora_tracker",
+    "title": "Aurorasaurus Citizen Science Project Advances Aurora Research",
+    "date": "2022-06-01",
+    "time": "00:00:00",
+    "timezone": "UTC",
+    "location": {
+      "latitude": 0,
+      "longitude": 0,
+      "name": "Global"
+    },
+    "impact_type": "positive",
+    "story": "The Aurorasaurus project, launched in 2014 and highlighted in 2022, engages citizen scientists to track auroras worldwide. Verified reports provide valuable data for scientists modeling auroral phenomena. This has led to better understanding of auroras, including rare types like STEVE. By combining public observations with scientific data, it improves forecast accuracy and public engagement in space weather, helping predict potential disruptions from solar storms.",
+    "source_url": "https://science.nasa.gov/citizen-science/aurorasaurus",
+    "image_url": "https://media.newswest9.com/assets/KWES/images/d717b770-b5f5-46eb-b3ae-138360ebd82b/20251112T160328/d717b770-b5f5-46eb-b3ae-138360ebd82b_1140x641.jpg",
+    "image_credit": "NewsWest9",
+    "tags": [
+      "citizen_science",
+      "space_weather",
+      "aurora_modeling"
+    ]
+  },
+  {
+    "id": "aurora-002",
+    "feature": "aurora_tracker",
+    "title": "Solar Storm Causes Quebec Blackout",
+    "date": "1989-03-13",
+    "time": "02:44:00",
+    "timezone": "EST",
+    "location": {
+      "latitude": 45.5017,
+      "longitude": -73.5673,
+      "name": "Quebec, Canada"
+    },
+    "impact_type": "negative",
+    "story": "A powerful solar storm in March 1989 induced geomagnetic disturbances that triggered a major blackout in Quebec, Canada. The storm caused surges in the power grid, leading to the collapse of Hydro-Québec's electricity transmission system. Over 6 million people were left without power for 9 hours, causing economic losses estimated at hundreds of millions of dollars. This event highlighted the vulnerability of modern infrastructure to space weather and spurred improvements in grid protection and forecasting.",
+    "source_url": "https://www.nasa.gov/topics/earth/features/sun_darkness.html",
+    "image_url": "https://cdn.mos.cms.futurecdn.net/ecAJ5nfpHLWxUC2Xd7RGbW.jpg",
+    "image_credit": "Reuters",
+    "tags": [
+      "space_weather",
+      "power_outage",
+      "solar_storm"
+    ]
+  },
+  {
+    "id": "ndvi-001",
+    "feature": "ndvi_map",
+    "title": "NDVI Helps Kansas Farmer Detect Crop Stress",
+    "date": "2020-01-01",
+    "time": "00:00:00",
+    "timezone": "CST",
+    "location": {
+      "latitude": 39.0119,
+      "longitude": -98.4842,
+      "name": "Kansas, USA"
+    },
+    "impact_type": "positive",
+    "story": "A wheat farmer in Kansas used NDVI satellite imagery to monitor crop health. When a sudden drop in NDVI was flagged in one field, inspection revealed a local problem affecting wheat growth. Immediate treatment prevented spread, protecting the yield. Without the alert, damage could have been extensive. NDVI enabled early detection, preserving yield quantity and quality, avoiding costly losses.",
+    "source_url": "https://eos.com/make-an-analysis/ndvi",
+    "image_url": "https://www.cropprophet.com/wp-content/uploads/2024/08/CropProphet_observed_VHI_anom_2004_US.png",
+    "image_credit": "CropProphet",
+    "tags": [
+      "agriculture",
+      "crop_health",
+      "precision_farming"
+    ]
+  },
+  {
+    "id": "ndvi-002",
+    "feature": "ndvi_map",
+    "title": "Deforestation in Amazon Reduces NDVI",
+    "date": "2020-01-01",
+    "time": "00:00:00",
+    "timezone": "UTC",
+    "location": {
+      "latitude": -3.4653,
+      "longitude": -62.2159,
+      "name": "Amazon Rainforest"
+    },
+    "impact_type": "negative",
+    "story": "Human activities like deforestation in the Amazon have led to a decline in NDVI values, indicating reduced vegetation health and coverage. This has contributed to biodiversity loss, increased carbon emissions, and altered local climate. Satellite monitoring shows significant NDVI decreases in deforested areas, highlighting the environmental harm from land-use changes.",
+    "source_url": "https://www.sciencedirect.com/science/article/pii/S1574954124000979",
+    "image_url": "https://geoawesome.com/wp-content/uploads/2022/03/NDVI-image-Drone-Remote-Sensing-Geoawesomeness.png",
+    "image_credit": "Geoawesome",
+    "tags": [
+      "deforestation",
+      "environmental_degradation",
+      "biodiversity_loss"
+    ]
+  },
+  {
+    "id": "co2-001",
+    "feature": "co2_chart",
+    "title": "Record CO2 Levels in 2024",
+    "date": "2024-01-01",
+    "time": "00:00:00",
+    "timezone": "UTC",
+    "location": {
+      "latitude": 0,
+      "longitude": 0,
+      "name": "Global"
+    },
+    "impact_type": "negative",
+    "story": "In 2024, atmospheric CO2 levels reached a record high of 422.8 ppm, with the largest one-year increase of 3.75 ppm. This surge, driven by human emissions and wildfires, intensifies global warming, leading to more extreme weather and climate impacts. The WMO highlighted concerns about weakening carbon sinks, exacerbating the climate crisis.",
+    "source_url": "https://www.climate.gov/news-features/understanding-climate/climate-change-atmospheric-carbon-dioxide",
+    "image_url": "https://images.ctfassets.net/cxgxgstp8r5d/cm-892-graphic-global-emissions-by-sector-2019/14dd023034984794c951d04cbdac1d64/2022GHG_GlobalSources_en_title_lg.jpg",
+    "image_credit": "Climate Central",
+    "tags": [
+      "climate_change",
+      "greenhouse_gases",
+      "global_warming"
+    ]
+  },
+  {
+    "id": "co2-002",
+    "feature": "co2_chart",
+    "title": "Rising CO2 Emissions Despite Coal Decline",
+    "date": "2019-12-04",
+    "time": "00:00:00",
+    "timezone": "UTC",
+    "location": {
+      "latitude": 0,
+      "longitude": 0,
+      "name": "Global"
+    },
+    "impact_type": "negative",
+    "story": "Global CO2 emissions continued to rise in 2019, despite a drop in coal use. Increases from oil and gas offset coal reductions, leading to higher atmospheric concentrations. This trend contributes to accelerated climate change, with impacts like rising temperatures and extreme weather events.",
+    "source_url": "https://www.bbc.com/news/science-environment-50648495",
+    "image_url": "https://ichef.bbci.co.uk/news/480/cpsprodpb/1316D/production/_109998187_optimised-carbon_emissions-nc.png.webp",
+    "image_credit": "BBC",
+    "tags": [
+      "emissions",
+      "fossil_fuels",
+      "climate_change"
+    ]
+  },
+  {
+    "id": "temperature-001",
+    "feature": "temperature_chart",
+    "title": "2023 Hottest Year on Record",
+    "date": "2023-01-01",
+    "time": "00:00:00",
+    "timezone": "UTC",
+    "location": {
+      "latitude": 0,
+      "longitude": 0,
+      "name": "Global"
+    },
+    "impact_type": "negative",
+    "story": "2023 was the hottest year on record, with global temperatures 1.48°C above pre-industrial levels. This led to widespread heatwaves, wildfires, and extreme weather events, causing thousands of deaths and billions in damages. The year highlighted the accelerating impacts of climate change.",
+    "source_url": "https://berkeleyearth.org/global-temperature-report-for-2023/",
+    "image_url": "https://www.noaa.gov/sites/default/files/styles/landscape_width_1275/public/2022-03/PHOTO-Climate-Collage-Diagonal-Design-NOAA-Communications-NO-NOAA-Logo.jpg",
+    "image_credit": "NOAA",
+    "tags": [
+      "global_warming",
+      "extreme_weather",
+      "heatwaves"
+    ]
+  },
+  {
+    "id": "temperature-002",
+    "feature": "temperature_chart",
+    "title": "2022 Heatwave in Europe",
+    "date": "2022-07-01",
+    "time": "00:00:00",
+    "timezone": "UTC",
+    "location": {
+      "latitude": 48.8566,
+      "longitude": 2.3522,
+      "name": "Europe"
+    },
+    "impact_type": "negative",
+    "story": "The 2022 European heatwave broke temperature records across the continent, leading to over 60,000 excess deaths. It caused wildfires, droughts, and agricultural losses. This event was made more likely and intense by climate change, demonstrating the human cost of rising temperatures.",
+    "source_url": "https://www.env-health.org/heatwaves-a-major-health-threat/",
+    "image_url": "https://www.env-health.org/wp-content/uploads/2022/08/3-1024x576.png",
+    "image_credit": "HEAL",
+    "tags": [
+      "heatwave",
+      "mortality",
+      "climate_change"
+    ]
+  },
+  {
+    "id": "light-001",
+    "feature": "light_pollution_map",
+    "title": "Light Pollution Disorients Turtle Hatchlings in Morocco",
+    "date": "2025-10-31",
+    "time": "00:00:00",
+    "timezone": "UTC",
+    "location": {
+      "latitude": 31.7917,
+      "longitude": -7.0926,
+      "name": "Morocco"
+    },
+    "impact_type": "negative",
+    "story": "A 2025 study on loggerhead turtle nesting beaches in Morocco found that artificial lighting caused 100% disorientation of hatchlings at Essir Beach, leading to mortality. At Sidi Messaoud with less lighting, only 21% were affected. This highlights how light pollution disrupts natural behaviors, increasing predation and reducing survival rates for endangered species.",
+    "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12613182",
+    "image_url": "https://darksky.org/app/uploads/2020/03/light-pollution-sea-turtles-web-824x549-1.jpg",
+    "image_credit": "DarkSky International",
+    "tags": [
+      "wildlife",
+      "light_pollution",
+      "sea_turtles"
+    ]
+  },
+  {
+    "id": "light-002",
+    "feature": "light_pollution_map",
+    "title": "Artificial Light Helps Migratory Birds Forage at Night",
+    "date": "2012-11-28",
+    "time": "00:00:00",
+    "timezone": "UTC",
+    "location": {
+      "latitude": 55.9533,
+      "longitude": -3.1883,
+      "name": "Scotland"
+    },
+    "impact_type": "positive",
+    "story": "A 2012 study found that light pollution from an oil refinery allowed migratory birds to forage longer at night, using sight instead of touch. This provided extra energy for migration. While generally negative, in this case, artificial light benefited the birds by extending feeding time.",
+    "source_url": "https://www.theguardian.com/environment/2012/nov/28/light-pollution-wildlife",
+    "image_url": "https://static.wixstatic.com/media/284097_9a95d8e54aa8461c866504319d11e3ec.jpg/v1/fill/w_1024,h_683,al_c,q_85,enc_avif,quality_auto/284097_9a95d8e54aa8461c866504319d11e3ec.jpg",
+    "image_credit": "AskProfessorBird",
+    "tags": [
+      "wildlife",
+      "light_pollution",
+      "birds"
+    ]
+  },
+  {
+    "id": "cloud-001",
+    "feature": "cloud_cover_map",
+    "title": "SAR Enables Flood Mapping Through Clouds",
+    "date": "2025-07-01",
+    "time": "00:00:00",
+    "timezone": "UTC",
+    "location": {
+      "latitude": 0,
+      "longitude": 0,
+      "name": "Global"
+    },
+    "impact_type": "positive",
+    "story": "A 2025 study used Sentinel-1 SAR imagery to create a longitudinal global flood extent dataset, unaffected by cloud cover. This allowed consistent monitoring of flood-prone areas over 10 years, improving disaster response and risk assessment in regions where optical satellites are limited by weather.",
+    "source_url": "https://www.nature.com/articles/s41467-025-60973-1",
+    "image_url": "https://images.ctfassets.net/cxgxgstp8r5d/568xOrNdAWSKSs03kwRSwb/17e04a94241d0605240b665bc43eddfc/20222023GlobalTemps_Anomalies_en_title_lg.jpg",
+    "image_credit": "Climate Central",
+    "tags": [
+      "disaster_management",
+      "remote_sensing",
+      "flood_mapping"
+    ]
+  },
+  {
+    "id": "cloud-002",
+    "feature": "cloud_cover_map",
+    "title": "Shrinking Cloud Cover Boosts Global Warming",
+    "date": "2024-12-19",
+    "time": "00:00:00",
+    "timezone": "UTC",
+    "location": {
+      "latitude": 0,
+      "longitude": 0,
+      "name": "Global"
+    },
+    "impact_type": "negative",
+    "story": "A 2024 study found that Earth's reflective cloud cover has shrunk over the past two decades, allowing more solar energy to reach the surface and accelerating global warming. Narrowing tropical storm bands reduced low-level clouds, contributing to record heat in 2023 and posing a dangerous feedback loop.",
+    "source_url": "https://www.science.org/content/article/earth-s-clouds-are-shrinking-boosting-global-warming",
+    "image_url": "https://images.squarespace-cdn.com/content/v1/5b9ab1e34611a09ab90a2305/1123d201-4025-4acd-8e92-d8e2b98cd829/Cloud+cover+from+1980+Vahrenholt+%28CERES%29.jpg",
+    "image_credit": "Science Under Attack",
+    "tags": [
+      "climate_change",
+      "cloud_cover",
+      "global_warming"
+    ]
+  },
+  {
+    "id": "debris-001",
+    "feature": "orbital_debris_map",
+    "title": "ISS Performs Debris Avoidance Maneuver",
+    "date": "2022-10-24",
+    "time": "19:25:00",
+    "timezone": "CDT",
+    "location": {
+      "latitude": 0,
+      "longitude": 0,
+      "name": "Low Earth Orbit"
+    },
+    "impact_type": "positive",
+    "story": "On October 24, 2022, the International Space Station conducted a collision avoidance maneuver to dodge a piece of orbital debris. This was the second such maneuver that year, demonstrating the effectiveness of orbital debris tracking systems in preventing potential collisions and ensuring the safety of crew and spacecraft.",
+    "source_url": "https://orbitaldebris.jsc.nasa.gov/quarterly-news/pdfs/odqnv26i4.pdf",
+    "image_url": "https://cdn.mos.cms.futurecdn.net/YFnfAsfDFSCVqJb8WxgcMA.jpg",
+    "image_credit": "Live Science",
+    "tags": [
+      "space_safety",
+      "collision_avoidance",
+      "orbital_debris"
+    ]
+  },
+  {
+    "id": "debris-002",
+    "feature": "orbital_debris_map",
+    "title": "Risk of Casualties from Falling Space Debris",
+    "date": "2022-07-18",
+    "time": "00:00:00",
+    "timezone": "UTC",
+    "location": {
+      "latitude": 0,
+      "longitude": 0,
+      "name": "Global"
+    },
+    "impact_type": "negative",
+    "story": "A 2022 study estimated a 10% chance over the next decade that falling space debris could cause casualties on Earth. With increasing satellite launches, the risk of uncontrolled reentries grows, potentially injuring people or damaging property. This underscores the need for better debris mitigation strategies.",
+    "source_url": "https://www.space.com/space-junk-rocket-debris-reentry-risk",
+    "image_url": "https://www.nasa.gov/wp-content/uploads/2016/05/spacecraft-risk-assessment_flowchart.png",
+    "image_credit": "NASA",
+    "tags": [
+      "space_debris",
+      "reentry_risk",
+      "public_safety"
+    ]
+  }
+]
