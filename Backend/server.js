@@ -41,6 +41,9 @@ app.use('/api/notifications', notificationRoutes);
 import postRoutes from "./Routes/postRoutes.js";
 app.use('/api/posts', postRoutes);
 
+import aiRoutes from "./Routes/aiRoutes.js";
+app.use('/api/ai', aiRoutes);
+
 
 // Basic logger for visibility
 app.use((req, res, next) => {

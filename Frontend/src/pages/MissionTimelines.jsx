@@ -9,7 +9,8 @@ import {
     MdClose,
     MdAccessTime,
     MdLocationOn,
-    MdOutlineInfo
+    MdOutlineInfo,
+    MdSmartToy
 } from 'react-icons/md';
 import { SiSpacex, SiNasa } from 'react-icons/si';
 import { GiIndiaGate } from 'react-icons/gi';
@@ -440,8 +441,16 @@ const MissionTimelines = () => {
 
                                     {/* Footer Action */}
                                     <div className="mt-6 pt-4 border-t border-white/5 flex justify-end">
-                                        <button className="cursor-target px-6 py-2 bg-[#00d9ff]/10 hover:bg-[#00d9ff]/20 text-[#00d9ff] text-xs font-bold rounded-lg border border-[#00d9ff]/30 uppercase tracking-widest transition-all">
-                                            Download Telemetry
+                                        <button
+                                            onClick={() => {
+                                                const event = new CustomEvent('SpaceScope:OpenChatbot', {
+                                                    detail: { message: `Tell me about the ${selectedMission.name} mission by ${selectedMission.provider}.` }
+                                                });
+                                                window.dispatchEvent(event);
+                                            }}
+                                            className="cursor-target flex items-center gap-2 px-6 py-2 bg-[#00ff88]/10 hover:bg-[#00ff88]/20 text-[#00ff88] text-xs font-bold rounded-lg border border-[#00ff88]/30 uppercase tracking-widest transition-all hover:scale-105"
+                                        >
+                                            <MdSmartToy className="text-lg" /> Ask AI
                                         </button>
                                     </div>
 

@@ -27,6 +27,19 @@ const Chatbot = () => {
         scrollToBottom();
     }, [messages, isTyping, isOpen]);
 
+    // Listen for external open events (e.g. from MissionTimelines)
+    useEffect(() => {
+        const handleOpenEvent = (e) => {
+            setIsOpen(true);
+            if (e.detail?.message) {
+                setInputValue(e.detail.message);
+            }
+        };
+
+        window.addEventListener('SpaceScope:OpenChatbot', handleOpenEvent);
+        return () => window.removeEventListener('SpaceScope:OpenChatbot', handleOpenEvent);
+    }, []);
+
     const findBestMatch = (text) => {
         const lowerText = text.toLowerCase();
 
@@ -53,16 +66,8 @@ const Chatbot = () => {
         return topic ? topic.keywords[0] : id.replace(/_/g, ' '); // Fallback to ID if not found
     };
 
-    const handleSend = (text = inputValue) => {
+    const handleSend = async (text = inputValue) => {
         if (!text.trim()) return;
-
-        // If text matches an ID exactly, use the keyword as display text, otherwise use text
-        // This is a bit tricky, let's just use the text passed in
-        // But if it's an ID click, we want to show a nice label.
-        // Let's handle clicks separately or rely on the caller to pass display text.
-
-        // Actually, let's refactor handleSend to take (text, isId = false)
-        // But for now, let's just assume standard send.
 
         const newUserMsg = {
             id: Date.now(),
@@ -75,33 +80,49 @@ const Chatbot = () => {
         setInputValue('');
         setIsTyping(true);
 
-        setTimeout(() => {
-            const match = findBestMatch(text);
-            let responseText = "That's a fascinating topic! 🌠 While I specialize in SpaceScope's data tools (NDVI, CO2, Debris, etc.), I'm always learning. Try asking me about 'NDVI', 'CO2', or 'Space Junk'!";
-            let related = [];
+        try {
+            // Call Backend API
+            const response = await fetch('http://localhost:5000/api/ai/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: text }),
+            });
 
-            if (match) {
-                responseText = match.response;
-                related = match.relatedTopics || [];
+            if (!response.ok) {
+                throw new Error(`Server error: ${response.status}`);
             }
+
+            const data = await response.json();
+            const responseText = data.response;
 
             const newAiMsg = {
                 id: Date.now() + 1,
                 text: responseText,
                 sender: 'ai',
                 timestamp: new Date().toISOString(),
-                relatedTopics: related
+                relatedTopics: [] // AI responses don't include related topics yet, can add later if needed
             };
 
             setMessages(prev => [...prev, newAiMsg]);
+        } catch (error) {
+            console.error("Chat error:", error);
+            const errorMsg = {
+                id: Date.now() + 1,
+                text: "I'm having trouble connecting to my deep-space network. 📶 Please try again later!",
+                sender: 'ai',
+                timestamp: new Date().toISOString()
+            };
+            setMessages(prev => [...prev, errorMsg]);
+        } finally {
             setIsTyping(false);
-        }, 1000);
+        }
     };
 
     const handleTopicClick = (topicId) => {
         const topic = chatbotData.find(t => t.id === topicId);
         if (topic) {
-            // Show the first keyword as the user message for better UX
             handleSend(topic.keywords[0]);
         }
     };
@@ -110,6 +131,18 @@ const Chatbot = () => {
         e.preventDefault();
         handleSend();
     };
+
+    const [showTeaser, setShowTeaser] = useState(false);
+
+    // Teaser Timer: Pop up every 10 seconds, stay for 4 seconds
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setShowTeaser(true);
+            setTimeout(() => setShowTeaser(false), 4000); // Vanish after 4s
+        }, 10000); // Repeat every 10s
+
+        return () => clearInterval(interval);
+    }, []);
 
     return (
         <div className="fixed bottom-6 right-6 z-[9999] font-inter">
@@ -213,6 +246,24 @@ const Chatbot = () => {
                                 </button>
                             </div>
                         </form>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+                {showTeaser && !isOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.5, x: 20 }}
+                        animate={{ opacity: 1, scale: 1, x: 0 }}
+                        exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.2 } }}
+                        transition={{ duration: 0.3 }}
+                        className="absolute bottom-2 right-16 w-max max-w-[200px] bg-[#0a0e17]/90 backdrop-blur-md border border-[#00ff88]/50 text-white px-4 py-3 rounded-2xl rounded-tr-sm shadow-[0_0_20px_rgba(0,255,136,0.2)] text-xs font-medium pointer-events-none"
+                    >
+                        <p className="leading-relaxed">
+                            <span className="text-[#00ff88] font-bold">Curious?</span> Ask AI and learn more about this topic live!
+                        </p>
+                        {/* Arrow */}
+                        <div className="absolute top-4 -right-1.5 w-3 h-3 bg-[#0a0e17] border-t border-r border-[#00ff88]/50 rotate-45 transform"></div>
                     </motion.div>
                 )}
             </AnimatePresence>
