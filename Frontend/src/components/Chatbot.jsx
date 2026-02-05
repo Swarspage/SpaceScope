@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, X, Send, Bot, Sparkles, User } from 'lucide-react';
 
 import chatbotData from '../data/chatbotData.json';
+import { API_BASE_URL } from '../config';
 
 const Chatbot = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -82,8 +83,7 @@ const Chatbot = () => {
 
         try {
             // Call Backend API
-            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-            const response = await fetch(`${API_URL}/api/ai/chat`, {
+            const response = await fetch(`${API_BASE_URL}/api/ai/chat`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -317,6 +317,7 @@
 // export default LoginPage;
 
 import React, { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import {
@@ -389,10 +390,8 @@ const LoginPage = () => {
     setError('');
     setLoading(true);
 
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-
     try {
-      const response = await fetch(`${API_URL}/api/auth/login`, {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(loginData)
@@ -419,10 +418,8 @@ const LoginPage = () => {
     setError('');
     setLoading(true);
 
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-
     try {
-      const response = await fetch(`${API_URL}/api/auth/register`, {
+      const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(registerData)

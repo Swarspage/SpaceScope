@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Globe from "react-globe.gl";
 import "leaflet/dist/leaflet.css";
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 import { X, Calendar as CalendarIcon, Info, Moon } from 'lucide-react';
 import { MapContainer, TileLayer, CircleMarker } from "react-leaflet";
 import Sidebar from '../components/Sidebar';
@@ -209,8 +210,7 @@ const DashboardPage = () => {
         const fetchSpaceXData = async () => {
             try {
                 // Using the backend query endpoint to get upcoming launches
-                const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-                const response = await fetch(`${API_URL}/api/spacex/launches/query`, {
+                const response = await fetch(`${API_BASE_URL}/api/spacex/launches/query`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -239,8 +239,7 @@ const DashboardPage = () => {
             // A. Fetch Backend Notifications
             if (user && user.id) {
                 try {
-                    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-                    const res = await axios.get(`${API_URL}/api/notifications/${user.id}`);
+                    const res = await axios.get(`${API_BASE_URL}/api/notifications/${user.id}`);
                     backendNotifs = res.data.notifications || [];
                 } catch (err) {
                     console.error("Failed to fetch notifications", err);
@@ -305,8 +304,7 @@ const DashboardPage = () => {
             if (isBackend) {
                 // Call API
                 try {
-                    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-                    await axios.put(`${API_URL}/api/notifications/${notif._id}/read`);
+                    await axios.put(`${API_BASE_URL}/api/notifications/${notif._id}/read`);
                     // Update State Locally
                     setNotifications(prev => prev.map(n => n._id === notif._id ? { ...n, isRead: true } : n));
                     setUnreadCount(prev => Math.max(0, prev - 1));
@@ -336,8 +334,7 @@ const DashboardPage = () => {
         // Mark Backend Read
         if (user && user.id) {
             try {
-                const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-                await axios.put(`${API_URL}/api/notifications/${user.id}/read-all`);
+                await axios.put(`${API_BASE_URL}/api/notifications/${user.id}/read-all`);
             } catch (err) { console.error("Failed to mark all API read", err); }
         }
 
