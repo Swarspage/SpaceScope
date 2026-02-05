@@ -355,16 +355,7 @@ const MeteorCalendar = () => {
                                             Details <MdChevronLeft className="rotate-180" />
                                         </button>
                                     </div>
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setAiContextEvent(event);
-                                            setShowAIPopup(true);
-                                        }}
-                                        className="mt-3 w-full py-2 rounded-lg bg-[#00ff88]/5 border border-[#00ff88]/20 text-[#00ff88] text-[10px] uppercase font-bold tracking-wider hover:bg-[#00ff88]/10 transition-colors flex items-center justify-center gap-2"
-                                    >
-                                        <MdSmartToy /> Ask AI about this
-                                    </button>
+
                                 </div>
                             </div>
                         )) : (
@@ -426,6 +417,16 @@ const MeteorCalendar = () => {
                                                 <div className="text-lg md:text-xl text-white font-bold">Waning</div>
                                             </div>
                                         </div>
+                                        <button
+                                            onClick={() => {
+                                                setAiContextEvent(selectedEvent);
+                                                setShowAIPopup(true);
+                                            }}
+                                            className="w-full py-3 rounded-xl bg-[#00ff88]/10 border border-[#00ff88]/30 text-[#00ff88] text-xs font-bold uppercase tracking-wider hover:bg-[#00ff88] hover:text-black transition-all shadow-[0_0_15px_rgba(0,255,136,0.2)] flex items-center justify-center gap-2"
+                                        >
+                                            <MdSmartToy className="text-lg" />
+                                            Ask AI about this
+                                        </button>
                                     </div>
 
                                     {/* Col 2: Visibility & Description */}
