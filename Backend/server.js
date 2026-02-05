@@ -644,3 +644,7 @@ app.listen(PORT, () => {
   console.log(`ISRO base: ${ISRO_BASE}`);
   console.log(`Available Env Vars: ${Object.keys(process.env).filter(k => !k.startsWith('npm_')).join(', ')}`);
 });
+
+// Start notification scheduler
+import { startScheduler } from './services/schedulerService.js';
+startScheduler();

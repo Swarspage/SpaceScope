@@ -11,6 +11,7 @@ import LearningPage from "./pages/LearningPage";
 import HomePage from "./pages/HomePage";
 import Applications from "./pages/ApplicationsPage";
 import CommunityPage from "./pages/CommunityPage"; // Add this
+import NotificationSettings from "./components/NotificationSettings";
 import Particles from "./components/Particles";
 
 // Protected Route Component - must be used inside AuthProvider
@@ -114,6 +115,15 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <CommunityPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/settings"
+        element={
+          <ProtectedRoute>
+            <NotificationSettings />
           </ProtectedRoute>
         }
       />

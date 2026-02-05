@@ -10,7 +10,8 @@ import {
   MdLogout,
   MdPeople,
   MdMenu,
-  MdClose
+  MdClose,
+  MdNotifications
 } from "react-icons/md";
 import Logo from "../assets/Logo.png";
 
@@ -150,6 +151,13 @@ const Sidebar = ({ activeTab = "Dashboard", forceOpen = false }) => {
 
         {/* Bottom Navigation */}
         <div className="p-4 border-t border-gray-500/10 bg-black/20 md:rounded-br-3xl space-y-1">
+          <NavItem
+            id="nav-settings"
+            icon={MdNotifications}
+            label="Settings"
+            active={activeTab === "Settings"}
+            onClick={() => navigate("/settings")}
+          />
           <NavItem
             id="nav-profile"
             icon={MdPerson}

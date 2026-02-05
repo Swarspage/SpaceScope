@@ -32,6 +32,27 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    notificationSettings: {
+        isSubscribed: { type: Boolean, default: true },
+        preferences: {
+            issPass: {
+                enabled: { type: Boolean, default: true },
+                minElevation: { type: Number, default: 30 }
+            },
+            aurora: {
+                enabled: { type: Boolean, default: true },
+                minKpIndex: { type: Number, default: 5 }
+            },
+            meteorShower: {
+                enabled: { type: Boolean, default: true }
+            }
+        },
+        location: {
+            latitude: { type: Number, default: null },
+            longitude: { type: Number, default: null },
+            city: { type: String, default: '' }
+        }
+    },
     tutorialCompleted: {
         type: Boolean,
         default: false
