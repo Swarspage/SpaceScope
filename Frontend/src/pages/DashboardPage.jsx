@@ -44,6 +44,15 @@ import SpaceDebrisGlobe from '../components/SpaceDebrisGlobe';
 import TempAnomalyChart from '../components/TempAnomalyChart';
 import HeaderGreeting from '../components/HeaderGreeting';
 import DashboardHeader from '../components/DashboardHeader';
+import UpcomingEventBanner from '../components/UpcomingEventBanner';
+import DashboardCarousel from '../components/DashboardCarousel';
+import ISSBanner from '../components/ISSBanner';
+import AuroraBanner from '../components/AuroraBanner';
+
+// Backup Data Imports
+import NASABackupData from '../data/NASA.json';
+import SpaceXBackupData from '../data/SpaceX.json';
+import ISROBackupData from '../data/ISRO.json';
 
 
 // --- Helpers copied from AuroraPage.jsx for the Map ---
@@ -205,32 +214,80 @@ const DashboardPage = () => {
         return () => clearInterval(interval);
     }, []);
 
-    // 5. Fetch SpaceX Missions (New)
+    // 5. Fetch Multi-Provider Upcoming Missions (Aggregated)
     useEffect(() => {
-        const fetchSpaceXData = async () => {
+        const fetchMissions = async () => {
+            let allMissions = [];
+
+            // A. Fetch SpaceX
             try {
-                // Using the backend query endpoint to get upcoming launches
-                const response = await fetch(`${API_BASE_URL}/api/spacex/launches/query`, {
+                // Try backend query first
+                const res = await fetch(`${API_BASE_URL}/api/spacex/launches/query`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         query: { upcoming: true },
-                        options: {
-                            limit: 3,
-                            sort: { date_utc: 'asc' },
-                            select: ['name', 'date_utc', 'details', 'links', 'flight_number', 'rocket']
-                        }
+                        options: { limit: 5, sort: { date_utc: 'asc' }, select: ['name', 'date_utc', 'details', 'links', 'rocket'] }
                     })
                 });
-                const data = await response.json();
-                if (data.docs) {
-                    setSpacexData(data.docs);
+                const data = await res.json();
+
+                if (data && data.docs && data.docs.length > 0) {
+                    allMissions = [...allMissions, ...data.docs.map(m => ({
+                        name: m.name,
+                        date: new Date(m.date_utc),
+                        provider: 'SPACEX',
+                        details: m.details,
+                        links: m.links
+                    }))];
+                } else {
+                    throw new Error("No SpaceX data from API");
                 }
-            } catch (error) {
-                console.error('Error fetching SpaceX data:', error);
+            } catch (err) {
+                console.warn("SpaceX API failed, using backup", err);
+                allMissions = [...allMissions, ...SpaceXBackupData.map(m => ({
+                    name: m.name,
+                    date: new Date(m.date_utc),
+                    provider: 'SPACEX',
+                    details: m.details,
+                    links: m.links
+                }))];
             }
+
+            // B. Fetch NASA (Mainly Backup for Demo stability)
+            try {
+                allMissions = [...allMissions, ...NASABackupData.map(m => ({
+                    name: m.name,
+                    date: new Date(m.window_start || m.net),
+                    provider: 'NASA',
+                    details: m.mission?.description,
+                    links: { flickr: { original: [m.image] } }
+                }))];
+            } catch (err) { console.error("NASA Data error", err); }
+
+            // C. Fetch ISRO (Backup)
+            try {
+                allMissions = [...allMissions, ...ISROBackupData.map(m => ({
+                    name: m.Name,
+                    date: new Date(m.LaunchDate),
+                    provider: 'ISRO',
+                    details: m.MissionStatus,
+                    links: { flickr: { original: [] } }
+                }))];
+            } catch (err) { console.error("ISRO Data error", err); }
+
+
+            // D. Filter & Sort
+            const now = new Date();
+            const upcoming = allMissions
+                .filter(m => m.date > now) // Strict future filter
+                .sort((a, b) => a.date - b.date) // Sooner first
+                .slice(0, 5); // Limit to top 5
+
+            setSpacexData(upcoming);
         };
-        fetchSpaceXData();
+
+        fetchMissions();
     }, []);
     // 6. Generate Translations & Fetch Backend Notifications
     useEffect(() => {
@@ -662,6 +719,24 @@ const DashboardPage = () => {
                     <div className="max-w-[1600px] mx-auto space-y-6">
 
                         {/* Title Section */}
+
+                        {/* Title Section & Banner */}
+
+                        {/* Featured Upcoming Launch Banner */}
+                        {/* Featured Carousel (Missions, ISS, Aurora) */}
+                        <div className="animate-fade-in-up">
+                            <DashboardCarousel
+                                slides={[
+                                    /* Slide 1: Mission (Only if data available) */
+                                    (spacexData && spacexData.length > 0) ? <UpcomingEventBanner event={spacexData[0]} /> : null,
+                                    /* Slide 2: ISS */
+                                    <ISSBanner issData={issData} nextPass={issPassData} />,
+                                    /* Slide 3: Aurora */
+                                    <AuroraBanner auroraData={auroraData} />
+                                ].filter(Boolean)}
+                            />
+                        </div>
+
                         {/* Title Section (Quote & Stats) */}
                         <div className="flex flex-col xl:flex-row justify-between items-end gap-6 border-b border-white/5 pb-6">
                             <div className="flex-1 w-full xl:w-auto">

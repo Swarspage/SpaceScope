@@ -19,6 +19,7 @@ import NASABackupData from '../data/NASA.json';
 import SpaceXBackupData from '../data/SpaceX.json';
 import ISROBackupData from '../data/ISRO.json';
 import MissionAIPopup from '../components/MissionAIPopup';
+import CountdownTimer from '../components/CountdownTimer';
 
 const MissionTimelines = () => {
     const navigate = useNavigate();
@@ -476,62 +477,6 @@ const MissionTimelines = () => {
     );
 };
 
-// === COMPONENT: Countdown Timer ===
-const CountdownTimer = ({ targetDate }) => {
-    const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0, isPast: false });
-
-    useEffect(() => {
-        if (!targetDate) return;
-
-        const calculate = () => {
-            const now = new Date().getTime();
-            const target = new Date(targetDate).getTime();
-            let diff = target - now;
-            const isPast = diff < 0;
-
-            if (isPast) diff = Math.abs(diff);
-
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-            setTimeLeft({ days, hours, minutes, seconds, isPast });
-        };
-
-        calculate();
-        const timer = setInterval(calculate, 1000);
-        return () => clearInterval(timer);
-    }, [targetDate]);
-
-    return (
-        <div className="flex flex-col items-center">
-            <div className={`text-[10px] font-bold uppercase tracking-[0.2em] mb-2 ${timeLeft.isPast ? 'text-[#00ff88]' : 'text-[#00d9ff]'}`}>
-                {timeLeft.isPast ? 'MISSION ELAPSED TIME (T+)' : 'T-MINUS COUNTDOWN'}
-            </div>
-            <div className="flex items-center gap-3 font-mono text-white">
-                <div className="text-center">
-                    <div className="text-2xl md:text-3xl font-bold leading-none">{String(timeLeft.days).padStart(2, '0')}</div>
-                    <div className="text-[9px] text-slate-500 uppercase mt-1">Days</div>
-                </div>
-                <div className="text-2xl text-slate-600">:</div>
-                <div className="text-center">
-                    <div className="text-2xl md:text-3xl font-bold leading-none">{String(timeLeft.hours).padStart(2, '0')}</div>
-                    <div className="text-[9px] text-slate-500 uppercase mt-1">Hrs</div>
-                </div>
-                <div className="text-2xl text-slate-600">:</div>
-                <div className="text-center">
-                    <div className="text-2xl md:text-3xl font-bold leading-none">{String(timeLeft.minutes).padStart(2, '0')}</div>
-                    <div className="text-[9px] text-slate-500 uppercase mt-1">Mins</div>
-                </div>
-                <div className="text-2xl text-slate-600">:</div>
-                <div className="text-center">
-                    <div className="text-2xl md:text-3xl font-bold leading-none text-[#00d9ff]">{String(timeLeft.seconds).padStart(2, '0')}</div>
-                    <div className="text-[9px] text-slate-500 uppercase mt-1">Secs</div>
-                </div>
-            </div>
-        </div>
-    );
-};
+// Internal CountdownTimer removed in favor of shared component
 
 export default MissionTimelines;
