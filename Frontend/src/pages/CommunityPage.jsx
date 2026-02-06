@@ -20,6 +20,9 @@ import {
   MdNotifications,
   MdSettings,
   MdAdd,
+  MdArticle,
+  MdGridView,
+  MdViewStream
 } from "react-icons/md";
 import {
   FaUserAstronaut,
@@ -46,8 +49,10 @@ import {
 import api from "../services/api";
 import axios from "axios";
 import { formatDistanceToNow, format } from "date-fns";
-
 import { motion, AnimatePresence } from "framer-motion";
+
+// --- NEW IMPORTS ---
+import NewsFeed from "../components/NewsFeed";
 
 
 const LocationSelector = ({ location, setLocation, setShowLocationSelector }) => {
@@ -103,9 +108,6 @@ const LocationSelector = ({ location, setLocation, setShowLocationSelector }) =>
       });
       if (res.data && res.data.length > 0) {
         const place = res.data[0];
-        // extracting a nice name is tricky, display_name is long.
-        // Let's try to parse display_name or just refrain from being too specific
-        // Display name usually: "City, County, State, Country"
         const parts = place.display_name.split(", ");
         const shortName = parts.length > 1 ? `${parts[0]}, ${parts[parts.length - 1]}` : parts[0];
         setLocation(shortName);
@@ -131,7 +133,6 @@ const LocationSelector = ({ location, setLocation, setShowLocationSelector }) =>
       </div>
 
       <div className="flex flex-col gap-3">
-        {/* Option 1: Current Location */}
         <button
           onClick={handleUseMyLocation}
           className="cursor-target flex items-center justify-center gap-2 w-full py-2 bg-[#00d9ff]/10 hover:bg-[#00d9ff]/20 text-[#00d9ff] rounded-lg border border-[#00d9ff]/30 transition-colors text-xs font-bold uppercase tracking-wider"
@@ -142,7 +143,6 @@ const LocationSelector = ({ location, setLocation, setShowLocationSelector }) =>
 
         <div className="text-center text-[10px] text-slate-500 font-mono uppercase">--- OR ---</div>
 
-        {/* Option 2: Custom Input */}
         <div className="flex gap-2">
           <input
             type="text"
@@ -177,7 +177,10 @@ const CommunityPage = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [isSearchOpen, setIsSearchOpen] = useState(false); // Mobile search toggle
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  // --- MOBILE VIEW STATE ---
+  const [activeTab, setActiveTab] = useState("posts"); // 'posts' or 'news'
 
   // Create Post State
   const [isCreating, setIsCreating] = useState(false);
@@ -185,10 +188,7 @@ const CommunityPage = () => {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [caption, setCaption] = useState("");
-
   const [location, setLocation] = useState("");
-
-  // Map State
   const [showMap, setShowMap] = useState(false);
 
   const fileInputRef = useRef(null);
@@ -196,7 +196,6 @@ const CommunityPage = () => {
   // Modal State
   const [selectedPost, setSelectedPost] = useState(null);
   const [showPostMenu, setShowPostMenu] = useState(false);
-  const [commentText, setCommentText] = useState("");
 
   // Polling
   useEffect(() => {
@@ -216,7 +215,6 @@ const CommunityPage = () => {
     }
   };
 
-  // Derived State for Search
   const filteredPosts = posts.filter(
     (post) =>
       post.caption?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -267,7 +265,6 @@ const CommunityPage = () => {
     setFile(null);
     setPreview(null);
     setCaption("");
-
     setLocation("");
     setShowMap(false);
   };
@@ -275,7 +272,7 @@ const CommunityPage = () => {
   // --- ACTION LOGIC ---
   const handleLike = async (post, e) => {
     e?.stopPropagation();
-    if (!user) return;
+    if (!user) return; // Silent fail if not logged in (or show auth prompt)
 
     const isLiked = post.likes.includes(user.username);
     const newLikes = isLiked
@@ -362,30 +359,47 @@ const CommunityPage = () => {
 
   return (
     <div className="flex h-screen bg-transparent text-slate-300 font-sans overflow-hidden">
-      {/* TargetCursor removed (global) */}
       <Sidebar activeTab="Community" />
 
       <div className="flex-1 flex flex-col min-w-0 relative">
-        {/* Header with Search - MATCHING DASHBOARD STYLE */}
-        <header className="h-20 flex items-center justify-between px-6 border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 z-10">
-          <div>
-            <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
-              <MdPeople className="text-[#00d9ff]" /> Community
-            </h1>
-            <p className="text-xs text-slate-500 font-mono mt-1">
-              Explore the cosmos together
-            </p>
+        {/* Header with Search */}
+        <header className="h-20 shrink-0 flex items-center justify-between px-6 border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 z-10">
+          <div className="flex items-center gap-4">
+            <div>
+              <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+                <MdPeople className="text-[#00d9ff]" /> Community
+              </h1>
+              <p className="text-xs text-slate-500 font-mono mt-1 hidden md:block">
+                Explore the cosmos together
+              </p>
+            </div>
+
+            {/* Mobile Toggle Switches */}
+            <div className="flex md:hidden bg-white/5 rounded-lg p-1 ml-4 border border-white/5">
+              <button
+                onClick={() => setActiveTab('posts')}
+                className={`px-3 py-1 rounded text-xs font-bold transition-all ${activeTab === 'posts' ? 'bg-[#00d9ff] text-black shadow-lg' : 'text-slate-400'}`}
+              >
+                Posts
+              </button>
+              <button
+                onClick={() => setActiveTab('news')}
+                className={`px-3 py-1 rounded text-xs font-bold transition-all ${activeTab === 'news' ? 'bg-[#00d9ff] text-black shadow-lg' : 'text-slate-400'}`}
+              >
+                News
+              </button>
+            </div>
           </div>
 
-          {/* Search Bar - Responsive */}
+          {/* Search Bar */}
           <div
-            className={`flex-1 max-w-2xl px-4 transition-all duration-300 ${isSearchOpen ? "absolute inset-x-0 top-0 h-full bg-[#050714] z-20 flex items-center px-4" : "hidden md:block"}`}
+            className={`flex-1 max-w-xl px-4 transition-all duration-300 ${isSearchOpen ? "absolute inset-x-0 top-0 h-full bg-[#050714] z-20 flex items-center px-4" : "hidden md:flex ml-auto justify-end"}`}
           >
-            <div className="relative w-full group">
+            <div className="relative w-full group max-w-sm">
               <MdSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-[#00d9ff] transition-colors text-lg" />
               <input
                 type="text"
-                placeholder="Search..."
+                placeholder="Search posts..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="cursor-target w-full bg-[#0f1322] border border-white/10 rounded-lg py-2 pl-10 pr-10 md:pr-4 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#00d9ff]/50 focus:ring-1 focus:ring-[#00d9ff]/50 transition-all"
@@ -402,92 +416,56 @@ const CommunityPage = () => {
             </div>
           </div>
 
-          {/* Right Side Actions */}
-          <div className="flex items-center gap-3 md:gap-4 ml-2">
-            {/* Mobile Search Toggle */}
+          {/* Actions */}
+          <div className="flex items-center gap-3 ml-4">
             <button
               onClick={() => setIsSearchOpen(true)}
-              className="cursor-target md:hidden text-slate-400 hover:text-white p-2"
+              className="md:hidden text-slate-400 hover:text-white"
             >
               <MdSearch size={24} />
             </button>
 
-            <button className="relative text-slate-400 hover:text-white transition-colors">
-              <MdNotifications className="text-xl" />
-              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full border border-[#080b14]"></span>
-            </button>
-
             <div className="h-6 w-px bg-white/10 mx-1 hidden md:block"></div>
 
-            <div
-              className="cursor-target flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
-              onClick={() => navigate("/profile")}
-            >
-              <div className="text-right hidden lg:block">
-                {user ? (
-                  <>
-                    <div className="text-sm font-bold text-white leading-none mb-1">
-                      {user.fullName || user.username}
-                    </div>
-                    <div className="text-[10px] text-[#00d9ff] font-medium">
-                      @{user.username}
-                    </div>
-                  </>
-                ) : (
-                  <div className="text-sm text-white">Guest</div>
-                )}
-              </div>
+            <div onClick={() => navigate("/profile")} className="cursor-pointer hover:opacity-80">
               <UserAvatar username={user?.username || "Guest"} size="sm" />
             </div>
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 p-4 md:p-6">
-          <div className="max-w-7xl mx-auto w-full">
-            <div className="mb-8 w-full flex justify-center">
+        {/* MAIN LAYOUT: Split for Desktop / Toggle for Mobile */}
+        <div className="flex-1 overflow-hidden grid grid-cols-1 md:grid-cols-3 relative">
+
+          {/* COLUMN 1: POSTS (2/3 Width on Desktop) */}
+          <main className={`
+                flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 p-4 md:p-6 md:col-span-2 md:border-r border-white/5
+                ${activeTab === 'posts' ? 'flex' : 'hidden md:flex'}
+            `}>
+
+            {/* Create Post Section */}
+            <div className="w-full flex justify-center mb-8">
               <motion.div
                 layout
-                transition={{
-                  type: "spring",
-                  stiffness: 350,
-                  damping: 30,
-                  mass: 1,
-                }}
+                transition={{ type: "spring", stiffness: 350, damping: 30 }}
                 onClick={() => !isCreating && setIsCreating(true)}
-                className={`
-          bg-black/30 backdrop-blur-md border border-white/10 shadow-2xl overflow-hidden relative
-          ${isCreating
-                    ? "w-full max-w-2xl rounded-[24px] cursor-default"
-                    : "cursor-target w-full max-w-xl rounded-full hover:bg-white/5 cursor-pointer"
-                  }
-        `}
+                className={`bg-black/30 backdrop-blur-md border border-white/10 shadow-xl overflow-hidden relative ${isCreating ? "w-full max-w-xl rounded-[24px] cursor-default" : "w-full max-w-lg rounded-full hover:bg-white/5 cursor-pointer"}`}
               >
                 <AnimatePresence mode="wait">
                   {!isCreating ? (
-                    /* --- COLLAPSED STATE --- */
                     <motion.div
                       key="collapsed"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      exit={{ opacity: 0, transition: { duration: 0.1 } }}
+                      exit={{ opacity: 0 }}
                       className="flex items-center gap-4 p-2 pl-3 h-14"
                     >
-                      <UserAvatar
-                        username={user?.username || "Guest"}
-                        size="sm"
-                      />
-                      <span className="text-slate-400 text-sm font-medium">
-                        What's happening in the cosmos?
-                      </span>
-                      <motion.div
-                        layoutId="action-button"
-                        className="ml-auto bg-[#00d9ff] text-black w-10 h-10 rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(0,217,255,0.4)]"
-                      >
+                      <UserAvatar username={user?.username || "Guest"} size="sm" />
+                      <span className="text-slate-400 text-sm font-medium truncat pr-2">Share your discovery...</span>
+                      <motion.div layoutId="action-button" className="ml-auto bg-[#00d9ff] text-black w-10 h-10 rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(0,217,255,0.4)]">
                         <MdAdd size={22} />
                       </motion.div>
                     </motion.div>
                   ) : (
-                    /* --- EXPANDED STATE --- */
                     <motion.div
                       key="expanded"
                       initial={{ opacity: 0, y: 10 }}
@@ -495,207 +473,87 @@ const CommunityPage = () => {
                       exit={{ opacity: 0, y: 10 }}
                       className="p-6"
                     >
-                      {/* Header */}
-                      <div className="flex justify-between items-start mb-6">
+                      <div className="flex justify-between items-start mb-4">
                         <div className="flex items-center gap-3">
-                          <UserAvatar
-                            username={user?.username || "Guest"}
-                            size="md"
-                          />
+                          <UserAvatar username={user?.username || "Guest"} size="md" />
                           <div>
-                            <div className="text-white font-bold text-sm tracking-tight">
-                              Create Post
-                            </div>
-                            <div className="text-slate-500 text-xs">
-                              Share your cosmic discovery
-                            </div>
+                            <div className="text-white font-bold text-sm">Create Post</div>
+                            <div className="text-slate-500 text-xs">Share to the cosmos</div>
                           </div>
                         </div>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleCancelCreate();
-                          }}
-                          className="hover:bg-white/10 p-2 rounded-full text-slate-400 transition-colors"
-                        >
+                        <button onClick={(e) => { e.stopPropagation(); handleCancelCreate(); }} className="hover:bg-white/10 p-2 rounded-full text-slate-400">
                           <X size={20} />
                         </button>
                       </div>
 
-                      {/* Input Area */}
                       <textarea
                         value={caption}
                         onChange={(e) => setCaption(e.target.value)}
-                        placeholder="What's happening in the cosmos?"
-                        className="cursor-target w-full bg-transparent text-white text-lg placeholder-slate-600 outline-none resize-none min-h-[120px] mb-4"
+                        placeholder="What's happening?"
+                        className="cursor-target w-full bg-transparent text-white text-base placeholder-slate-600 outline-none resize-none min-h-[100px] mb-4"
                         autoFocus
                       />
 
-                      {/* Image Preview */}
                       <AnimatePresence>
                         {preview && (
-                          <motion.div
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.95 }}
-                            className="relative mb-4 rounded-2xl overflow-hidden max-h-80 bg-black/50 border border-white/10"
-                          >
-                            <img
-                              src={preview}
-                              alt="Preview"
-                              className="w-full h-full object-cover"
-                            />
-                            <button
-                              onClick={() => {
-                                setFile(null);
-                                setPreview(null);
-                              }}
-                              className="absolute top-3 right-3 p-2 bg-black/60 backdrop-blur-md rounded-full text-white hover:bg-red-500 transition-colors"
-                            >
-                              <X size={16} />
-                            </button>
+                          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="relative mb-4 rounded-xl overflow-hidden max-h-60 bg-black/50 border border-white/10">
+                            <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+                            <button onClick={() => { setFile(null); setPreview(null); }} className="absolute top-2 right-2 p-1.5 bg-black/60 rounded-full text-white hover:bg-red-500"><X size={14} /></button>
                           </motion.div>
                         )}
                       </AnimatePresence>
 
-                      {/* Location Selector */}
                       <AnimatePresence>
                         {showMap && (
-                          <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
-                            className="relative mb-4 overflow-hidden"
-                          >
+                          <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden">
                             <LocationSelector location={location} setLocation={setLocation} setShowLocationSelector={setShowMap} />
                           </motion.div>
                         )}
                       </AnimatePresence>
 
-                      {/* Footer Actions */}
-                      <div className="pt-4 border-t border-white/5 flex items-center justify-between">
+                      <div className="pt-3 border-t border-white/5 flex items-center justify-between">
                         <div className="flex gap-2">
-                          <ActionButton
-                            icon={<Camera size={20} />}
-                            active={!!file}
-                            onClick={() => fileInputRef.current.click()}
-                          />
-                          <div className="relative group">
-                            <ActionButton
-                              icon={<MapPin size={20} />}
-                              active={showMap || !!location}
-                              onClick={() => setShowMap(!showMap)}
-                            />
-                            {/* Location Tooltip/Input could go here */}
-                          </div>
+                          <ActionButton icon={<Camera size={18} />} active={!!file} onClick={() => fileInputRef.current.click()} />
+                          <ActionButton icon={<MapPin size={18} />} active={showMap || !!location} onClick={() => setShowMap(!showMap)} />
                         </div>
-
                         <motion.button
                           layoutId="action-button"
                           onClick={handleCreatePost}
                           disabled={(!file && !caption) || uploading}
-                          className={`cursor-target
-                    px-8 py-2.5 rounded-full text-sm font-black transition-all
-                    ${(!file && !caption) || uploading
-                              ? "bg-slate-800 text-slate-500 cursor-not-allowed"
-                              : "bg-[#00d9ff] text-black hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(0,217,255,0.4)]"
-                            }
-                  `}
+                          className={`px-6 py-2 rounded-full text-xs font-black transition-all ${(!file && !caption) || uploading ? "bg-slate-800 text-slate-500" : "bg-[#00d9ff] text-black shadow-lg"}`}
                         >
-                          {uploading ? "TRANSMITTING..." : "POST"}
+                          {uploading ? "SENDING..." : "POST"}
                         </motion.button>
                       </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
               </motion.div>
-
-              <input
-                ref={fileInputRef}
-                type="file"
-                hidden
-                accept="image/*"
-                onChange={handleFileSelect}
-              />
+              <input ref={fileInputRef} type="file" hidden accept="image/*" onChange={handleFileSelect} />
             </div>
 
-            {/* 2. POSTS GRID */}
-            <div className="mb-4 text-sm text-slate-500 font-medium tracking-wider uppercase ml-1 border-b border-white/5 pb-2">
-              Community Posts
+            {/* Posts Feed */}
+            <div className="mb-4 text-sm text-slate-500 font-medium tracking-wider uppercase ml-1 pb-2 border-b border-white/5 flex justify-between items-center">
+              <span>Latest Posts</span>
+              <span className="text-xs text-[#00d9ff]">{filteredPosts.length}</span>
             </div>
 
             {loading ? (
-              <div className="flex justify-center py-20">
-                <FaSpinner className="animate-spin text-[#00d9ff] text-4xl" />
-              </div>
+              <div className="flex justify-center py-20"><FaSpinner className="animate-spin text-[#00d9ff] text-3xl" /></div>
             ) : filteredPosts.length === 0 ? (
-              <div className="text-center py-20 text-slate-500">
-                <p className="text-xl">No posts found</p>
-                <p className="text-sm mt-2">Be the first to share something!</p>
-              </div>
+              <div className="text-center py-20 text-slate-500">No posts found.</div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 auto-rows-fr">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 auto-rows-fr pb-20 md:pb-0">
                 {filteredPosts.map((post) => {
                   const isLiked = post.likes.includes(user?.username);
                   return (
-                    <div
-                      key={post._id}
-                      onClick={() => setSelectedPost(post)}
-                      className="cursor-target group relative bg-transparent rounded-2xl overflow-hidden border border-white/5 aspect-square cursor-pointer hover:border-[#00d9ff]/30 transition-all duration-300 hover:shadow-2xl hover:shadow-[#00d9ff]/10"
-                    >
-                      <img
-                        src={post.imageUrl}
-                        alt="Post"
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
-
-                      {/* Hover Overlay */}
-                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
-                        <div className="flex items-center gap-2 mb-2">
-                          <UserAvatar username={post.user} size="sm" />
-                          <span className="text-white font-semibold text-sm drop-shadow-md">
-                            {post.user}
-                          </span>
-                        </div>
-                        <p className="text-white/90 text-sm line-clamp-2 mb-4 drop-shadow-md">
-                          {post.caption}
-                        </p>
-
-                        <div className="flex items-center justify-between text-white border-t border-white/20 pt-4">
-                          <div className="flex gap-4">
-                            <div className="flex items-center gap-1.5">
-                              <Heart
-                                size={18}
-                                className={
-                                  isLiked
-                                    ? "fill-pink-500 text-pink-500"
-                                    : "text-white"
-                                }
-                              />
-                              <span className="text-xs font-bold">
-                                {post.likes.length}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-1.5">
-                              <MessageCircle size={18} />
-                              <span className="text-xs font-bold">0</span>
-                            </div>
-                          </div>
-
-                          {/* Location Badge */}
-                          {post.location && (
-                            <div className="flex items-center gap-1 text-[#00d9ff] max-w-[120px] ml-auto mr-4">
-                              <MapPin size={14} className="shrink-0" />
-                              <span className="text-[10px] truncate font-medium">
-                                {post.location}
-                              </span>
-                            </div>
-                          )}
-
-                          <Share2
-                            size={18}
-                            className="hover:text-[#00d9ff] transition-colors"
-                          />
+                    <div key={post._id} onClick={() => setSelectedPost(post)} className="cursor-pointer group relative bg-black/20 rounded-xl overflow-hidden border border-white/5 aspect-square hover:border-[#00d9ff]/30 transition-all hover:shadow-lg">
+                      <img src={post.imageUrl} alt="Post" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+                        <p className="text-white text-xs line-clamp-2 mb-2">{post.caption}</p>
+                        <div className="flex items-center justify-between text-white/80">
+                          <div className="flex items-center gap-1 text-xs"><Heart size={14} className={isLiked ? "fill-pink-500 text-pink-500" : "text-white"} /> {post.likes.length}</div>
+                          <div className="text-[10px] text-[#00d9ff]">{post.user}</div>
                         </div>
                       </div>
                     </div>
@@ -703,232 +561,87 @@ const CommunityPage = () => {
                 })}
               </div>
             )}
-          </div>
-        </main>
+          </main>
 
-        {/* 3. SPLIT VIEW MODAL */}
+          {/* COLUMN 2: NEWS (1/3 Width on Desktop) */}
+          <aside className={`
+                flex-col bg-[#050714]/50 p-4 md:p-6 md:col-span-1 h-full overflow-hidden
+                ${activeTab === 'news' ? 'flex' : 'hidden md:flex'}
+            `}>
+            <NewsFeed />
+          </aside>
+
+        </div>
+
+
+        {/* 3. SPLIT VIEW MODAL (UNCHANGED LOGIC mostly, simplified styling) */}
         {selectedPost && (
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-0 md:p-8 animate-in fade-in duration-200"
-            onClick={() => setSelectedPost(null)}
-          >
-            {/* Navigation Arrows */}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleNavigatePost("prev");
-              }}
-              className="cursor-target absolute left-4 p-3 rounded-full bg-white/5 text-white hover:bg-white/20 transition-colors hidden md:block z-50"
-            >
-              <MdChevronLeft size={32} />
-            </button>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleNavigatePost("next");
-              }}
-              className="cursor-target absolute right-4 p-3 rounded-full bg-white/5 text-white hover:bg-white/20 transition-colors hidden md:block z-50"
-            >
-              <MdChevronRight size={32} />
-            </button>
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-0 md:p-8 animate-in fade-in duration-200" onClick={() => setSelectedPost(null)}>
+            <button onClick={(e) => { e.stopPropagation(); handleNavigatePost("prev"); }} className="absolute left-4 p-3 rounded-full bg-white/5 text-white hover:bg-white/20 hidden md:block z-50"><MdChevronLeft size={32} /></button>
+            <button onClick={(e) => { e.stopPropagation(); handleNavigatePost("next"); }} className="absolute right-4 p-3 rounded-full bg-white/5 text-white hover:bg-white/20 hidden md:block z-50"><MdChevronRight size={32} /></button>
 
-            <div
-              className="bg-[#0f1322] w-full max-w-6xl h-full md:max-h-[85vh] md:rounded-3xl overflow-hidden flex flex-col md:flex-row shadow-2xl border border-white/10"
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowPostMenu(false);
-              }}
-            >
+            <div className="bg-[#0f1322] w-full max-w-5xl h-full md:max-h-[85vh] md:rounded-3xl overflow-hidden flex flex-col md:flex-row shadow-2xl border border-white/10" onClick={(e) => e.stopPropagation()}>
               {/* Left: Image */}
-              <div className="w-full md:w-[60%] h-[40vh] md:h-auto bg-black flex items-center justify-center relative shrink-0">
-                <img
-                  src={selectedPost.imageUrl}
-                  alt="Full view"
-                  className="max-w-full max-h-full object-contain"
-                />
-
-                <button
-                  onClick={() => setSelectedPost(null)}
-                  className="cursor-target absolute top-4 left-4 p-2 bg-black/50 rounded-full text-white hover:bg-white/20 md:hidden z-50"
-                >
-                  <MdClose size={24} />
-                </button>
+              <div className="w-full md:w-[60%] h-[45vh] md:h-auto bg-black flex items-center justify-center relative shrink-0">
+                <img src={selectedPost.imageUrl} alt="Full view" className="max-w-full max-h-full object-contain" />
+                <button onClick={() => setSelectedPost(null)} className="absolute top-4 left-4 p-2 bg-black/50 rounded-full text-white md:hidden z-50"><MdClose size={24} /></button>
               </div>
 
               {/* Right: Details */}
               <div className="w-full md:w-[40%] flex flex-col bg-[#0f1322] relative h-full">
-                {/* Header */}
                 <div className="p-4 border-b border-white/5 flex items-center justify-between shrink-0">
                   <div className="flex items-center gap-3">
                     <UserAvatar username={selectedPost.user} size="md" />
                     <div>
-                      <div className="font-bold text-white leading-tight">
-                        {selectedPost.user}
-                      </div>
-                      {selectedPost.location && (
-                        <div className="text-xs text-slate-400 flex items-center gap-0.5 mt-0.5">
-                          <MdLocationOn size={12} />
-                          {selectedPost.location}
-                        </div>
-                      )}
+                      <div className="font-bold text-white text-sm">{selectedPost.user}</div>
+                      {selectedPost.location && <div className="text-xs text-slate-400 flex items-center gap-0.5"><MdLocationOn size={12} /> {selectedPost.location}</div>}
                     </div>
                   </div>
                   <div className="relative">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setShowPostMenu(!showPostMenu);
-                      }}
-                      className="cursor-target text-slate-400 hover:text-white p-2 rounded-full hover:bg-white/5"
-                    >
-                      <MdMoreVert size={24} />
-                    </button>
-
-                    {/* Dropdown Menu - PERMISSIONS UPDATE */}
+                    <button onClick={(e) => { e.stopPropagation(); setShowPostMenu(!showPostMenu); }} className="text-slate-400 hover:text-white p-2 rounded-full hover:bg-white/5"><MdMoreVert size={24} /></button>
                     {showPostMenu && (
-                      <div className="absolute right-0 top-full mt-2 w-48 bg-[#1a1f35] rounded-xl shadow-xl border border-white/10 overflow-hidden z-20 py-1">
+                      <div className="absolute right-0 top-full mt-2 w-48 bg-[#1a1f35] rounded-xl shadow-xl border border-white/10 z-20 py-1">
                         {user?.username === selectedPost.user && (
-                          <>
-                            <button
-                              onClick={(e) =>
-                                handleDelete(
-                                  selectedPost._id,
-                                  selectedPost.user,
-                                  e,
-                                )
-                              }
-                              className="cursor-target w-full text-left px-4 py-3 text-red-500 text-sm hover:bg-white/5 flex items-center gap-2"
-                            >
-                              <MdDelete size={16} /> Delete Post
-                            </button>
-                            <button className="w-full text-left px-4 py-3 text-slate-300 text-sm hover:bg-white/5 flex items-center gap-2">
-                              <MdArchive size={16} /> Archive
-                            </button>
-                          </>
+                          <button onClick={(e) => handleDelete(selectedPost._id, selectedPost.user, e)} className="w-full text-left px-4 py-3 text-red-500 text-sm hover:bg-white/5 flex items-center gap-2">
+                            <MdDelete /> Delete Post
+                          </button>
                         )}
-
-                        <button className="w-full text-left px-4 py-3 text-slate-300 text-sm hover:bg-white/5 flex items-center gap-2">
-                          <MdBlock size={16} /> Block User
-                        </button>
-                        <button className="w-full text-left px-4 py-3 text-red-400 text-sm hover:bg-white/5 flex items-center gap-2 border-t border-white/5">
-                          <MdFlag size={16} /> Report
-                        </button>
+                        <button className="w-full text-left px-4 py-3 text-slate-300 text-sm hover:bg-white/5 flex items-center gap-2"><MdFlag /> Report</button>
                       </div>
                     )}
                   </div>
                 </div>
 
-                {/* Scrollable Comment Section */}
-                <div className="flex-1 overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-white/10">
-                  <div className="flex gap-3 mb-6">
-                    <UserAvatar
-                      username={selectedPost.user}
-                      size="sm"
-                      className="mt-1"
-                    />
-                    <div className="flex-1">
-                      <p className="text-sm text-white/90 whitespace-pre-wrap leading-relaxed">
-                        <span className="font-bold text-white mr-2">
-                          {selectedPost.user}
-                        </span>
-                        {selectedPost.caption}
-                      </p>
-                      <div className="text-xs text-slate-500 mt-2">
-                        {formatDistanceToNow(new Date(selectedPost.createdAt), {
-                          addSuffix: true,
-                        })}
-                      </div>
-                    </div>
-                  </div>
+                <div className="flex-1 overflow-y-auto p-4">
+                  <p className="text-white text-sm leading-relaxed mb-4">{selectedPost.caption}</p>
 
-                  <div className="h-px bg-white/5 mb-6"></div>
-
-                  <div className="flex flex-col gap-6 opacity-60 hover:opacity-100 transition-opacity">
-                    <div className="flex gap-3">
-                      <UserAvatar
-                        username="NebulaWalker"
-                        size="sm"
-                        className="mt-1 bg-gradient-to-tr from-green-500 to-teal-500"
-                      />
-                      <div>
-                        <p className="text-sm text-white/80">
-                          <span className="font-bold text-white mr-2">
-                            NebulaWalker
-                          </span>
-                          Stunning view! 🌌
-                        </p>
-                        <div className="flex items-center gap-4 mt-1 text-xs text-slate-500">
-                          <span>2h</span>
-                          <span className="cursor-pointer hover:text-white">
-                            Reply
-                          </span>
-                        </div>
-                      </div>
-                    </div>
+                  {/* Comments Placeholder */}
+                  <div className="text-xs text-slate-500 font-mono text-center py-6 border-t border-white/5">
+                    NO TRANSMISSIONS YET
                   </div>
                 </div>
 
-                {/* Footer Actions */}
-                <div className="p-4 border-t border-white/5 bg-[#0f1322]">
+                <div className="p-4 border-t border-white/5 bg-[#0a0d16]">
                   <div className="flex justify-between items-center mb-4">
                     <div className="flex gap-4">
-                      <button
-                        onClick={(e) => handleLike(selectedPost, e)}
-                        className="hover:opacity-75 transition-opacity"
-                      >
-                        {selectedPost.likes.includes(user?.username) ? (
-                          <MdFavorite size={28} className="text-pink-500" />
-                        ) : (
-                          <MdFavoriteBorder size={28} className="text-white" />
-                        )}
+                      <button onClick={(e) => handleLike(selectedPost, e)} className={`flex items-center gap-1.5 text-sm font-bold transition-colors ${selectedPost.likes.includes(user?.username) ? "text-pink-500" : "text-slate-300 hover:text-pink-500"}`}>
+                        <Heart size={20} className={selectedPost.likes.includes(user?.username) ? "fill-current" : ""} /> {selectedPost.likes.length}
                       </button>
-                      <button className="hover:opacity-75 transition-opacity text-white">
-                        <MessageCircle size={28} />
-                      </button>
-                      <button className="hover:opacity-75 transition-opacity text-white">
-                        <Share2 size={28} />
-                      </button>
+                      <button className="flex items-center gap-1.5 text-sm font-bold text-slate-300 hover:text-[#00d9ff] transition-colors"><MessageCircle size={20} /> 0</button>
+                      <button className="flex items-center gap-1.5 text-sm font-bold text-slate-300 hover:text-green-500 transition-colors"><Share2 size={20} /></button>
                     </div>
-                    <button className="hover:opacity-75 transition-opacity text-white">
-                      <MdArchive size={28} />
-                    </button>
+                    <div className="text-[10px] text-slate-500 uppercase">{selectedPost.createdAt ? formatDistanceToNow(new Date(selectedPost.createdAt)) + " ago" : "Just now"}</div>
                   </div>
-
-                  <div className="mb-4">
-                    <div className="font-bold text-white text-sm">
-                      {selectedPost.likes.length} likes
-                    </div>
-                    <div className="text-[10px] text-slate-500 uppercase mt-1">
-                      {format(
-                        new Date(selectedPost.createdAt),
-                        "MMMM d, yyyy",
-                      ).toUpperCase()}
-                    </div>
-                  </div>
-
-                  {/* Comment Input */}
-                  <div className="flex items-center gap-3">
-                    <div className="relative flex-1">
-                      <input
-                        type="text"
-                        placeholder="Add a comment..."
-                        value={commentText}
-                        onChange={(e) => setCommentText(e.target.value)}
-                        className="w-full bg-transparent text-sm text-white placeholder-slate-500 outline-none"
-                      />
-                    </div>
-                    <button
-                      disabled={!commentText.trim()}
-                      className={`font-semibold text-sm ${commentText.trim() ? "text-[#00d9ff] hover:text-white" : "text-[#00d9ff]/30 cursor-default"}`}
-                    >
-                      Post
-                    </button>
+                  <div className="relative">
+                    <input type="text" placeholder="Be nice..." className="w-full bg-[#151a25] border border-white/10 rounded-full py-2 pl-4 pr-10 text-sm text-white focus:border-[#00d9ff] outline-none" />
+                    <button className="absolute right-2 top-1/2 -translate-y-1/2 text-[#00d9ff] hover:text-white p-1"><FaPaperPlane size={14} /></button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         )}
+
       </div>
     </div>
   );
