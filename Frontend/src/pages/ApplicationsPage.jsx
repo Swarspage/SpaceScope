@@ -4,7 +4,7 @@ import { MapContainer, TileLayer, Polygon, useMap, GeoJSON } from 'react-leaflet
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
 import { Layers, Cloud, Calendar, AlertTriangle, Loader2, ArrowLeftRight, Activity, Wind, Info, Map as MapIcon, Thermometer, ChevronLeft, Search, Satellite, Leaf, ExternalLink, Clock, MapPin } from 'lucide-react';
-import impactStoriesData from '../data/ImpactStories.json';
+
 import { MdSmartToy } from 'react-icons/md';
 import CO2Chart from '../components/CO2Chart';
 import TempAnomalyChart from '../components/TempAnomalyChart';
@@ -13,6 +13,7 @@ import CloudCoverMap from '../components/CloudCoverMap';
 import SpaceDebrisGlobe from '../components/SpaceDebrisGlobe';
 import FeatureInfoModal from '../components/FeatureInfoModal';
 import CO2CalculatorModal from '../components/CO2CalculatorModal';
+import ImpactStoriesView from '../components/ImpactStoriesView'; // Imported component
 
 
 import FeatureAIPopup from '../components/FeatureAIPopup';
@@ -155,96 +156,7 @@ const CHANNEL_TO_FEATURE = {
     debris: 'orbital_debris_map'
 };
 
-// --- IMPACT STORIES COMPONENT ---
-const ImpactStoriesView = ({ activeChannel, onBack }) => {
-    const featureKey = CHANNEL_TO_FEATURE[activeChannel];
-    const stories = impactStoriesData.filter(s => s.feature === featureKey);
-
-    return (
-        <div className="w-full h-full flex flex-col bg-[#0a0e17] text-white p-4 md:p-6 overflow-y-auto">
-            {/* Header */}
-            <div className="flex items-center gap-4 mb-6">
-                <button
-                    onClick={onBack}
-                    className="flex items-center gap-2 px-4 py-2 bg-[#151a25] border border-white/10 rounded-lg hover:border-[#00ff88] hover:text-[#00ff88] transition-all group"
-                >
-                    <ChevronLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-                    <span className="font-bold text-sm uppercase tracking-wider">Back to Map</span>
-                </button>
-                <div>
-                    <h2 className="text-2xl font-black uppercase tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400">
-                        Impact Stories
-                    </h2>
-                    <p className="text-xs text-slate-400">Real-world applications and events</p>
-                </div>
-            </div>
-
-            {/* Stories Grid */}
-            {stories.length > 0 ? (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-8">
-                    {stories.map(story => (
-                        <div key={story.id} className="bg-[#151a25] border border-white/10 rounded-xl overflow-hidden hover:border-[#00ff88]/50 transition-all hover:shadow-[0_0_20px_rgba(0,255,136,0.1)] group flex flex-col">
-                            {/* Image */}
-                            <div className="relative h-48 overflow-hidden">
-                                <img
-                                    src={story.image_url}
-                                    alt={story.title}
-                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                                />
-                                <div className="absolute top-3 right-3">
-                                    <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border backdrop-blur-md ${story.impact_type === 'positive'
-                                        ? 'bg-green-500/20 border-green-500 text-green-400'
-                                        : 'bg-red-500/20 border-red-500 text-red-400'
-                                        }`}>
-                                        {story.impact_type}
-                                    </span>
-                                </div>
-                                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-4">
-                                    <div className="text-[10px] text-slate-400 uppercase tracking-widest font-bold mb-1 flex items-center gap-2">
-                                        <Calendar size={12} className="text-[#00ff88]" /> {story.date}
-                                        <span className="text-slate-600">|</span>
-                                        <MapPin size={12} className="text-[#00ff88]" /> {story.location.name}
-                                    </div>
-                                    <h3 className="text-lg font-bold text-white leading-tight group-hover:text-[#00ff88] transition-colors">{story.title}</h3>
-                                </div>
-                            </div>
-
-                            {/* Content */}
-                            <div className="p-5 flex flex-col flex-1">
-                                <div className="text-sm text-slate-300 leading-relaxed mb-4 flex-1 whitespace-pre-wrap">
-                                    {story.story}
-                                </div>
-
-                                <div className="flex items-center justify-between pt-4 border-t border-white/5">
-                                    <div className="flex gap-2">
-                                        {story.tags.slice(0, 2).map(tag => (
-                                            <span key={tag} className="text-[10px] text-slate-500 bg-black/30 px-2 py-1 rounded border border-white/5">
-                                                #{tag}
-                                            </span>
-                                        ))}
-                                    </div>
-                                    <a
-                                        href={story.source_url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-[#00ff88] text-xs font-bold uppercase tracking-wider flex items-center gap-1 hover:underline"
-                                    >
-                                        Source <ExternalLink size={12} />
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            ) : (
-                <div className="flex flex-col items-center justify-center h-64 text-slate-500">
-                    <Info size={48} className="mb-4 opacity-50" />
-                    <p>No stories found for this category yet.</p>
-                </div>
-            )}
-        </div>
-    );
-};
+// ImpactStoriesView component removed (imported from components)
 
 const NDVIMap = () => {
     const navigate = useNavigate();

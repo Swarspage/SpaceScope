@@ -48,30 +48,6 @@
     ]
   },
   {
-    "id": "iss-003",
-    "feature": "iss_tracker",
-    "title": "Blood Clot Discovered in Astronaut on ISS",
-    "date": "2019-01-01",
-    "time": "00:00:00",
-    "timezone": "UTC",
-    "location": {
-      "latitude": 0,
-      "longitude": 0,
-      "name": "International Space Station"
-    },
-    "impact_type": "negative",
-    "story": "In 2019, during a study on blood flow in space, an unidentified astronaut was found to have a jugular vein blood clot two months into the mission, with no prior symptoms. Blood thinners were used for the remaining mission. The clot disappeared after landing with no symptoms. This incident highlighted potential health risks of long-duration spaceflight, including increased risk of thrombosis due to microgravity effects on blood circulation. It prompted additional testing on subsequent missions to monitor for similar conditions.",
-    "source_url": "https://en.wikipedia.org/wiki/List_of_accidents_and_incidents_involving_the_International_Space_Station",
-    "image_url": "https://www.nasa.gov/wp-content/uploads/2022/06/iss036e006639_resized.jpg",
-    "image_credit": "NASA",
-    "tags": [
-      "health_risks",
-      "space_medicine",
-      "thrombosis",
-      "microgravity"
-    ]
-  },
-  {
     "id": "aurora-001",
     "feature": "aurora_tracker",
     "title": "Aurorasaurus Citizen Science Project Advances Aurora Research",

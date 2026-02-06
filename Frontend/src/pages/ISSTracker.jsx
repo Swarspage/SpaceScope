@@ -10,6 +10,7 @@ import { MdChevronLeft, MdSatelliteAlt, MdPublic, MdWifi, MdInfoOutline, MdAnaly
 import { WiStars } from "react-icons/wi";
 import FeatureInfoModal from "../components/FeatureInfoModal";
 import FeatureAIPopup from "../components/FeatureAIPopup";
+import ImpactStoriesView from "../components/ImpactStoriesView"; // New Import //
 
 
 import ISSPassPredictor from "../components/ISSPassPredictor";
@@ -87,8 +88,10 @@ export default function ISSTracker() {
     const [activeView, setActiveView] = useState('map');
     const [iss, setIss] = useState(null);
     const [pollMs, setPollMs] = useState(15000);
+
     const [showInfoModal, setShowInfoModal] = useState(false);
     const [showAIPopup, setShowAIPopup] = useState(false);
+    const [showImpactStories, setShowImpactStories] = useState(false); // New State
     const [trajectory, setTrajectory] = useState([]);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false); // For mobile settings collapse
 
@@ -388,6 +391,14 @@ export default function ISSTracker() {
                         <MdSmartToy className="text-lg" />
                         Ask AI
                     </button>
+
+                    <button
+                        onClick={() => setShowImpactStories(true)}
+                        className="cursor-target px-6 py-3 bg-[#0a0e17] hover:bg-[#151a25] border border-white/10 hover:border-[#00ff88]/50 rounded-full text-slate-300 hover:text-white text-xs font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 hover:shadow-[0_0_15px_rgba(0,255,136,0.1)]"
+                    >
+                        <MdInfoOutline className="text-lg" />
+                        Stories
+                    </button>
                 </div>
 
                 {/* Mobile Collapsible Menu */}
@@ -441,6 +452,13 @@ export default function ISSTracker() {
                                 Ask AI
                             </button>
                             <button
+                                onClick={() => { setShowImpactStories(true); setIsSettingsOpen(false); }}
+                                className="flex-1 py-3 bg-[#00ff88]/10 border border-[#00ff88]/30 rounded-lg text-[#00ff88] text-xs font-bold uppercase flex items-center justify-center gap-2"
+                            >
+                                <MdInfoOutline size={16} />
+                                Stories
+                            </button>
+                            <button
                                 onClick={() => { setShowInfoModal(true); setIsSettingsOpen(false); }}
                                 className="flex-1 py-3 bg-[#00ff88]/10 border border-[#00ff88]/30 rounded-lg text-[#00ff88] text-xs font-bold uppercase flex items-center justify-center gap-2"
                             >
@@ -489,6 +507,16 @@ export default function ISSTracker() {
                 ? 'flex flex-col overflow-y-auto' /* Scrollable vertical stack for mobile "Both" */
                 : 'flex flex-col lg:grid lg:grid-cols-2 overflow-hidden' /* Fixed Layout for others */
                 }`}>
+
+                {/* Impact Stories Overlay */}
+                {showImpactStories && (
+                    <div className="absolute inset-0 z-[2000] bg-[#050714] p-4 lg:p-6">
+                        <ImpactStoriesView
+                            activeChannel="iss"
+                            onBack={() => setShowImpactStories(false)}
+                        />
+                    </div>
+                )}
 
                 {/* Left: Globe (3D) */}
                 <div className={`cursor-target relative border border-white/5 bg-black/40 rounded-3xl overflow-hidden shadow-2xl transition-all duration-300 ${activeView === 'orbit'

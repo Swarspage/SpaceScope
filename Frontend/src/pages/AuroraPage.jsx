@@ -27,7 +27,8 @@ import {
 } from "react-icons/fi";
 import FeatureInfoModal from "../components/FeatureInfoModal";
 import FeatureAIPopup from "../components/FeatureAIPopup";
-import { MdChevronLeft, MdInfoOutline, MdSmartToy } from "react-icons/md";
+import ImpactStoriesView from "../components/ImpactStoriesView"; // New Import
+import { MdChevronLeft, MdInfoOutline, MdSmartToy, MdEventNote } from "react-icons/md"; // Added MdEventNote
 
 import auroraImage from "../assets/images/app_auroraimage.png";
 
@@ -85,6 +86,7 @@ const AuroraPage = () => {
     const [mapInstance, setMapInstance] = useState(null);
     const [showInfoModal, setShowInfoModal] = useState(false);
     const [showAIPopup, setShowAIPopup] = useState(false);
+    const [showImpactStories, setShowImpactStories] = useState(false); // New State
     const [isSettingsOpen, setIsSettingsOpen] = useState(false); // Mobile Settings Toggle
 
     const auroraFeatureData = {
@@ -333,6 +335,14 @@ const AuroraPage = () => {
                         <MdSmartToy className="text-lg" />
                         Ask AI
                     </button>
+
+                    <button
+                        onClick={() => setShowImpactStories(true)}
+                        className="cursor-target ml-1 px-6 py-3 bg-[#0a0e17] hover:bg-[#151a25] border border-white/10 hover:border-[#00ff88]/50 rounded-full text-slate-300 hover:text-white text-xs font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 hover:shadow-[0_0_15px_rgba(0,255,136,0.1)]"
+                    >
+                        <MdEventNote className="text-lg" />
+                        Stories
+                    </button>
                 </div>
 
                 {/* Mobile Collapsible Menu */}
@@ -345,6 +355,14 @@ const AuroraPage = () => {
                             >
                                 <FiRefreshCw className={dataFetching ? "animate-spin" : ""} />
                                 {autoRefresh ? "Sync On" : "Sync Off"}
+                            </button>
+
+                            <button
+                                onClick={() => setShowImpactStories(true)}
+                                className="flex-1 p-3 rounded-lg text-xs font-bold uppercase border flex items-center justify-center gap-2 bg-[#00ff88]/10 border-[#00ff88]/30 text-[#00ff88]"
+                            >
+                                <MdEventNote />
+                                Stories
                             </button>
 
                             <button
@@ -407,180 +425,191 @@ const AuroraPage = () => {
             {/* Main Content (Fullscreen Map) */}
             <div className="flex-1 relative bg-[#050714] p-4 md:p-6 overflow-hidden">
                 <div className="cursor-target relative w-full h-full rounded-3xl overflow-hidden border border-white/5 shadow-2xl bg-[#0a0e17]">
-                    <MapContainer
-                        center={[60, 0]}
-                        zoom={2}
-                        minZoom={2}
-                        className="w-full h-full bg-transparent"
-                        zoomControl={false}
-                        whenCreated={setMapInstance}
-                    >
-                        <TileLayer
-                            attribution='&copy; OpenStreetMap &copy; CartoDB'
-                            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-                        />
-                        {showAurora && coords.map((p, idx) => {
-                            if (p.intensity <= 0) return null;
-                            return (
-                                <CircleMarker
-                                    key={`${p.lat}-${p.lon}-${idx}`}
-                                    center={[p.lat, p.lon]}
-                                    radius={intensityToRadius(p.intensity)}
-                                    pathOptions={{
-                                        color: intensityToColor(p.intensity),
-                                        fillColor: intensityToColor(p.intensity),
-                                        fillOpacity: 0.6,
-                                        weight: 0,
-                                        className: "animate-pulse"
-                                    }}
-                                >
-                                    <Tooltip direction="top">
-                                        <div className="text-xs font-mono">
-                                            Intensity: {p.intensity.toFixed(1)}
-                                        </div>
-                                    </Tooltip>
-                                </CircleMarker>
-                            );
-                        })}
-
-                        {/* User Location Marker */}
-                        {userLocation && (
-                            <CircleMarker
-                                center={[userLocation.lat, userLocation.lon]}
-                                radius={6}
-                                pathOptions={{
-                                    color: "#3b82f6", // Blue
-                                    fillColor: "#3b82f6",
-                                    fillOpacity: 1,
-                                    weight: 2,
-                                    className: "animate-pulse"
-                                }}
-                            >
-                                <Tooltip direction="top" permanent>
-                                    <div className="text-xs font-bold bg-blue-500 text-white px-2 py-1 rounded">You are Here</div>
-                                </Tooltip>
-                            </CircleMarker>
-                        )}
-
-                        {/* Best Spot Marker */}
-                        {bestSpot && (
-                            <CircleMarker
-                                center={[bestSpot.lat, bestSpot.lon]}
-                                radius={10}
-                                pathOptions={{
-                                    color: "#ffffff",
-                                    fillColor: "transparent",
-                                    weight: 2,
-                                    dashArray: "4, 4"
-                                }}
-                            >
-                                <CircleMarker
-                                    center={[bestSpot.lat, bestSpot.lon]}
-                                    radius={4}
-                                    pathOptions={{
-                                        color: "#ffffff",
-                                        fillColor: "#ffffff",
-                                        fillOpacity: 1
-                                    }}
-                                />
-                            </CircleMarker>
-                        )}
-
-                        {/* Connection Line */}
-                        {userLocation && bestSpot && (
-                            <Polyline
-                                positions={[
-                                    [userLocation.lat, userLocation.lon],
-                                    [bestSpot.lat, bestSpot.lon]
-                                ]}
-                                pathOptions={{
-                                    color: "#ffffff",
-                                    weight: 2,
-                                    dashArray: "5, 10",
-                                    opacity: 0.5
-                                }}
+                    {showImpactStories ? (
+                        <div className="absolute inset-0 z-[1500]">
+                            <ImpactStoriesView
+                                activeChannel="aurora"
+                                onBack={() => setShowImpactStories(false)}
                             />
-                        )}
-                    </MapContainer>
+                        </div>
+                    ) : (
+                        <>
+                            <MapContainer
+                                center={[60, 0]}
+                                zoom={2}
+                                minZoom={2}
+                                className="w-full h-full bg-transparent"
+                                zoomControl={false}
+                                whenCreated={setMapInstance}
+                            >
+                                <TileLayer
+                                    attribution='&copy; OpenStreetMap &copy; CartoDB'
+                                    url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                                />
+                                {showAurora && coords.map((p, idx) => {
+                                    if (p.intensity <= 0) return null;
+                                    return (
+                                        <CircleMarker
+                                            key={`${p.lat}-${p.lon}-${idx}`}
+                                            center={[p.lat, p.lon]}
+                                            radius={intensityToRadius(p.intensity)}
+                                            pathOptions={{
+                                                color: intensityToColor(p.intensity),
+                                                fillColor: intensityToColor(p.intensity),
+                                                fillOpacity: 0.6,
+                                                weight: 0,
+                                                className: "animate-pulse"
+                                            }}
+                                        >
+                                            <Tooltip direction="top">
+                                                <div className="text-xs font-mono">
+                                                    Intensity: {p.intensity.toFixed(1)}
+                                                </div>
+                                            </Tooltip>
+                                        </CircleMarker>
+                                    );
+                                })}
 
-                    {/* Map Controls (Top Right) */}
-                    <div className="absolute top-4 right-4 md:top-6 md:right-6 z-[1000] flex flex-col gap-2">
-                        <button onClick={() => mapInstance?.zoomIn()} className="cursor-target w-10 h-10 bg-black/60 backdrop-blur border border-white/10 rounded-lg flex items-center justify-center hover:bg-white/10 text-white"><FiPlus /></button>
-                        <button onClick={() => mapInstance?.zoomOut()} className="cursor-target w-10 h-10 bg-black/60 backdrop-blur border border-white/10 rounded-lg flex items-center justify-center hover:bg-white/10 text-white"><FiMinus /></button>
-                    </div>
+                                {/* User Location Marker */}
+                                {userLocation && (
+                                    <CircleMarker
+                                        center={[userLocation.lat, userLocation.lon]}
+                                        radius={6}
+                                        pathOptions={{
+                                            color: "#3b82f6", // Blue
+                                            fillColor: "#3b82f6",
+                                            fillOpacity: 1,
+                                            weight: 2,
+                                            className: "animate-pulse"
+                                        }}
+                                    >
+                                        <Tooltip direction="top" permanent>
+                                            <div className="text-xs font-bold bg-blue-500 text-white px-2 py-1 rounded">You are Here</div>
+                                        </Tooltip>
+                                    </CircleMarker>
+                                )}
 
-                    {/* KPI Alert (Top Left Overlay) */}
-                    {
-                        kp >= 5 && (
-                            <div className="absolute top-4 left-4 md:top-6 md:left-6 z-[1000] bg-red-500/10 border border-red-500/50 backdrop-blur-md px-4 py-3 rounded-xl flex items-center gap-3 animate-pulse">
-                                <FiAlertTriangle className="text-red-500 text-xl" />
-                                <div>
-                                    <div className="text-red-400 font-bold uppercase text-xs tracking-wider">Geomagnetic Storm</div>
-                                    <div className="text-white text-xs">Kp Index {kp} - High Visibility</div>
-                                </div>
+                                {/* Best Spot Marker */}
+                                {bestSpot && (
+                                    <CircleMarker
+                                        center={[bestSpot.lat, bestSpot.lon]}
+                                        radius={10}
+                                        pathOptions={{
+                                            color: "#ffffff",
+                                            fillColor: "transparent",
+                                            weight: 2,
+                                            dashArray: "4, 4"
+                                        }}
+                                    >
+                                        <CircleMarker
+                                            center={[bestSpot.lat, bestSpot.lon]}
+                                            radius={4}
+                                            pathOptions={{
+                                                color: "#ffffff",
+                                                fillColor: "#ffffff",
+                                                fillOpacity: 1
+                                            }}
+                                        />
+                                    </CircleMarker>
+                                )}
+
+                                {/* Connection Line */}
+                                {userLocation && bestSpot && (
+                                    <Polyline
+                                        positions={[
+                                            [userLocation.lat, userLocation.lon],
+                                            [bestSpot.lat, bestSpot.lon]
+                                        ]}
+                                        pathOptions={{
+                                            color: "#ffffff",
+                                            weight: 2,
+                                            dashArray: "5, 10",
+                                            opacity: 0.5
+                                        }}
+                                    />
+                                )}
+                            </MapContainer>
+
+                            {/* Map Controls (Top Right) */}
+                            <div className="absolute top-4 right-4 md:top-6 md:right-6 z-[1000] flex flex-col gap-2">
+                                <button onClick={() => mapInstance?.zoomIn()} className="cursor-target w-10 h-10 bg-black/60 backdrop-blur border border-white/10 rounded-lg flex items-center justify-center hover:bg-white/10 text-white"><FiPlus /></button>
+                                <button onClick={() => mapInstance?.zoomOut()} className="cursor-target w-10 h-10 bg-black/60 backdrop-blur border border-white/10 rounded-lg flex items-center justify-center hover:bg-white/10 text-white"><FiMinus /></button>
                             </div>
-                        )
-                    }
 
-                    {/* Best Spot Info Card */}
-                    {bestSpot && (
-                        <div className="absolute top-20 left-4 md:top-24 md:left-6 z-[1000] bg-black/80 backdrop-blur-md border border-[#00d9ff]/30 p-4 rounded-xl max-w-xs animate-in fade-in slide-in-from-bottom-4 duration-500">
-                            <div className="flex items-start gap-4">
-                                <div className="p-3 bg-[#00d9ff]/10 rounded-lg text-[#00d9ff]">
-                                    <FiTarget size={24} />
-                                </div>
-                                <div>
-                                    <h4 className="text-[#00d9ff] font-bold text-sm uppercase tracking-wider mb-1">Optimal Viewing</h4>
-                                    <div className="text-white font-bold text-lg leading-tight mb-1">{bestSpot.locationName || "Unknown Location"}</div>
-                                    <div className="text-slate-400 font-mono text-sm mb-2">{Math.round(bestSpot.distance)} km away</div>
+                            {/* KPI Alert (Top Left Overlay) */}
+                            {
+                                kp >= 5 && (
+                                    <div className="absolute top-4 left-4 md:top-6 md:left-6 z-[1000] bg-red-500/10 border border-red-500/50 backdrop-blur-md px-4 py-3 rounded-xl flex items-center gap-3 animate-pulse">
+                                        <FiAlertTriangle className="text-red-500 text-xl" />
+                                        <div>
+                                            <div className="text-red-400 font-bold uppercase text-xs tracking-wider">Geomagnetic Storm</div>
+                                            <div className="text-white text-xs">Kp Index {kp} - High Visibility</div>
+                                        </div>
+                                    </div>
+                                )
+                            }
 
-                                    <div className="flex gap-2 mb-1">
-                                        <span className="text-[10px] uppercase bg-[#00d9ff]/20 text-[#00d9ff] px-2 py-0.5 rounded border border-[#00d9ff]/30">
-                                            {bestSpot.intensity.toFixed(1)} GW Intensity
-                                        </span>
-                                        {!bestSpot.reachable && <span className="text-[10px] uppercase bg-red-500/20 text-red-400 px-2 py-0.5 rounded border border-red-500/30">Remote</span>}
+                            {/* Best Spot Info Card */}
+                            {bestSpot && (
+                                <div className="absolute top-20 left-4 md:top-24 md:left-6 z-[1000] bg-black/80 backdrop-blur-md border border-[#00d9ff]/30 p-4 rounded-xl max-w-xs animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                    <div className="flex items-start gap-4">
+                                        <div className="p-3 bg-[#00d9ff]/10 rounded-lg text-[#00d9ff]">
+                                            <FiTarget size={24} />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-[#00d9ff] font-bold text-sm uppercase tracking-wider mb-1">Optimal Viewing</h4>
+                                            <div className="text-white font-bold text-lg leading-tight mb-1">{bestSpot.locationName || "Unknown Location"}</div>
+                                            <div className="text-slate-400 font-mono text-sm mb-2">{Math.round(bestSpot.distance)} km away</div>
+
+                                            <div className="flex gap-2 mb-1">
+                                                <span className="text-[10px] uppercase bg-[#00d9ff]/20 text-[#00d9ff] px-2 py-0.5 rounded border border-[#00d9ff]/30">
+                                                    {bestSpot.intensity.toFixed(1)} GW Intensity
+                                                </span>
+                                                {!bestSpot.reachable && <span className="text-[10px] uppercase bg-red-500/20 text-red-400 px-2 py-0.5 rounded border border-red-500/30">Remote</span>}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    )}
+                            )}
 
-                    {/* Stats HUD (Bottom Overlay) */}
-                    <div className="absolute bottom-4 md:bottom-6 left-4 right-4 md:left-6 md:right-6 z-[1000] flex flex-col justify-end pointer-events-none">
-                        <div className="pointer-events-auto flex gap-4 overflow-x-auto pb-4 md:pb-0 w-full md:w-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
-                            <StatCardOverlay
-                                label="Planetary K-Index"
-                                value={kp}
-                                subtext={kp < 4 ? "Low Activity" : "Storm Watch"}
-                                icon={FiActivity}
-                                alertLevel={kp >= 5 ? "high" : "normal"}
-                            />
-                            <StatCardOverlay
-                                label="Max Intensity"
-                                value={`${maxIntensity.toFixed(1)} GW`}
-                                subtext="Hemispheric Power"
-                                icon={FiMap}
-                            />
-                            <StatCardOverlay
-                                label="Forecast Time"
-                                value={forecastTime ? new Date(forecastTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "--:--"}
-                                subtext="Updated just now"
-                                icon={FiClock}
-                            />
-                        </div>
-                    </div>
-
-                    {/* Loading Overlay */}
-                    {
-                        loading && (
-                            <div className="absolute inset-0 z-[1001] bg-[#050714]/80 backdrop-blur-sm flex items-center justify-center">
-                                <div className="flex flex-col items-center gap-4">
-                                    <div className="w-12 h-12 border-2 border-[#00d9ff] border-t-transparent rounded-full animate-spin"></div>
-                                    <span className="text-[#00d9ff] font-mono text-xs tracking-widest animate-pulse">ESTABLISHING UPLINK...</span>
+                            {/* Stats HUD (Bottom Overlay) */}
+                            <div className="absolute bottom-4 md:bottom-6 left-4 right-4 md:left-6 md:right-6 z-[1000] flex flex-col justify-end pointer-events-none">
+                                <div className="pointer-events-auto flex gap-4 overflow-x-auto pb-4 md:pb-0 w-full md:w-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+                                    <StatCardOverlay
+                                        label="Planetary K-Index"
+                                        value={kp}
+                                        subtext={kp < 4 ? "Low Activity" : "Storm Watch"}
+                                        icon={FiActivity}
+                                        alertLevel={kp >= 5 ? "high" : "normal"}
+                                    />
+                                    <StatCardOverlay
+                                        label="Max Intensity"
+                                        value={`${maxIntensity.toFixed(1)} GW`}
+                                        subtext="Hemispheric Power"
+                                        icon={FiMap}
+                                    />
+                                    <StatCardOverlay
+                                        label="Forecast Time"
+                                        value={forecastTime ? new Date(forecastTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "--:--"}
+                                        subtext="Updated just now"
+                                        icon={FiClock}
+                                    />
                                 </div>
                             </div>
-                        )
-                    }
+
+                            {/* Loading Overlay */}
+                            {
+                                loading && (
+                                    <div className="absolute inset-0 z-[1001] bg-[#050714]/80 backdrop-blur-sm flex items-center justify-center">
+                                        <div className="flex flex-col items-center gap-4">
+                                            <div className="w-12 h-12 border-2 border-[#00d9ff] border-t-transparent rounded-full animate-spin"></div>
+                                            <span className="text-[#00d9ff] font-mono text-xs tracking-widest animate-pulse">ESTABLISHING UPLINK...</span>
+                                        </div>
+                                    </div>
+                                )
+                            }
+                        </>
+                    )}
                 </div>
             </div >
 
