@@ -37,9 +37,9 @@ const DashboardCarousel = ({ slides, autoPlayInterval = 8000 }) => {
                     <div
                         key={index}
                         className={`absolute inset-0 w-full h-full transition-all duration-700 ease-in-out transform
-                            ${index === currentIndex ? 'opacity-100 translate-x-0 scale-100' :
-                                index < currentIndex ? 'opacity-0 -translate-x-full scale-95' :
-                                    'opacity-0 translate-x-full scale-95'}
+                            ${index === currentIndex ? 'opacity-100 translate-x-0' :
+                                index < currentIndex ? 'opacity-0 -translate-x-full' :
+                                    'opacity-0 translate-x-full'}
                         `}
                     >
                         {slide}

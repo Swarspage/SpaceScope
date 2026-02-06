@@ -27,7 +27,7 @@ const UpcomingEventBanner = ({ event }) => {
                 <img
                     src={bgImage}
                     alt="Launch Background"
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                    className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-[#050810] via-[#050810]/80 to-transparent" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#050810] via-transparent to-transparent" />
@@ -49,12 +49,12 @@ const UpcomingEventBanner = ({ event }) => {
                 </div>
 
                 {/* Title */}
-                <h1 className="text-2xl sm:text-3xl md:text-6xl font-black text-white leading-tight mb-3 md:mb-6 uppercase tracking-tight drop-shadow-lg animate-fade-in-up delay-100 break-words max-w-full">
+                <h1 className="text-lg sm:text-2xl md:text-4xl font-black text-white leading-tight mb-3 md:mb-6 uppercase tracking-tight drop-shadow-lg animate-fade-in-up delay-100 break-words max-w-full">
                     {event.name}
                 </h1>
 
                 {/* Details */}
-                <div className="flex flex-wrap items-center gap-3 md:gap-6 mb-6 md:mb-8 text-xs md:text-base text-slate-300 font-mono animate-fade-in-up delay-200">
+                <div className="flex flex-wrap items-center gap-3 md:gap-6 mb-6 md:mb-8 text-xs md:text-sm text-slate-300 font-mono animate-fade-in-up delay-200">
                     <div className="flex items-center gap-2">
                         <MdCalendarToday className="text-[#00d9ff]" />
                         {eventDate.toLocaleString(undefined, { dateStyle: 'long', timeStyle: 'short' })}
@@ -63,8 +63,8 @@ const UpcomingEventBanner = ({ event }) => {
 
                 {/* Timer Section */}
                 <div className="animate-fade-in-up delay-300">
-                    <div className="inline-block bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-6 md:px-10 md:py-6">
-                        <CountdownTimer targetDate={eventDate} size="large" />
+                    <div className="inline-block bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-4 md:px-8 md:py-4">
+                        <CountdownTimer targetDate={eventDate} size="normal" />
                     </div>
                 </div>
             </div>
