@@ -68,7 +68,19 @@ const userSchema = new mongoose.Schema({
         correctAnswers: Number,
         totalQuestions: Number,
         date: { type: Date, default: Date.now }
-    }]
+    }],
+    learning_progress: {
+        modules: [{
+            module_id: Number, // Maps to modules.json ID
+            completed_content: [String], // ["video", "article", "quiz"]
+            completion_percentage: { type: Number, default: 0 },
+            xp_earned: { type: Number, default: 0 },
+            completed_at: Date,
+            unlocked: { type: Boolean, default: false }
+        }],
+        total_learning_xp: { type: Number, default: 0 },
+        badges: [String] // ["Space Cadet", "Planet Explorer", ...]
+    }
 });
 
 // Hash password before saving

@@ -35,8 +35,12 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/spacescop
 
 
 // Auth Routes - ADD THIS
+// Auth Routes - ADD THIS
 app.use('/api/auth', authRoutes);
 app.use('/api/notifications', notificationRoutes);
+
+import learningRoutes from "./Routes/learningRoutes.js";
+app.use('/api/learning', learningRoutes);
 
 import postRoutes from "./Routes/postRoutes.js";
 app.use('/api/posts', postRoutes);

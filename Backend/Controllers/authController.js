@@ -164,7 +164,7 @@ export const getLeaderboard = async (req, res) => {
     try {
         // Fetch top 50 users sorted by XP in descending order
         const leaderboard = await User.find({})
-            .select('username xp avatar quizHistory') // Select fields to display
+            .select('username xp avatar quizHistory learning_progress') // Select fields to display
             .sort({ xp: -1 }) // Sort by XP descending
             .limit(50); // Limit to top 50
 

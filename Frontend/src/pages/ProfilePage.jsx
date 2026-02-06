@@ -136,18 +136,40 @@ const ProfilePage = () => {
 
                                 <div className="w-full pt-6 border-t border-white/5 grid grid-cols-3 gap-2">
                                     <div className="text-center">
-                                        <div className="text-white font-bold text-lg">12</div>
-                                        <div className="text-[10px] text-slate-500 uppercase font-bold">Missions</div>
+                                        <div className="text-white font-bold text-lg">{user?.quizHistory?.length || 0}</div>
+                                        <div className="text-[10px] text-slate-500 uppercase font-bold">Quizzes</div>
                                     </div>
                                     <div className="text-center border-l border-white/5 border-r">
-                                        <div className="text-white font-bold text-lg">850</div>
+                                        <div className="text-white font-bold text-lg">{user?.xp || 0}</div>
                                         <div className="text-[10px] text-slate-500 uppercase font-bold">XP</div>
                                     </div>
                                     <div className="text-center">
-                                        <div className="text-white font-bold text-lg">4</div>
+                                        <div className="text-white font-bold text-lg">
+                                            {user?.learning_progress?.badges?.length || 0}
+                                        </div>
                                         <div className="text-[10px] text-slate-500 uppercase font-bold">Badges</div>
                                     </div>
                                 </div>
+
+                                {/* Badges Section */}
+                                {user?.learning_progress?.badges?.length > 0 && (
+                                    <div className="w-full mt-6 pt-6 border-t border-white/5">
+                                        <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Earned Badges</div>
+                                        <div className="flex flex-wrap justify-center gap-2">
+                                            {user.learning_progress.badges.map((badge, i) => (
+                                                <div key={i} className="group relative">
+                                                    <div className="px-3 py-1 bg-[#00d9ff]/10 border border-[#00d9ff]/30 text-[#00d9ff] text-[10px] font-bold rounded-full cursor-help">
+                                                        {badge}
+                                                    </div>
+                                                    {/* Tooltip */}
+                                                    <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 px-2 py-1 bg-black border border-white/20 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-20">
+                                                        {badge}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
