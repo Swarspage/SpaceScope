@@ -592,7 +592,7 @@ const DashboardPage = () => {
                 <div className="absolute top-[-20%] left-[20%] w-[500px] h-[500px] bg-[#00d9ff]/5 rounded-full blur-[100px] pointer-events-none" />
 
                 {/* Top Header */}
-                <header className="h-20 flex items-center justify-between px-6 border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 z-10 transition-all duration-300">
+                <header className="min-h-20 h-auto py-2 flex items-center justify-between pl-20 pr-6 md:px-6 border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 z-10 transition-all duration-300">
                     <HeaderGreeting user={user} />
 
                     <div className="flex items-center gap-4 ml-4">

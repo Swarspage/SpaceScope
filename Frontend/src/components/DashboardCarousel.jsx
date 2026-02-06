@@ -27,7 +27,7 @@ const DashboardCarousel = ({ slides, autoPlayInterval = 8000 }) => {
 
     return (
         <div
-            className="relative w-full h-[350px] md:h-[400px] group"
+            className="relative w-full h-[420px] md:h-[400px] group"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
         >

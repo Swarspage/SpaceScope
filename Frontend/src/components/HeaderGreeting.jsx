@@ -19,8 +19,8 @@ const HeaderGreeting = ({ user }) => {
 
     return (
         <div className="flex flex-col justify-center h-full py-1">
-            <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight uppercase leading-none drop-shadow-lg">
-                {getGreeting()}, <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00d9ff] to-blue-600 filter drop-shadow-[0_0_8px_rgba(0,217,255,0.3)]">{user?.fullName?.split(' ')[0] || user?.username || "Explorer"}</span>
+            <h1 className="text-lg sm:text-2xl md:text-3xl font-black text-white tracking-tight uppercase leading-tight drop-shadow-lg break-words">
+                {getGreeting()}, <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00d9ff] to-blue-600 filter drop-shadow-[0_0_8px_rgba(0,217,255,0.3)] block sm:inline">{user?.fullName?.split(' ')[0] || user?.username || "Explorer"}</span>
             </h1>
             <div className="flex items-center gap-3 mt-1.5">
                 <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#00d9ff]/10 border border-[#00d9ff]/20 text-[#00d9ff] text-[10px] font-bold tracking-widest uppercase shadow-[0_0_10px_rgba(0,217,255,0.1)]">

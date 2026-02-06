@@ -21,7 +21,7 @@ const UpcomingEventBanner = ({ event }) => {
     };
 
     return (
-        <div className="relative w-full h-[350px] md:h-[400px] rounded-2xl overflow-hidden border border-white/10 group">
+        <div className="relative w-full min-h-[300px] h-auto md:h-[400px] rounded-2xl overflow-hidden border border-white/10 group">
             {/* Background Image with Overlay */}
             <div className="absolute inset-0 z-0">
                 <img
@@ -34,32 +34,31 @@ const UpcomingEventBanner = ({ event }) => {
             </div>
 
             {/* Glowing Effects */}
-            <div className="absolute -left-20 -bottom-20 w-[400px] h-[400px] bg-[#00d9ff]/20 rounded-full blur-[100px] pointer-events-none" />
+            <div className="absolute -left-20 -bottom-20 w-[200px] md:w-[400px] h-[200px] md:h-[400px] bg-[#00d9ff]/20 rounded-full blur-[100px] pointer-events-none" />
 
             {/* Content */}
-            <div className="relative z-10 h-full flex flex-col justify-center p-8 md:p-12 max-w-4xl">
+            <div className="relative z-10 h-full flex flex-col justify-center p-5 sm:p-8 md:p-12 max-w-4xl">
                 {/* Badge */}
-                <div className="flex items-center gap-3 mb-4 animate-fade-in-up">
-                    <span className="px-3 py-1 bg-[#00d9ff] text-black font-bold text-xs rounded uppercase tracking-wider shadow-[0_0_15px_rgba(0,217,255,0.4)]">
+                <div className="flex items-center gap-3 mb-3 md:mb-4 animate-fade-in-up">
+                    <span className="px-2 py-0.5 md:px-3 md:py-1 bg-[#00d9ff] text-black font-bold text-[10px] md:text-xs rounded uppercase tracking-wider shadow-[0_0_15px_rgba(0,217,255,0.4)]">
                         Upcoming Launch
                     </span>
-                    <span className="flex items-center gap-1 text-xs font-bold text-slate-300 bg-white/10 px-3 py-1 rounded border border-white/10">
+                    <span className="flex items-center gap-1 text-[10px] md:text-xs font-bold text-slate-300 bg-white/10 px-2 py-0.5 md:px-3 md:py-1 rounded border border-white/10">
                         {getProviderIcon(provider)} {provider}
                     </span>
                 </div>
 
                 {/* Title */}
-                <h1 className="text-4xl md:text-6xl font-black text-white leading-none mb-4 md:mb-6 uppercase tracking-tight drop-shadow-lg animate-fade-in-up delay-100">
+                <h1 className="text-2xl sm:text-3xl md:text-6xl font-black text-white leading-tight mb-3 md:mb-6 uppercase tracking-tight drop-shadow-lg animate-fade-in-up delay-100 break-words max-w-full">
                     {event.name}
                 </h1>
 
                 {/* Details */}
-                <div className="flex flex-wrap items-center gap-6 mb-8 text-sm md:text-base text-slate-300 font-mono animate-fade-in-up delay-200">
+                <div className="flex flex-wrap items-center gap-3 md:gap-6 mb-6 md:mb-8 text-xs md:text-base text-slate-300 font-mono animate-fade-in-up delay-200">
                     <div className="flex items-center gap-2">
                         <MdCalendarToday className="text-[#00d9ff]" />
                         {eventDate.toLocaleString(undefined, { dateStyle: 'long', timeStyle: 'short' })}
                     </div>
-                    {/* Location if available (SpaceX API often gives launchpad ID, would need lookup, skipping for simple banner unless enriched) */}
                 </div>
 
                 {/* Timer Section */}
