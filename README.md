@@ -11,7 +11,7 @@
 ---
 
 ## 🎥 Project Demo
-**[Watch the Full App Tutorial](./app_tutorial.mp4)**
+**[Watch the Full App Tutorial]([./app_tutorial.mp4](https://www.youtube.com/watch?v=lDWuxWCVywc))**
 *(Click above to view the walkthrough)*
 
 ---
