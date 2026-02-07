@@ -2,7 +2,6 @@
 **The Ultimate "Mission Control" for Space Enthusiasts**
 
 ![Singularity Banner](https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1200&auto=format&fit=crop) 
-*(Replace this link with your own screenshot/banner if available)*
 
 > **Top 8 Finalist out of 100+ Submissions** 🏆
 
